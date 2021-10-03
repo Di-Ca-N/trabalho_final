@@ -71,6 +71,7 @@ CTestTestfile.cmake
 _deps
 CPackConfig.cmake
 CPackSourceConfig.cmake
+build/
 
 ### CMake Patch ###
 # External projects
