@@ -7,6 +7,11 @@ add_subdirectory(libs/raylib)
 
 add_executable(main 
     src/main.c
+    src/game.c
+    src/saves.c
+    src/maps.c
+    src/graphics.c
+    src/ranking.c
 )
 
 target_link_libraries(main raylib)
