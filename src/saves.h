@@ -3,7 +3,9 @@
 
 #include "game.h"
 
-Game loadSave(char* savePath);         // Load a save from disk
-void saveGame(Game game, char* path);  // Save a game to disk
+#define SAVE_PATH "assets/save.dat"
+
+Game loadSave();           // Load a save from disk
+void saveGame(Game game);  // Save a game to disk
 
 #endif
