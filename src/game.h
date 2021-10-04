@@ -26,17 +26,21 @@ typedef struct {
 } Dave;
 
 typedef struct {
+    // Dave and Map representations
     Dave dave;
     Map map;
 
     // Current player score
     int score;
 
+    // Current stage number
+    int stage;
+
     // Physics related variables
     float gravity;
 } Game;
 
-// Recognized game actions. Defined to decouple input from game actions
+// Recognized game actions. Defined to decouple keyboard input from game actions
 typedef enum {
     ACTION_UP = 1, ACTION_DOWN, ACTION_LEFT, ACTION_RIGHT,
     ACTION_EXIT, ACTION_SAVE, ACTION_STOP, 
@@ -61,7 +65,7 @@ typedef struct {
 } Menu;
 
 typedef enum {
-    MENU_MAIN, MENU_EXIT
+    MENU_MAIN, MENU_EXIT, MENU_RANKING
 } MenuType;
 
 Menu getMenu(MenuType type);                 // Create a menu from given type

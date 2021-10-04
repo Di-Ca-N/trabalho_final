@@ -1,8 +1,10 @@
-#include "raylib.h"
-
 #include <stdio.h>
 
+#include "raylib.h"
+
 #include "graphics.h"
+#include "game.h"
+#include "ranking.h"
 
 typedef enum {
     STATE_MENU = 1,
@@ -13,20 +15,21 @@ typedef enum {
     STATE_WAITING_EXIT,
 } GameState;
 
-int mainMenuScreen(Menu *menu);
+int mainMenuScreen(Menu* menu);
+int rankingScreen();
 
 int main() {
     // Init graphics module
     initGraphics();
-
-    // Init game menu 
-    Menu menu = getMenu(MENU_MAIN);
 
     // Current game state
     GameState state = STATE_MENU;
 
     // Flag that indicate if the game is running
     bool running = true;
+
+    // Init game menu 
+    Menu menu = getMenu(MENU_MAIN);
 
     // Main game loop
     while (running) {
@@ -50,11 +53,14 @@ int main() {
             state = STATE_MENU;
             menu.selectionDone = false;
             break;
-        case STATE_RANKING:
-            printf("Ranking\n");
-            state = STATE_MENU;
-            menu.selectionDone = false;
+        case STATE_RANKING: {
+            int nextState = rankingScreen();
+            if (nextState != 0) {
+                state = nextState;
+                menu.selectionDone = false;
+            }
             break;
+        }
         case STATE_NEW_GAME:
             printf("New Game\n");
             state = STATE_MENU;
@@ -63,13 +69,14 @@ int main() {
         }
     }
 
+    // Tear down graphics module
     endGraphics();
 
     return 0;
 }
 
 int mainMenuScreen(Menu *menu) {
-    renderMenu(*menu);
+    renderMainMenu(*menu);
 
     if(IsKeyPressed(KEY_DOWN))
         *menu = updateMenu(*menu, ACTION_DOWN);
@@ -91,6 +98,20 @@ int mainMenuScreen(Menu *menu) {
         default:
             return 0;
         }
+    }
+    return 0;
+}
+
+int rankingScreen() {
+    Ranking ranking = getRanking();
+    Menu menu = getMenu(MENU_RANKING);
+
+    renderRanking(ranking, menu);
+    if(IsKeyPressed(KEY_ENTER))
+        menu = updateMenu(menu, ACTION_YES);
+
+    if (menu.selectionDone) {
+        return STATE_MENU; 
     }
     return 0;
 }

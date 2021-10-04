@@ -5,8 +5,12 @@
 
 // Write ranking struct to file in disk
 void writeRanking(Ranking ranking) {
+    // Opening file in binary write mode
     FILE *rankingFile = fopen("assets/ranking.dat", "wb");
+    // Writing data to file
     fwrite(&ranking, sizeof(Ranking), 1, rankingFile);
+
+    // Closing file
     fclose(rankingFile);
 }
 

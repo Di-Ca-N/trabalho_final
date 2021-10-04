@@ -1,5 +1,6 @@
 #include "game.h"
 
+// Create a new game
 Game newGame() {
     // Dummy map. Replace with a "loadMap" call after it is done
     Map map = {
@@ -43,6 +44,7 @@ Game newGame() {
     Game game = {
         .map = map,
         .dave = dave,
+        .stage = 1,
         .score = 0,
         .gravity = 10,
     };
@@ -58,6 +60,15 @@ Menu getMenu(MenuType type) {
         Menu menu = {
             .options = {"New game", "Load game", "Ranking", "Exit"},
             .numOptions = 4,
+            .selectedOption = 0,
+            .selectionDone = false,
+        };
+        return menu;
+    }
+    case MENU_RANKING: {
+        Menu menu = {
+            .options = {"Back"},
+            .numOptions = 1,
             .selectedOption = 0,
             .selectionDone = false,
         };

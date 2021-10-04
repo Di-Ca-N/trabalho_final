@@ -1,6 +1,7 @@
 #include "graphics.h"
 
-#include <stdio.h> // sprintf
+#include <stdio.h> // snprintf
+#include <string.h> // strlen
 #include "raylib.h"
 
 void initGraphics() {
@@ -14,17 +15,8 @@ void initGraphics() {
     SetExitKey(0);
 }
 
-// Render a menu into screen
-void renderMenu(Menu menu) {
-    // Start drawing
-    BeginDrawing();
-
-    // Clear background
-    ClearBackground(RAYWHITE);
-    
-    // Draw menu title
-    DrawText("Dangerous Dave", 100, 100, 30, BLACK);
-
+// Draw a menu to the screen, starting at xPos and yPos
+void drawMenu(Menu menu, int xPos, int yPos) {
     // Loop to draw menu options
     for (int i = 0; i < menu.numOptions; i++) {
         // Buffer to hold option text. Set to MAX_OPTION_LENGTH + 2 to account for extra
@@ -40,10 +32,63 @@ void renderMenu(Menu menu) {
             snprintf(optionBuffer, MAX_OPTION_LENGTH + 2, "  %s", menu.options[i]);
         }
         // Draw option text to screen
-        DrawText(optionBuffer, 100, 140 + i * 22, 20, BLACK);
+        DrawText(optionBuffer, xPos, yPos + 2 + i * TEXT_FONT_SIZE, TEXT_FONT_SIZE, BLACK);
     }
+}
+
+// Render the main menu scren
+void renderMainMenu(Menu menu) {
+    // Start drawing
+    BeginDrawing();
+
+    // Clear background
+    ClearBackground(RAYWHITE);
+    
+    // Draw menu title
+    DrawText("Dangerous Dave", TILE_SIZE * 3, TILE_SIZE * 3, HEADER_FONT_SIZE, BLACK);
+
+    // Draw menu options
+    drawMenu(menu, TILE_SIZE * 3, TILE_SIZE * 3 + HEADER_FONT_SIZE + 10);
 
     // End drawing
+    EndDrawing();
+}
+
+// Render the ranking screen
+void renderRanking(Ranking ranking, Menu menu) {
+    BeginDrawing();
+    ClearBackground(RAYWHITE);
+
+    DrawText("Ranking", TILE_SIZE * 3, TILE_SIZE * 3, HEADER_FONT_SIZE, BLACK);
+
+    char rankingEntryBuffer[MAX_USERNAME_LENGTH + 4 + 8];
+
+    for (int i = 0; i < 5; i++) {
+        if (strlen(ranking.entries[i].username) == 0) {
+            snprintf(
+                rankingEntryBuffer,
+                MAX_USERNAME_LENGTH + 12,
+                "%d. ----    %04d",
+                i + 1,
+                ranking.entries[i].score);
+        } else {
+            snprintf(
+                rankingEntryBuffer, 
+                MAX_USERNAME_LENGTH + 12, 
+                "%d. %s    %04d", i + 1, 
+                ranking.entries[i].username, 
+                ranking.entries[i].score);
+        }
+        
+        DrawText(
+            rankingEntryBuffer, 
+            TILE_SIZE * 3, 
+            TILE_SIZE * 3 + HEADER_FONT_SIZE + 12 + i * TEXT_FONT_SIZE, 
+            TEXT_FONT_SIZE, 
+            BLACK);
+    }
+
+    drawMenu(menu, TILE_SIZE * 3, TILE_SIZE * 3 + HEADER_FONT_SIZE + 10 + 5 * TEXT_FONT_SIZE);
     EndDrawing();
 }
 
