@@ -17,8 +17,8 @@ typedef struct {
     // State flags
     bool jumping;
     bool flying;
-    bool trophy;
-    bool jetpack;
+    bool gotTrophy;
+    bool hasJetpack;
 
     // Frame update acumulators
     Vector2 dFramePosition;
@@ -29,6 +29,7 @@ typedef struct {
     Dave dave;
     Map map;
 
+    // Current player score
     int score;
 
     // Physics related variables
@@ -48,12 +49,13 @@ Game newGame();                                               // Create a new ga
 Game handleAction(Game game, Action action, double time);     // Update game state according to actions
 Game updatePhysics(Game game, double time);                   // Apply physics updates on game
 
-// Menu related stuff
+// Menus
 #define MAX_MENU_LENGTH 4
 #define MAX_OPTION_LENGTH 20
 
 typedef struct {
     char options[MAX_MENU_LENGTH][MAX_OPTION_LENGTH];
+    int numOptions;
     int selectedOption;
     bool selectionDone;
 } Menu;

@@ -1,49 +1,96 @@
 #include "raylib.h"
 
+#include <stdio.h>
+
+#include "graphics.h"
+
 typedef enum {
-    STATE_MENU,
+    STATE_MENU = 1,
     STATE_PLAYING,
     STATE_NEW_GAME,
     STATE_LOAD_GAME,
+    STATE_RANKING,
     STATE_WAITING_EXIT,
-} GameStates;
+} GameState;
 
-int main(void)
-{
-    // Initialization
-    //--------------------------------------------------------------------------------------
-    const int screenWidth = 800;
-    const int screenHeight = 450;
+int mainMenuScreen(Menu *menu);
 
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+int main() {
+    // Init graphics module
+    initGraphics();
 
-    SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
-    //--------------------------------------------------------------------------------------
+    // Init game menu 
+    Menu menu = getMenu(MENU_MAIN);
+
+    // Current game state
+    GameState state = STATE_MENU;
+
+    // Flag that indicate if the game is running
+    bool running = true;
 
     // Main game loop
-    while (!WindowShouldClose())    // Detect window close button or ESC key
-    {
-        // Update
-        //----------------------------------------------------------------------------------
-        // TODO: Update your variables here
-        //----------------------------------------------------------------------------------
-
-        // Draw
-        //----------------------------------------------------------------------------------
-        BeginDrawing();
-
-            ClearBackground(RAYWHITE);
-
-            DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
-
-        EndDrawing();
-        //----------------------------------------------------------------------------------
+    while (running) {
+        switch (state) {
+        case STATE_MENU: {  
+            int nextState = mainMenuScreen(&menu);
+            if (nextState != 0)
+                state = nextState;
+            break;
+        }
+        case STATE_WAITING_EXIT:
+            running = false;
+            break;
+        case STATE_LOAD_GAME:
+            printf("Carregar jogo\n");
+            state = STATE_MENU;
+            menu.selectionDone = false;
+            break;
+        case STATE_PLAYING:
+            printf("Jogar\n");
+            state = STATE_MENU;
+            menu.selectionDone = false;
+            break;
+        case STATE_RANKING:
+            printf("Ranking\n");
+            state = STATE_MENU;
+            menu.selectionDone = false;
+            break;
+        case STATE_NEW_GAME:
+            printf("New Game\n");
+            state = STATE_MENU;
+            menu.selectionDone = false;
+            break;
+        }
     }
 
-    // De-Initialization
-    //--------------------------------------------------------------------------------------
-    CloseWindow();        // Close window and OpenGL context
-    //--------------------------------------------------------------------------------------
+    endGraphics();
 
+    return 0;
+}
+
+int mainMenuScreen(Menu *menu) {
+    renderMenu(*menu);
+
+    if(IsKeyPressed(KEY_DOWN))
+        *menu = updateMenu(*menu, ACTION_DOWN);
+    if(IsKeyPressed(KEY_UP))
+        *menu = updateMenu(*menu, ACTION_UP);
+    if(IsKeyPressed(KEY_ENTER))
+        *menu = updateMenu(*menu, ACTION_YES);
+
+    if (menu->selectionDone) {
+        switch (menu->selectedOption) {
+        case 0:
+            return STATE_NEW_GAME;
+        case 1:
+            return STATE_LOAD_GAME;
+        case 2:
+            return STATE_RANKING;
+        case 3:
+            return STATE_WAITING_EXIT;
+        default:
+            return 0;
+        }
+    }
     return 0;
 }

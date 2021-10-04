@@ -13,6 +13,6 @@ typedef struct {
 } Ranking;
 
 Ranking getRanking();                    // Load and return the current ranking
-void saveOnRanking(RankingEntry entry);  // Add an entry to the rank with the given username and score
+void saveOnRanking(RankingEntry entry);  // Add an entry to the ranking
 
 #endif

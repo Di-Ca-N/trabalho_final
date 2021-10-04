@@ -11,10 +11,11 @@ typedef struct{
     // Dave starting position
     int daveStart[2];
 
-    // Real map dimensions
+    // Actual map dimensions
     int height;
     int width;
 } Map;
 
 Map loadMap(char* filename);   // Load a map from disk
+
 #endif

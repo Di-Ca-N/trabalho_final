@@ -1,7 +1,8 @@
 #include <stdio.h>  // fopen, fread, fwrite
-#include "raylib.h"
+#include "raylib.h" // FileExists
 
 #include "ranking.h"
+
 // Write ranking struct to file in disk
 void writeRanking(Ranking ranking) {
     FILE *rankingFile = fopen("assets/ranking.dat", "wb");
@@ -31,17 +32,18 @@ Ranking getRanking() {
     return ranking;
 }
 
+// Save entry on ranking file
 void saveOnRanking(RankingEntry entry) {
     // Load current ranking
     Ranking ranking = getRanking();
 
-    // Hold the last entry in loop
+    // Variable to hold the last entry in loop
     RankingEntry lastEntry;
 
     // Flag that indicates whether the entry is being inserted or moved down
     bool inserting = true;
 
-    // Loop to place the entry on the correct position, according to its score.
+    // Loop to place the entry on the correct position, according to its score
     for (int i = 0; i < 5; i++) {
         // If the entry score is higher than the current entry, it was either
         // inserted or the current entry needs to be pushed down the list
@@ -56,7 +58,7 @@ void saveOnRanking(RankingEntry entry) {
                 inserting = false;
             } else {
                 // If it is pushing an entry down
-                
+
                 // Swaps the current entry with the last entry, using a 
                 // temporary variable
                 RankingEntry tmp = ranking.entries[i];
