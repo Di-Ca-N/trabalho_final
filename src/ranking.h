@@ -12,7 +12,7 @@ typedef struct {
     RankingEntry entries[5];
 } Ranking;
 
-Ranking getRanking();                                               // Load and return the current ranking
-Ranking saveOnRanking(Ranking ranking, char* username, int score);  // Add an entry to the rank with the given username and score
+Ranking getRanking();                    // Load and return the current ranking
+void saveOnRanking(RankingEntry entry);  // Add an entry to the rank with the given username and score
 
 #endif
