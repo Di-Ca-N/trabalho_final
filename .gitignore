@@ -82,3 +82,6 @@ build/
 # Game data
 ranking.dat
 save.dat
+
+# IDE files
+.vscode/

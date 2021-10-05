@@ -5,6 +5,7 @@
 #include "graphics.h"
 #include "game.h"
 #include "ranking.h"
+#include "menus.h"
 
 typedef enum {
     STATE_MENU = 1,

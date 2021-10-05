@@ -1,6 +1,7 @@
 #include "saves.h"
 #include <stdio.h>
 
+// Load a game save from disk
 Game loadGame() {
     // If save does not exist, load a new game
     if (!FileExists(SAVE_PATH)) {
@@ -19,6 +20,7 @@ Game loadGame() {
     return game;
 }
 
+// Save a game to the disk
 void saveGame(Game game) {
     FILE *saveFile = fopen(SAVE_PATH, "wb");
     fwrite(&game, sizeof(Game), 1, saveFile);

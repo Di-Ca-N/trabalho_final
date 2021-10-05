@@ -6,7 +6,10 @@
 
 void initGraphics() {
     // Init game window
-    InitWindow(TILE_SIZE * NUM_TILES_WIDTH, TILE_SIZE * NUM_TILES_HEIGHT, "Dangerous Dave");
+    InitWindow(
+        TILE_SIZE * NUM_TILES_WIDTH, 
+        TILE_SIZE * NUM_TILES_HEIGHT, 
+        "Dangerous Dave");
 
     // Set game to run at 60 fps
     SetTargetFPS(60);
@@ -19,20 +22,23 @@ void initGraphics() {
 void drawMenu(Menu menu, int xPos, int yPos) {
     // Loop to draw menu options
     for (int i = 0; i < menu.numOptions; i++) {
-        // Buffer to hold option text. Set to MAX_OPTION_LENGTH + 2 to account for extra
-        // characters added to the buffer on the "if" below
+        // Buffer to hold option text. Set to MAX_OPTION_LENGTH + 2 to 
+        // account for extra characters added to the buffer on the "if" below
         char optionBuffer[MAX_OPTION_LENGTH + 2];
 
         // If the option being current redendered is the selected option
         if (menu.selectedOption == i) {
             // Add a marker to the option
-            snprintf(optionBuffer, MAX_OPTION_LENGTH + 2, "> %s", menu.options[i]);
+            snprintf(optionBuffer, MAX_OPTION_LENGTH + 2, 
+                     "> %s", menu.options[i]);
         } else {
             // Otherwise, add no mark
-            snprintf(optionBuffer, MAX_OPTION_LENGTH + 2, "  %s", menu.options[i]);
+            snprintf(optionBuffer, MAX_OPTION_LENGTH + 2, "  %s", 
+                     menu.options[i]);
         }
         // Draw option text to screen
-        DrawText(optionBuffer, xPos, yPos + 2 + i * TEXT_FONT_SIZE, TEXT_FONT_SIZE, BLACK);
+        int itemYPos = yPos + 2 + i * TEXT_FONT_SIZE;
+        DrawText(optionBuffer, xPos, itemYPos, TEXT_FONT_SIZE, BLACK);
     }
 }
 
@@ -45,7 +51,8 @@ void renderMainMenu(Menu menu) {
     ClearBackground(RAYWHITE);
     
     // Draw menu title
-    DrawText("Dangerous Dave", TILE_SIZE * 3, TILE_SIZE * 3, HEADER_FONT_SIZE, BLACK);
+    DrawText("Dangerous Dave", TILE_SIZE * 3, TILE_SIZE * 3, 
+             HEADER_FONT_SIZE, BLACK);
 
     // Draw menu options
     drawMenu(menu, TILE_SIZE * 3, TILE_SIZE * 3 + HEADER_FONT_SIZE + 10);
@@ -61,21 +68,22 @@ void renderRanking(Ranking ranking, Menu menu) {
 
     DrawText("Ranking", TILE_SIZE * 3, TILE_SIZE * 3, HEADER_FONT_SIZE, BLACK);
 
-    char rankingEntryBuffer[MAX_USERNAME_LENGTH + 4 + 8];
+    char rankingEntryBuffer[MAX_USERNAME_LENGTH + 12];
 
     for (int i = 0; i < 5; i++) {
         if (strlen(ranking.entries[i].username) == 0) {
             snprintf(
                 rankingEntryBuffer,
                 MAX_USERNAME_LENGTH + 12,
-                "%d. ----    %04d",
+                "%d. %10s    %04d",
                 i + 1,
+                "---",
                 ranking.entries[i].score);
         } else {
             snprintf(
                 rankingEntryBuffer, 
                 MAX_USERNAME_LENGTH + 12, 
-                "%d. %s    %04d", i + 1, 
+                "%d. %10s    %04d", i + 1, 
                 ranking.entries[i].username, 
                 ranking.entries[i].score);
         }
@@ -87,8 +95,8 @@ void renderRanking(Ranking ranking, Menu menu) {
             TEXT_FONT_SIZE, 
             BLACK);
     }
-
-    drawMenu(menu, TILE_SIZE * 3, TILE_SIZE * 3 + HEADER_FONT_SIZE + 10 + 5 * TEXT_FONT_SIZE);
+    int menuYPos = TILE_SIZE * 3 + HEADER_FONT_SIZE + 10 + 5 * TEXT_FONT_SIZE;
+    drawMenu(menu, TILE_SIZE * 3, menuYPos);
     EndDrawing();
 }
 

@@ -1,9 +1,17 @@
+/********************************************************
+ * maps module
+ * Loading of game maps
+ ********************************************************/
 #ifndef MAPS_H
 #define MAPS_H
 
-#define MAX_MAP_WIDTH 120
-#define MAX_MAP_HEIGHT 30
+// ==== CONSTANTS ====
+#define MAX_MAP_WIDTH 120 // Max supported map width
+#define MAX_MAP_HEIGHT 30 // Max supported map height
 
+// ==== TYPES ====
+
+// Internal map representation
 typedef struct{
     // Matrix map representation
     char stage[MAX_MAP_HEIGHT][MAX_MAP_WIDTH];
@@ -16,6 +24,7 @@ typedef struct{
     int width;
 } Map;
 
-Map loadMap(char* filename);   // Load a map from disk
+// ==== FUNCTIONS ====
+Map loadMap(char* filename); // Load a map from disk
 
 #endif

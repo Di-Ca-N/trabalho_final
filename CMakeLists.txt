@@ -13,6 +13,7 @@ add_executable(main
     src/graphics.c
     src/ranking.c
     src/saves.c
+    src/menus.c
 )
 
 target_link_libraries(main raylib)
