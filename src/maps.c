@@ -28,6 +28,7 @@ Map loadMap(char* filename) {
             newMap.stage[y][x] = mapa1[0];
         }
 
+
         if(mapa1[0] == '\n') {
             y++;
             x = 0;
