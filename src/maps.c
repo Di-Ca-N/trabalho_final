@@ -16,10 +16,10 @@ Map loadMap(char* filename) {
   }
     
 
-   char mapa1[2];
+   char mapa[2];
 
-   while (fgets (mapa1, 2 , file) != NULL ) { 
-     printf ("%s" , mapa1);                 
+   while (fgets (mapa, 2 , file) != NULL ) { 
+     printf ("%s" , mapa);                 
 
 //        if(mapa1[0] == 'D') {
 //            meu_mapa.daveStart[0] = x;
