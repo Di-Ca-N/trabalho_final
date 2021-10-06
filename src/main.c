@@ -20,6 +20,18 @@ int mainMenuScreen(Menu* menu);
 int rankingScreen();
 
 int main() {
+    // Map map;
+    // map = loadMap("assets/stages/fase_01.txt");
+    // printf("Altura do mapa %d\n", map.height);
+    // printf("Começo do dave: %d %d\n", map.daveStart[0], map.daveStart[1]);
+
+    // for (int i = 0; i < 15; i++) {
+    //     for (int j = 0; j < 97; j++) {
+    //         printf("%c", map.stage[i][j]);
+    //     }
+    //     printf("\n");
+    // }
+    
     // Init graphics module
     initGraphics();
 
