@@ -2,45 +2,49 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-Map loadMap(char* filename) {
-   
+Map loadMap(char *filename)
+{
     Map newMap;
-
-    FILE *file; 
-    file = fopen (filename , "r"); 
-
-    if (file == NULL) {
-        printf ("Erro no carregamento do arquivo\n"); 
+    FILE *file;
+    file = fopen(filename, "r");
+    if (file == NULL)
+    {
+        printf("Erro no carregamento do arquivo\n");
         getchar();
-        exit(0); 
+        exit(0);
     }
 
-    char mapa1[2];
-    int x = 0, y = 0;
-    while (fgets (mapa1, 2 , file) != NULL ) { 
-        printf ("%s" , mapa1);
+    char mapa[2];
 
-        if (mapa1[0] == 'D') {
-            newMap.daveStart[0] = y;
-            newMap.daveStart[1] = x;
-            newMap.stage[y][x] = ' ';
-        } else if (mapa1[0] != '\n') {
-            newMap.stage[y][x] = mapa1[0];
+    int l = 0, c = 0;
+    while (fgets(mapa, 2, file) != NULL)
+    {
+
+        if (mapa[0] == 'D')
+        {
+            newMap.daveStart[0] = l;
+            newMap.daveStart[1] = c;
+            newMap.stage[l][c] = ' ';
+        }
+        else if (mapa[0] != '\n')
+        {
+            newMap.stage[l][c] = mapa[0];
         }
 
-
-        if(mapa1[0] == '\n') {
-            y++;
-            x = 0;
-        } else {
-            x++;
+        if (mapa[0] == '\n')
+        {
+            l++;
+            newMap.width = c + 1;
+            c = 0;
         }
+        else
+        {
+            c++;
+        }
+        newMap.height = l + 1;
     }
 
     fclose(file);
-
-    printf ("\n");
-
 
     return newMap;
 }
