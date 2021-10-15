@@ -21,27 +21,27 @@ Map loadMap(char *filename)
     {
 
         if (mapa[0] == 'D')
-        {
+        {                                 // Dave starting position - line (l) and columm (c)
             newMap.daveStart[0] = l;
             newMap.daveStart[1] = c;
             newMap.stage[l][c] = ' ';
         }
         else if (mapa[0] != '\n')
-        {
+        {                                
             newMap.stage[l][c] = mapa[0];
         }
 
         if (mapa[0] == '\n')
         {
             l++;
-            newMap.width = c + 1;
+            newMap.width = c + 1;  // Map width 
             c = 0;
         }
         else
         {
             c++;
         }
-        newMap.height = l + 1;
+        newMap.height = l + 1; // Map height
     }
 
     fclose(file);
