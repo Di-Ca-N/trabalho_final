@@ -2,14 +2,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-Map loadMap(char *filename)
+Map loadMap(char *filename)  // Loading a map from disk
 {
     Map newMap;
     FILE *file;
     file = fopen(filename, "r");
     if (file == NULL)
     {
-        printf("Erro no carregamento do arquivo\n");
+        printf("Erro no carregamento do arquivo\n");  // Error message - Load failed
         getchar();
         exit(0);
     }
@@ -17,7 +17,7 @@ Map loadMap(char *filename)
     char mapa[2];
 
     int l = 0, c = 0;
-    while (fgets(mapa, 2, file) != NULL)
+    while (fgets(mapa, 2, file) != NULL)  // Reading map informations
     {
 
         if (mapa[0] == 'D')
@@ -28,23 +28,23 @@ Map loadMap(char *filename)
         }
         else if (mapa[0] != '\n')
         {                                
-            newMap.stage[l][c] = mapa[0];
+            newMap.stage[l][c] = mapa[0]; 
         }
 
         if (mapa[0] == '\n')
         {
             l++;
-            newMap.width = c + 1;  // Map width 
+            newMap.width = c + 1;  // Actual Map width (part of Max Supported map width)
             c = 0;
         }
         else
         {
             c++;
         }
-        newMap.height = l + 1; // Map height
+        newMap.height = l + 1; // Actual Map height (part of Max Supported map width)
     }
 
     fclose(file);
 
-    return newMap;
+    return newMap; 
 }
