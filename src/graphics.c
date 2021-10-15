@@ -126,7 +126,9 @@ void renderGame(Game game) {
                 DrawRectangle( col * TILE_SIZE , row * TILE_SIZE  , TILE_SIZE  , (TILE_SIZE / 2) ,  PURPLE); 
             }
          }
-    } 
+    }
+
+    DrawRectangle(game.dave.position.x * TILE_SIZE, game.dave.position.y * TILE_SIZE, TILE_SIZE, TILE_SIZE, BLUE);
     EndDrawing();
 }
 

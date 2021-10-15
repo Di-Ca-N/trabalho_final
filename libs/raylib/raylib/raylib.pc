@@ -1,4 +1,4 @@
-prefix=C:/Program Files (x86)/Trabalho Final
+prefix=/usr/local
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include
@@ -8,6 +8,6 @@ Description: Simple and easy-to-use library to enjoy videogames programming
 URL: http://github.com/raysan5/raylib
 Version: 3.5.0
 Libs: -L"${libdir}" -lraylib 
-Libs.private: -lglfw  -lgdi32
-Requires.private: 
+Libs.private: -lglfw  -lrt -lm -ldl
+Requires.private:  x11
 Cflags: -I"${includedir}"

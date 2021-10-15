@@ -65,6 +65,23 @@ int main() {
             break;
         case STATE_PLAYING:
             renderGame(game);
+
+            if (IsKeyPressed(KEY_RIGHT)) {
+                game = handleAction(game, ACTION_RIGHT, GetFrameTime());
+            }
+
+            if (IsKeyPressed(KEY_LEFT)) {
+                game = handleAction(game, ACTION_LEFT, GetFrameTime());
+            }
+
+            if (IsKeyReleased(KEY_LEFT)) {
+                game = handleAction(game, ACTION_RELEASE_LEFT, GetFrameTime());
+            }
+
+            if (IsKeyReleased(KEY_RIGHT)) {
+                game = handleAction(game, ACTION_RELEASE_RIGHT, GetFrameTime());
+            }
+            game = updateGame(game, GetFrameTime());
             //state = STATE_MENU;
             //menu.selectionDone = false;
             break;
