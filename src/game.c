@@ -1,11 +1,12 @@
 #include "game.h"
 #include <stdio.h>
+#include <math.h>
 
 // Create a new game
 Game newGame()
 {
     // Static map. Must be replaced with a "loadMap" call after it is implemented
-    Map map = loadMap("assets/stages/mapa1.txt");
+    Map map = loadMap("assets/stages/fase_01.txt");
 
     // Dave starting representation
     Dave dave = {
@@ -40,10 +41,10 @@ Game handleAction(Game game, Action action, double time)
     switch (action)
     {
     case ACTION_RIGHT:
-        game.dave.speed.x = 4 * time;
+        game.dave.speed.x = 6 * time;
         break;
     case ACTION_LEFT:
-        game.dave.speed.x = -4 * time;
+        game.dave.speed.x = -6 * time;
         break;
     case ACTION_RELEASE_RIGHT:
     case ACTION_RELEASE_LEFT:
@@ -73,24 +74,28 @@ Game updateGame(Game game, double time)
     int offset_y = game.dave.speed.y > 0;
 
     next_position_x = game.map.stage[(int)(game.dave.position.y)][(int)(game.dave.position.x + game.dave.speed.x + offset_x)];
+    char next_position_x_d = game.map.stage[(int)(ceil(game.dave.position.y))][(int)(game.dave.position.x + game.dave.speed.x + offset_x)];
     next_position_y = game.map.stage[(int)(game.dave.position.y + game.dave.speed.y + offset_y)][(int)(game.dave.position.x)];
+    char next_position_y_r = game.map.stage[(int)(game.dave.position.y + game.dave.speed.y + offset_y)][(int)ceil(game.dave.position.x)];
     stop_y_below = game.map.stage[(int)(game.dave.position.y + game.dave.speed.y + 1)][(int)(game.dave.position.x)];
+    char stop_y_below_r = game.map.stage[(int)(game.dave.position.y + game.dave.speed.y + 1)][(int)ceil(game.dave.position.x)];
 
-    if (next_position_x != 'x')
+    if (next_position_x != 'x' && next_position_x_d != 'x')
     {
         game.dave.position.x += game.dave.speed.x;
     }
 
-    if (next_position_y != 'x')
+    if (next_position_y != 'x' && next_position_y_r != 'x')
     {
         game.dave.position.y += game.dave.speed.y;
     }
-    if (stop_y_below != 'x')
+    if (stop_y_below != 'x' && stop_y_below_r != 'x')
     {
         game.dave.speed.y += GRAVITY * time;
     } else {
       game.dave.speed.y = 0; 
       game.dave.jumping = false;
+      game.dave.position.y = ceil(game.dave.position.y);
       }
     return game;
 }

@@ -66,11 +66,11 @@ int main() {
         case STATE_PLAYING:
             renderGame(game);
 
-            if (IsKeyPressed(KEY_RIGHT)) {
+            if (IsKeyDown(KEY_RIGHT)) {
                 game = handleAction(game, ACTION_RIGHT, GetFrameTime());
             }
 
-            if (IsKeyPressed(KEY_LEFT)) {
+            if (IsKeyDown(KEY_LEFT)) {
                 game = handleAction(game, ACTION_LEFT, GetFrameTime());
             }
 
@@ -82,13 +82,11 @@ int main() {
                 game = handleAction(game, ACTION_RELEASE_RIGHT, GetFrameTime());
             }
             if (IsKeyDown(KEY_UP)) {
-                printf ("Teste \n"); 
                 game = handleAction(game, ACTION_UP, GetFrameTime());
             }
             game = updateGame(game, GetFrameTime());
-            //state = STATE_MENU;
-            //menu.selectionDone = false;
             break;
+
         case STATE_RANKING: {
             int nextState = rankingScreen();
             if (nextState != 0) {
