@@ -81,6 +81,10 @@ int main() {
             if (IsKeyReleased(KEY_RIGHT)) {
                 game = handleAction(game, ACTION_RELEASE_RIGHT, GetFrameTime());
             }
+            if (IsKeyDown(KEY_UP)) {
+                printf ("Teste \n"); 
+                game = handleAction(game, ACTION_UP, GetFrameTime());
+            }
             game = updateGame(game, GetFrameTime());
             //state = STATE_MENU;
             //menu.selectionDone = false;
