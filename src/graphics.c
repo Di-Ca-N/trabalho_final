@@ -106,12 +106,27 @@ void renderGame(Game game) {
     ClearBackground(RAYWHITE);
 
     for (int row = 0; row < game.map.height; row++) {
-        for (int col = 0; col < game.map.width; col++) {
+        for (int col = 0; col < game.map.width; col++) 
+        {
             if (game.map.stage[row][col] == 'x') {
                 DrawRectangle(col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE, RED);
             }
-        }
-    }
+            if  (game.map.stage[row][col] == '%') {  // Coroa
+                DrawCircle(col * TILE_SIZE + (TILE_SIZE / 2) , row * TILE_SIZE + (TILE_SIZE / 2) , (TILE_SIZE / 2) , GOLD); 
+            }
+            if  (game.map.stage[row][col] == '#') {  // Rubi
+                
+                Vector2 v1 = { (col + 0.5) * TILE_SIZE , row  * TILE_SIZE};
+                Vector2 v2 = {col * TILE_SIZE , (row + 1)  * TILE_SIZE};
+                Vector2 v3 = { (col + 1) * TILE_SIZE , (row + 1)  * TILE_SIZE};
+                
+                DrawTriangle ( v1 , v2 , v3 , GREEN); 
+             }
+            if  (game.map.stage[row][col] == '!') {  // Ametista
+                DrawRectangle( col * TILE_SIZE , row * TILE_SIZE  , TILE_SIZE  , (TILE_SIZE / 2) ,  PURPLE); 
+            }
+         }
+    } 
     EndDrawing();
 }
 
