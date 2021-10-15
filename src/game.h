@@ -61,6 +61,6 @@ typedef enum {
 // ==== FUNCTIONS ====
 Game newGame();                                            // Create a new game
 Game handleAction(Game game, Action action, double time);  // Update game state according to actions
-Game updatePhysics(Game game, double time);                // Apply physics updates on game
+Game updateGame(Game game, double time);                   // Apply updates on game
 
 #endif

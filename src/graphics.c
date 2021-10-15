@@ -100,6 +100,22 @@ void renderRanking(Ranking ranking, Menu menu) {
     EndDrawing();
 }
 
+void renderGame(Game game) {
+    SetWindowSize(game.map.width * TILE_SIZE, game.map.height * TILE_SIZE);
+    BeginDrawing();
+    ClearBackground(RAYWHITE);
+
+    for (int row = 0; row < game.map.height; row++) {
+        for (int col = 0; col < game.map.width; col++) {
+            if (game.map.stage[row][col] == 'x') {
+                DrawRectangle(col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE, RED);
+            }
+        }
+    }
+    EndDrawing();
+}
+
+
 void endGraphics() {
     CloseWindow();
 }
