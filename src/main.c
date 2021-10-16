@@ -18,6 +18,7 @@ typedef enum {
 
 int mainMenuScreen(Menu* menu);
 int rankingScreen();
+int gameScreen(Game* game);
 
 int main() {
     Map map;
@@ -49,58 +50,43 @@ int main() {
     // Main game loop
     while (running) {
         switch (state) {
-        case STATE_MENU: {  
-            int nextState = mainMenuScreen(&menu);
-            if (nextState != 0)
-                state = nextState;
-            break;
-        }
-        case STATE_WAITING_EXIT:
-            running = false;
-            break;
-        case STATE_LOAD_GAME:
-            printf("Carregar jogo\n");
-            state = STATE_MENU;
-            menu.selectionDone = false;
-            break;
-        case STATE_PLAYING:
-            renderGame(game);
-
-            if (IsKeyDown(KEY_RIGHT)) {
-                game = handleAction(game, ACTION_RIGHT, GetFrameTime());
+            case STATE_MENU: {  
+                int nextState = mainMenuScreen(&menu);
+                if (nextState != 0)
+                    state = nextState;
+                break;
             }
+            case STATE_WAITING_EXIT:
+                running = false;
+                break;
 
-            if (IsKeyDown(KEY_LEFT)) {
-                game = handleAction(game, ACTION_LEFT, GetFrameTime());
-            }
-
-            if (IsKeyReleased(KEY_LEFT)) {
-                game = handleAction(game, ACTION_RELEASE_LEFT, GetFrameTime());
-            }
-
-            if (IsKeyReleased(KEY_RIGHT)) {
-                game = handleAction(game, ACTION_RELEASE_RIGHT, GetFrameTime());
-            }
-            if (IsKeyDown(KEY_UP)) {
-                game = handleAction(game, ACTION_UP, GetFrameTime());
-            }
-            game = updateGame(game, GetFrameTime());
-            break;
-
-        case STATE_RANKING: {
-            int nextState = rankingScreen();
-            if (nextState != 0) {
-                state = nextState;
+            case STATE_LOAD_GAME:
+                printf("Carregar jogo\n");
+                state = STATE_MENU;
                 menu.selectionDone = false;
+                break;
+
+            case STATE_PLAYING: {
+                int nextState = gameScreen(&game);
+
+                if (nextState != 0) {
+                    state = nextState;
+                }
+                break;
             }
-            break;
-        }
-        case STATE_NEW_GAME:
-            printf("New Game\n");
-            state = STATE_PLAYING;
-            game = newGame();
-            menu.selectionDone = false;
-            break;
+            case STATE_RANKING: {
+                int nextState = rankingScreen();
+                if (nextState != 0) {
+                    state = nextState;
+                    menu.selectionDone = false;
+                }
+                break;
+            }
+            case STATE_NEW_GAME:
+                state = STATE_PLAYING;
+                game = newGame();
+                menu.selectionDone = false;
+                break;
         }
     }
 
@@ -148,5 +134,30 @@ int rankingScreen() {
     if (menu.selectionDone) {
         return STATE_MENU; 
     }
+    return 0;
+}
+
+int gameScreen(Game* game) {
+    renderGame(*game);
+
+    if (IsKeyDown(KEY_RIGHT)) {
+        *game = handleAction(*game, ACTION_RIGHT, GetFrameTime());
+    }
+
+    if (IsKeyDown(KEY_LEFT)) {
+        *game = handleAction(*game, ACTION_LEFT, GetFrameTime());
+    }
+
+    if (IsKeyReleased(KEY_LEFT)) {
+        *game = handleAction(*game, ACTION_RELEASE_LEFT, GetFrameTime());
+    }
+
+    if (IsKeyReleased(KEY_RIGHT)) {
+        *game = handleAction(*game, ACTION_RELEASE_RIGHT, GetFrameTime());
+    }
+    if (IsKeyDown(KEY_UP)) {
+        *game = handleAction(*game, ACTION_UP, GetFrameTime());
+    }
+    *game = updateGame(*game, GetFrameTime());
     return 0;
 }
