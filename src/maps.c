@@ -34,14 +34,14 @@ Map loadMap(char *filename)  // Loading a map from disk
         if (mapa[0] == '\n')
         {
             l++;
-            newMap.width = c + 1;  // Actual Map width (part of Max Supported map height)
+            newMap.width = c;  // Actual Map width (part of Max Supported map height)
             c = 0;
         }
         else
         {
             c++;
+            newMap.height = l + 1; // Actual Map height (part of Max Supported map width)
         }
-        newMap.height = l + 1; // Actual Map height (part of Max Supported map width)
     }
 
     fclose(file);

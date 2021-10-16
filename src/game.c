@@ -3,9 +3,8 @@
 #include <math.h>
 
 // Create a new game
-Game newGame()
-{
-    // Static map. Must be replaced with a "loadMap" call after it is implemented
+Game newGame() {
+    // Load first stage map
     Map map = loadMap("assets/stages/mapa1.txt");
 
     // Dave starting representation
@@ -19,9 +18,6 @@ Game newGame()
         .flying = false,
         .gotTrophy = false,
         .hasJetpack = false,
-
-        .dFramePosition = {0, 0},
-        .dFrameSpeed = {0, 0},
     };
 
     // New game
@@ -35,16 +31,13 @@ Game newGame()
     return game;
 }
 
-Game handleAction(Game game, Action action, double time)
-{
-
-    switch (action)
-    {
+Game handleAction(Game game, Action action, double time) {
+    switch (action) {
     case ACTION_RIGHT:
-        game.dave.speed.x = 6 * time;
+        game.dave.speed.x = WALKING_X_SPEED * time;
         break;
     case ACTION_LEFT:
-        game.dave.speed.x = -6 * time;
+        game.dave.speed.x = -WALKING_X_SPEED * time;
         break;
     case ACTION_RELEASE_RIGHT:
     case ACTION_RELEASE_LEFT:
@@ -53,7 +46,7 @@ Game handleAction(Game game, Action action, double time)
     case ACTION_UP:
         if (!game.dave.jumping)
         {
-            game.dave.speed.y = -30 * time;
+            game.dave.speed.y = -JUMP_INITIAL_SPEED * time;
             game.dave.jumping = true;
         }
         break;
@@ -64,38 +57,60 @@ Game handleAction(Game game, Action action, double time)
     return game;
 }
 
-Game updateGame(Game game, double time)
-{
+char getStagePosition(Map map, float x, float y) {
+    return map.stage[(int) y][(int) x];
+}
 
-    char next_position_x;
-    char next_position_y;
-    char stop_y_below;
+Game updateGame(Game game, double time) {
     int offset_x = game.dave.speed.x > 0;
+
+    float nextX = game.dave.position.x + game.dave.speed.x + offset_x;
+    float currentY = game.dave.position.y;
+    float yCeil = ceil(game.dave.position.y);
+
+    char next_position_x = getStagePosition(game.map, nextX, currentY);
+    char next_position_x_d = getStagePosition(game.map, nextX, yCeil);
+
+    if (next_position_x != 'x' && next_position_x_d != 'x') {
+        game.dave.position.x += game.dave.speed.x;
+    } else {
+        if (offset_x) {
+            game.dave.position.x = ceil(game.dave.position.x);
+        } else {
+            game.dave.position.x = (int) game.dave.position.x;
+        }
+    }
+
     int offset_y = game.dave.speed.y > 0;
 
-    next_position_x = game.map.stage[(int)(game.dave.position.y)][(int)(game.dave.position.x + game.dave.speed.x + offset_x)];
-    char next_position_x_d = game.map.stage[(int)(ceil(game.dave.position.y))][(int)(game.dave.position.x + game.dave.speed.x + offset_x)];
-    next_position_y = game.map.stage[(int)(game.dave.position.y + game.dave.speed.y + offset_y)][(int)(game.dave.position.x)];
-    char next_position_y_r = game.map.stage[(int)(game.dave.position.y + game.dave.speed.y + offset_y)][(int)ceil(game.dave.position.x)];
-    stop_y_below = game.map.stage[(int)(game.dave.position.y + game.dave.speed.y + 1)][(int)(game.dave.position.x)];
-    char stop_y_below_r = game.map.stage[(int)(game.dave.position.y + game.dave.speed.y + 1)][(int)ceil(game.dave.position.x)];
+    float nextY = game.dave.position.y + game.dave.speed.y + offset_y;
+    float currentX = game.dave.position.x;    
+    float xCeil = ceil(game.dave.position.x);
 
-    if (next_position_x != 'x' && next_position_x_d != 'x')
-    {
-        game.dave.position.x += game.dave.speed.x;
-    }
+    char next_position_y = getStagePosition(game.map, currentX, nextY);
+    char next_position_y_r = getStagePosition(game.map,xCeil, nextY);
 
-    if (next_position_y != 'x' && next_position_y_r != 'x')
-    {
+
+    if (next_position_y != 'x' && next_position_y_r != 'x') {
         game.dave.position.y += game.dave.speed.y;
-    }
-    if (stop_y_below != 'x' && stop_y_below_r != 'x')
-    {
-        game.dave.speed.y += GRAVITY * time;
     } else {
-      game.dave.speed.y = 0; 
-      game.dave.jumping = false;
-      game.dave.position.y = ceil(game.dave.position.y);
-      }
+        if (offset_y) {
+            game.dave.position.y = ceil(game.dave.position.y);
+        } else {
+            game.dave.position.y = (int) game.dave.position.y;
+        }
+    }
+
+    float belowDave = game.dave.position.y + game.dave.speed.y + 1;
+    char stop_y_below = getStagePosition(game.map, currentX, belowDave);
+    char stop_y_below_r = getStagePosition(game.map, xCeil, belowDave);
+
+    game.dave.speed.y += GRAVITY * time;
+    if (stop_y_below == 'x' || stop_y_below_r == 'x') {
+        game.dave.speed.y = 0;
+        game.dave.jumping = false;
+    }
+
     return game;
 }
+
