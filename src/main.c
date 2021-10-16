@@ -21,7 +21,7 @@ int rankingScreen();
 
 int main() {
     Map map;
-    map = loadMap("assets/stages/fase_01.txt");
+    map = loadMap("assets/stages/mapa1.txt");
     printf("Altura do mapa %d\n", map.height);
     printf("Começo do dave: %d %d\n", map.daveStart[0], map.daveStart[1]);
 

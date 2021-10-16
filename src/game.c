@@ -6,7 +6,7 @@
 Game newGame()
 {
     // Static map. Must be replaced with a "loadMap" call after it is implemented
-    Map map = loadMap("assets/stages/fase_01.txt");
+    Map map = loadMap("assets/stages/mapa1.txt");
 
     // Dave starting representation
     Dave dave = {

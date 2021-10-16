@@ -109,7 +109,7 @@ void renderGame(Game game) {
         for (int col = 0; col < game.map.width; col++) 
         {
             if (game.map.stage[row][col] == 'x') {
-                DrawRectangle(col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE, RED);
+                DrawRectangle(col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE, GREEN);
             }
             if  (game.map.stage[row][col] == '%') {  // Coroa
                 DrawCircle(col * TILE_SIZE + (TILE_SIZE / 2) , row * TILE_SIZE + (TILE_SIZE / 2) , (TILE_SIZE / 2) , GOLD); 
@@ -120,10 +120,33 @@ void renderGame(Game game) {
                 Vector2 v2 = {col * TILE_SIZE , (row + 1)  * TILE_SIZE};
                 Vector2 v3 = { (col + 1) * TILE_SIZE , (row + 1)  * TILE_SIZE};
                 
-                DrawTriangle ( v1 , v2 , v3 , GREEN); 
+                DrawTriangle ( v1 , v2 , v3 , DARKGREEN); 
              }
             if  (game.map.stage[row][col] == '!') {  // Ametista
                 DrawRectangle( col * TILE_SIZE , row * TILE_SIZE  , TILE_SIZE  , (TILE_SIZE / 2) ,  PURPLE); 
+            }
+            if  (game.map.stage[row][col] == '@') {  // Safira
+               
+                Vector2 v4 = { (col + 0.4) * TILE_SIZE , row  * TILE_SIZE};
+                Vector2 v5 = {col * TILE_SIZE , (row + 1)  * TILE_SIZE};
+                Vector2 v6 = { (col + 0.8) * TILE_SIZE , (row + 1)  * TILE_SIZE};
+ 
+                DrawTriangle ( v4 , v5 , v6 , DARKBLUE);  
+            }
+            if  (game.map.stage[row][col] == '$') {  // Anel
+                DrawCircle(col * TILE_SIZE + (TILE_SIZE / 2.5) , row * TILE_SIZE + (TILE_SIZE / 3) , (TILE_SIZE / 2.5) , GRAY); 
+            }
+            if  (game.map.stage[row][col] == 'P') {  // Porta
+                DrawRectangle(col * TILE_SIZE, (row * TILE_SIZE - 25) , TILE_SIZE, (TILE_SIZE + 25),  BROWN); 
+            }
+            if  (game.map.stage[row][col] == 'A') {  // Água
+                DrawRectangle(col * TILE_SIZE, row * TILE_SIZE , TILE_SIZE, TILE_SIZE ,  SKYBLUE); 
+            }
+            if  (game.map.stage[row][col] == 'F') {  // Fogo
+                DrawRectangle(col * TILE_SIZE, row * TILE_SIZE , TILE_SIZE, TILE_SIZE ,  MAROON); 
+            }
+            if  (game.map.stage[row][col] == 'J') {  // Fogo
+                DrawRectangle(col * TILE_SIZE, row * TILE_SIZE , TILE_SIZE, TILE_SIZE ,  MAROON); 
             }
          }
     }
