@@ -1,3 +1,16 @@
+/**
+ * ==== Dangerous Dave ====
+ * 
+ * Esse trabalho se trata de um jogo inspirado no jogo Dangerous Dave, 
+ * de 1988
+ * 
+ * Jogo desenvolvido como trabalho final da disciplina 
+ * INF-01202 - Algoritmos e Programação
+ * 
+ * Professor: Lucas Rafael Costella Pessuto
+ * Estudantes: Diego Cardoso Nunes, Enzo Sergi Berquo Xavier
+*/
+
 #include <stdio.h>
 
 #include "raylib.h"
@@ -45,6 +58,7 @@ int main() {
                     state = nextState;
                 break;
             }
+
             case STATE_WAITING_EXIT:
                 running = false;
                 break;
