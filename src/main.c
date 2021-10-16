@@ -6,6 +6,7 @@
 #include "game.h"
 #include "ranking.h"
 #include "menus.h"
+#include "saves.h"
 
 typedef enum {
     STATE_MENU = 1,
@@ -60,11 +61,11 @@ int main() {
                 running = false;
                 break;
 
-            case STATE_LOAD_GAME:
-                printf("Carregar jogo\n");
-                state = STATE_MENU;
-                menu.selectionDone = false;
+            case STATE_LOAD_GAME: {
+                game = loadGame();
+                state = STATE_PLAYING;
                 break;
+            }
 
             case STATE_PLAYING: {
                 int nextState = gameScreen(&game);
@@ -158,6 +159,11 @@ int gameScreen(Game* game) {
     if (IsKeyDown(KEY_UP)) {
         *game = handleAction(*game, ACTION_UP, GetFrameTime());
     }
+
+    if (IsKeyDown(KEY_S)) {
+        saveGame(*game);
+    }
+
     *game = updateGame(*game, GetFrameTime());
     return 0;
 }
