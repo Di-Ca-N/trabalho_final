@@ -12,7 +12,7 @@
 #define SAVE_PATH "assets/save.dat"
 
 // ==== FUNCTIONS ====
-Game loadSave();           // Load a save from disk
+Game loadGame();           // Load a save from disk
 void saveGame(Game game);  // Save a game to disk
 
 #endif
