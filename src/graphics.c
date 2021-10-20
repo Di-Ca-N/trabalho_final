@@ -112,7 +112,7 @@ void renderGame(Game game) {
                 DrawRectangle(col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE, GREEN);
             }
             if  (game.map.stage[row][col] == '%') {  // Coroa
-                DrawCircle(col * TILE_SIZE + (TILE_SIZE / 2) , row * TILE_SIZE + (TILE_SIZE / 2) , (TILE_SIZE / 2) , GOLD); 
+                DrawCircle(col * TILE_SIZE + (TILE_SIZE / 2) , row * TILE_SIZE + (TILE_SIZE / 2) , (TILE_SIZE / 2) , YELLOW); 
             }
             if  (game.map.stage[row][col] == '#') {  // Rubi
                 
@@ -123,7 +123,7 @@ void renderGame(Game game) {
                 DrawTriangle ( v1 , v2 , v3 , DARKGREEN); 
              }
             if  (game.map.stage[row][col] == '!') {  // Ametista
-                DrawRectangle( col * TILE_SIZE , row * TILE_SIZE  , TILE_SIZE  , (TILE_SIZE / 2) ,  PURPLE); 
+                DrawEllipse  (col * TILE_SIZE , row * TILE_SIZE  , (TILE_SIZE/2)  , (TILE_SIZE / 3) ,  PURPLE);
             }
             if  (game.map.stage[row][col] == '@') {  // Safira
                
@@ -145,8 +145,16 @@ void renderGame(Game game) {
             if  (game.map.stage[row][col] == 'F') {  // Fogo
                 DrawRectangle(col * TILE_SIZE, row * TILE_SIZE , TILE_SIZE, TILE_SIZE ,  MAROON); 
             }
-            if  (game.map.stage[row][col] == 'J') {  // Fogo
-                DrawRectangle(col * TILE_SIZE, row * TILE_SIZE , TILE_SIZE, TILE_SIZE ,  MAROON); 
+            if  (game.map.stage[row][col] == 'J') {  // Jetpack
+                DrawRectangle(col * TILE_SIZE, (row * TILE_SIZE - 8 ) , TILE_SIZE, (TILE_SIZE + 8 ),  ORANGE); 
+            }
+            if  (game.map.stage[row][col] == 'T') {  // Safira
+               
+                Vector2 v7 = { (col + 0.5) * TILE_SIZE , (row -1 )  * TILE_SIZE};
+                Vector2 v8 = {col * TILE_SIZE , (row + 1)  * TILE_SIZE};
+                Vector2 v9 = { (col + 1.0) * TILE_SIZE , (row + 1)  * TILE_SIZE};
+ 
+                DrawTriangle ( v7 , v8 , v9 , GOLD);  
             }
          }
     }
