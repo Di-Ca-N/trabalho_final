@@ -3,9 +3,8 @@
 #include <math.h>
 
 // Create a new game
-Game newGame()
-{
-    // Static map. Must be replaced with a "loadMap" call after it is implemented
+Game newGame() {
+    // Load first stage map
     Map map = loadMap("assets/stages/mapa1.txt");
 
     // Dave starting representation
@@ -19,9 +18,6 @@ Game newGame()
         .flying = false,
         .gotTrophy = false,
         .hasJetpack = false,
-
-        .dFramePosition = {0, 0},
-        .dFrameSpeed = {0, 0},
     };
 
     // New game
@@ -35,16 +31,23 @@ Game newGame()
     return game;
 }
 
-Game handleAction(Game game, Action action, double time)
-{
-
-    switch (action)
-    {
+/** 
+ * Update the game state based on a single game action.
+ * This function only manipulates the velocity of objects based on the
+ * action. To update the game object positions, call 'updateGame' after.
+ *   
+ * Arguments:
+ *     game (Game): Game to be updated
+ *     action (Action): Action to handle
+ *     time (double): Time elapsed
+*/
+Game handleAction(Game game, Action action, double time) {
+    switch (action) {
     case ACTION_RIGHT:
-        game.dave.speed.x = 6 * time;
+        game.dave.speed.x = WALKING_X_SPEED * time;
         break;
     case ACTION_LEFT:
-        game.dave.speed.x = -6 * time;
+        game.dave.speed.x = -WALKING_X_SPEED * time;
         break;
     case ACTION_RELEASE_RIGHT:
     case ACTION_RELEASE_LEFT:
@@ -53,7 +56,7 @@ Game handleAction(Game game, Action action, double time)
     case ACTION_UP:
         if (!game.dave.jumping)
         {
-            game.dave.speed.y = -30 * time;
+            game.dave.speed.y = -JUMP_INITIAL_SPEED * time;
             game.dave.jumping = true;
         }
         break;
@@ -64,38 +67,95 @@ Game handleAction(Game game, Action action, double time)
     return game;
 }
 
-Game updateGame(Game game, double time)
-{
+char getStagePosition(Map map, float x, float y) {
+    return map.stage[(int) y][(int) x];
+}
 
-    char next_position_x;
-    char next_position_y;
-    char stop_y_below;
-    int offset_x = game.dave.speed.x > 0;
-    int offset_y = game.dave.speed.y > 0;
+/** 
+ * Update the game objects positions and general game state.
+ * 
+ * Arguments:
+ *     game (Game): Game to be updated
+ *     time (double): Time elapsed
+*/
+Game updateGame(Game game, double time) {
+    // Dave X Position Update
+    
+    // Indicate whether Dave is movind to the right
+    int goingRight = game.dave.speed.x > 0;
 
-    next_position_x = game.map.stage[(int)(game.dave.position.y)][(int)(game.dave.position.x + game.dave.speed.x + offset_x)];
-    char next_position_x_d = game.map.stage[(int)(ceil(game.dave.position.y))][(int)(game.dave.position.x + game.dave.speed.x + offset_x)];
-    next_position_y = game.map.stage[(int)(game.dave.position.y + game.dave.speed.y + offset_y)][(int)(game.dave.position.x)];
-    char next_position_y_r = game.map.stage[(int)(game.dave.position.y + game.dave.speed.y + offset_y)][(int)ceil(game.dave.position.x)];
-    stop_y_below = game.map.stage[(int)(game.dave.position.y + game.dave.speed.y + 1)][(int)(game.dave.position.x)];
-    char stop_y_below_r = game.map.stage[(int)(game.dave.position.y + game.dave.speed.y + 1)][(int)ceil(game.dave.position.x)];
+    float nextX = game.dave.position.x + game.dave.speed.x + goingRight;
+    float currentY = game.dave.position.y;
+    float yCeil = ceil(game.dave.position.y);
 
-    if (next_position_x != 'x' && next_position_x_d != 'x')
-    {
+    // Objects on the next x position of Dave. It is necessary to check 
+    // two positions because Dave can be located between two integer 
+    // y positions
+    char next_position_x = getStagePosition(game.map, nextX, currentY);
+    char next_position_x_forward = getStagePosition(game.map, nextX, yCeil);
+
+    if (next_position_x != WALL && next_position_x_forward != WALL) {
+        // If neither position is a wall, update Dave x position
         game.dave.position.x += game.dave.speed.x;
+    } else {
+        // Otherwise, correct Dave position in relation to the wall,
+        // based on its current movement direction
+        if (goingRight) {
+            // If he is going to the right, the corrected position is
+            // the ceil of the current x position
+            game.dave.position.x = ceil(game.dave.position.x);
+        } else {
+            // If he is going to the left, the corrected position is the
+            // floor of the current x position
+            game.dave.position.x = floor(game.dave.position.x);
+        }
     }
 
-    if (next_position_y != 'x' && next_position_y_r != 'x')
-    {
+    // Dave Y position update
+    int goingDown = game.dave.speed.y > 0;
+
+    float nextY = game.dave.position.y + game.dave.speed.y + goingDown;
+    float currentX = game.dave.position.x;    
+    float xCeil = ceil(game.dave.position.x);
+
+    // Objects on the next y position of Dave. It is necessary to check 
+    // two positions because Dave can be located between two integer 
+    // x positions
+    char next_position_y = getStagePosition(game.map, currentX, nextY);
+    char next_position_y_r = getStagePosition(game.map, xCeil, nextY);
+
+    // If there is no wall on Dave's path on the Y axis
+    if (next_position_y != WALL && next_position_y_r != WALL) {
+        // Update Dave Y pos
         game.dave.position.y += game.dave.speed.y;
-    }
-    if (stop_y_below != 'x' && stop_y_below_r != 'x')
-    {
-        game.dave.speed.y += GRAVITY * time;
     } else {
-      game.dave.speed.y = 0; 
-      game.dave.jumping = false;
-      game.dave.position.y = ceil(game.dave.position.y);
-      }
+        // If there is a wall, corrects Dave Y position
+        if (goingDown) {
+            game.dave.position.y = ceil(game.dave.position.y);
+        } else {
+            game.dave.position.y = floor(game.dave.position.y);
+        }
+    }
+    
+    // Dave floor interaction
+    float belowDave = game.dave.position.y + game.dave.speed.y + 1;
+
+    // Objects below Dave. It is necessary to check two positions 
+    // because Dave can be located between two integer x positions
+    char stop_y_below = getStagePosition(game.map, currentX, belowDave);
+    char stop_y_below_r = getStagePosition(game.map, xCeil, belowDave);
+
+    // Apply gravity
+    game.dave.speed.y += GRAVITY * time;
+
+    // If there is a wall below Dave
+    if (stop_y_below == WALL || stop_y_below_r == WALL) {
+        // Y speed becomes zero
+        game.dave.speed.y = 0;
+        // Reset jump flag (so Dave can jump again)
+        game.dave.jumping = false;
+    }
+
     return game;
 }
+

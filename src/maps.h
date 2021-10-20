@@ -9,6 +9,20 @@
 #define MAX_MAP_WIDTH 120 // Max supported map width
 #define MAX_MAP_HEIGHT 30 // Max supported map height
 
+#define WALL 'x'
+#define TROPHY 'T'
+#define WATER 'A'
+#define FIRE 'F'
+#define DAVE 'D'
+#define DOOR 'P'
+#define ENTRY 'O'
+#define JETPACK 'J'
+#define RING '$'
+#define CROWN '%'
+#define RUBY '#'
+#define SAPHIRE '@'
+#define AMETIST '!'
+
 // ==== TYPES ====
 
 // Internal map representation

@@ -1,3 +1,16 @@
+/**
+ * ==== Dangerous Dave ====
+ * 
+ * Esse trabalho se trata de um jogo inspirado no jogo Dangerous Dave, 
+ * de 1988
+ * 
+ * Jogo desenvolvido como trabalho final da disciplina 
+ * INF-01202 - Algoritmos e Programação
+ * 
+ * Professor: Lucas Rafael Costella Pessuto
+ * Estudantes: Diego Cardoso Nunes, Enzo Sergi Berquo Xavier
+*/
+
 #include <stdio.h>
 
 #include "raylib.h"
@@ -6,6 +19,7 @@
 #include "game.h"
 #include "ranking.h"
 #include "menus.h"
+#include "saves.h"
 
 typedef enum {
     STATE_MENU = 1,
@@ -18,20 +32,9 @@ typedef enum {
 
 int mainMenuScreen(Menu* menu);
 int rankingScreen();
+int gameScreen(Game* game);
 
 int main() {
-    Map map;
-    map = loadMap("assets/stages/mapa1.txt");
-    printf("Altura do mapa %d\n", map.height);
-    printf("Começo do dave: %d %d\n", map.daveStart[0], map.daveStart[1]);
-
-    for (int i = 0; i < 15; i++) {
-        for (int j = 0; j < 97; j++) {
-            printf("%c", map.stage[i][j]);
-        }
-        printf("\n");
-    }
-    
     // Init graphics module
     initGraphics();
 
@@ -49,58 +52,44 @@ int main() {
     // Main game loop
     while (running) {
         switch (state) {
-        case STATE_MENU: {  
-            int nextState = mainMenuScreen(&menu);
-            if (nextState != 0)
-                state = nextState;
-            break;
-        }
-        case STATE_WAITING_EXIT:
-            running = false;
-            break;
-        case STATE_LOAD_GAME:
-            printf("Carregar jogo\n");
-            state = STATE_MENU;
-            menu.selectionDone = false;
-            break;
-        case STATE_PLAYING:
-            renderGame(game);
-
-            if (IsKeyDown(KEY_RIGHT)) {
-                game = handleAction(game, ACTION_RIGHT, GetFrameTime());
+            case STATE_MENU: {  
+                int nextState = mainMenuScreen(&menu);
+                if (nextState != 0)
+                    state = nextState;
+                break;
             }
 
-            if (IsKeyDown(KEY_LEFT)) {
-                game = handleAction(game, ACTION_LEFT, GetFrameTime());
+            case STATE_WAITING_EXIT:
+                running = false;
+                break;
+
+            case STATE_LOAD_GAME: {
+                game = loadGame();
+                state = STATE_PLAYING;
+                break;
             }
 
-            if (IsKeyReleased(KEY_LEFT)) {
-                game = handleAction(game, ACTION_RELEASE_LEFT, GetFrameTime());
-            }
+            case STATE_PLAYING: {
+                int nextState = gameScreen(&game);
 
-            if (IsKeyReleased(KEY_RIGHT)) {
-                game = handleAction(game, ACTION_RELEASE_RIGHT, GetFrameTime());
+                if (nextState != 0) {
+                    state = nextState;
+                }
+                break;
             }
-            if (IsKeyDown(KEY_UP)) {
-                game = handleAction(game, ACTION_UP, GetFrameTime());
+            case STATE_RANKING: {
+                int nextState = rankingScreen();
+                if (nextState != 0) {
+                    state = nextState;
+                    menu.selectionDone = false;
+                }
+                break;
             }
-            game = updateGame(game, GetFrameTime());
-            break;
-
-        case STATE_RANKING: {
-            int nextState = rankingScreen();
-            if (nextState != 0) {
-                state = nextState;
+            case STATE_NEW_GAME:
+                state = STATE_PLAYING;
+                game = newGame();
                 menu.selectionDone = false;
-            }
-            break;
-        }
-        case STATE_NEW_GAME:
-            printf("New Game\n");
-            state = STATE_PLAYING;
-            game = newGame();
-            menu.selectionDone = false;
-            break;
+                break;
         }
     }
 
@@ -148,5 +137,35 @@ int rankingScreen() {
     if (menu.selectionDone) {
         return STATE_MENU; 
     }
+    return 0;
+}
+
+int gameScreen(Game* game) {
+    renderGame(*game);
+
+    if (IsKeyDown(KEY_RIGHT)) {
+        *game = handleAction(*game, ACTION_RIGHT, GetFrameTime());
+    }
+
+    if (IsKeyDown(KEY_LEFT)) {
+        *game = handleAction(*game, ACTION_LEFT, GetFrameTime());
+    }
+
+    if (IsKeyReleased(KEY_LEFT)) {
+        *game = handleAction(*game, ACTION_RELEASE_LEFT, GetFrameTime());
+    }
+
+    if (IsKeyReleased(KEY_RIGHT)) {
+        *game = handleAction(*game, ACTION_RELEASE_RIGHT, GetFrameTime());
+    }
+    if (IsKeyDown(KEY_UP)) {
+        *game = handleAction(*game, ACTION_UP, GetFrameTime());
+    }
+
+    if (IsKeyDown(KEY_S)) {
+        saveGame(*game);
+    }
+
+    *game = updateGame(*game, GetFrameTime());
     return 0;
 }

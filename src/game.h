@@ -11,7 +11,7 @@
 // ==== CONSTANTS ====
 #define GRAVITY 2            // Game gravity
 #define WALKING_X_SPEED 8      // Dave's walking speed
-#define JUMP_INITIAL_SPEED 30  // Dave's jump impulse
+#define JUMP_INITIAL_SPEED 27  // Dave's jump impulse
 #define FLYING_SPEED 8         // Dave's flying speed (with jetpack)
 
 // ==== TYPEDEFS ====
@@ -29,10 +29,6 @@ typedef struct {
     bool flying;
     bool gotTrophy;
     bool hasJetpack;
-
-    // Frame update acumulators
-    Vector2 dFramePosition;
-    Vector2 dFrameSpeed;
 } Dave;
 
 // Game representation
