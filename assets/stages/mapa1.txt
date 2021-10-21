@@ -1,7 +1,7 @@
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 x                                                                  #      xFFFFFFx          x
 x                      J                                                  xF  % Fx          x
-x                    xxx                                                  xF    Fx          x     
+x                    xxx                                                  xF    Fx          x
 x              xxx                                     !                                    x
 x@ F                                    xxxxx        AAAAAAAAAAAAAAAAA                      x
 xxxxx    xxx                    FFFFFF               xxxxxxxxxxxxxxxxx          @           x
@@ -11,5 +11,5 @@ x    xxxx         ! FF                       $       xxxxxxxxxxxFFFFxxxx        
 x             xxxxxxxx                  x    x    x             xxxx                 xxxx   x
 x                                   T                                                       x
 x   O   xxxx                xxxxxxxxx                                                       x
-x   D                     AAAAAAAAA        AAAAAAAAAAAAA                      AAAAAAAA      x
+x   D                      AAAAAAAAAAA        AAAAAAAAAAAAA                      AAAAAAAA   x
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
