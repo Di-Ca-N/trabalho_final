@@ -100,65 +100,71 @@ void renderRanking(Ranking ranking, Menu menu) {
     EndDrawing();
 }
 
-void renderGame(Game game) {   // Render game icons from map
-    SetWindowSize(game.map.width * TILE_SIZE, game.map.height * TILE_SIZE);
+void renderGame(Game* game) {   // Render game icons from map
+    SetWindowSize(game->map.width * TILE_SIZE, game->map.height * TILE_SIZE);
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-    for (int row = 0; row < game.map.height; row++) { 
-        for (int col = 0; col < game.map.width; col++) 
+    for (int row = 0; row < game->map.height; row++) { 
+        for (int col = 0; col < game->map.width; col++) 
         {
-            if (game.map.stage[row][col] == WALL) {      // Render walls
-                DrawRectangle(col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE, GREEN);
-            }
-            if  (game.map.stage[row][col] == CROWN) {     // Render crown
-                DrawCircle(col * TILE_SIZE + (TILE_SIZE / 2) , row * TILE_SIZE + (TILE_SIZE / 2) , (TILE_SIZE / 2) , YELLOW);
-            }
-            if  (game.map.stage[row][col] == RUBY) {      // Render ruby gem
+            switch (game->map.stage[row][col]) {
+                case WALL:      // Render walls
+                    DrawRectangle(col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE, GREEN);
+                    break;
+                case CROWN:     // Render crown
+                    DrawCircle(col * TILE_SIZE + (TILE_SIZE / 2) , row * TILE_SIZE + (TILE_SIZE / 2) , (TILE_SIZE / 2) , YELLOW);
+                    break;
+                case RUBY: {//Render ruby gem 
+                    
+                    Vector2 v1 = { col  * TILE_SIZE , row  * TILE_SIZE};
+                    Vector2 v2 = { (col - 0.4) * TILE_SIZE , (row + 1)  * TILE_SIZE};
+                    Vector2 v3 = { (col + 0.4) * TILE_SIZE , (row + 1)  * TILE_SIZE};
+                    
+                    DrawTriangle ( v1 , v2 , v3 , DARKGREEN); 
+                    break;
+                }
+                case AMETIST: //Render ametist gem
+                    DrawEllipse( col * TILE_SIZE , row * TILE_SIZE  , (TILE_SIZE/2)  , (TILE_SIZE / 3) ,  PURPLE);
+                    break;
+                case SAPHIRE: {//Render saphire gem
                 
-                Vector2 v1 = { col  * TILE_SIZE , row  * TILE_SIZE};
-                Vector2 v2 = { (col - 0.4) * TILE_SIZE , (row + 1)  * TILE_SIZE};
-                Vector2 v3 = { (col + 0.4) * TILE_SIZE , (row + 1)  * TILE_SIZE};
+                    Vector2 v4 = { (col + 0.25)  * TILE_SIZE , row  * TILE_SIZE};
+                    Vector2 v5 = { col  * TILE_SIZE , (row + 1)  * TILE_SIZE};
+                    Vector2 v6 = { (col + 0.5) * TILE_SIZE , (row + 1)  * TILE_SIZE};
+    
+                    DrawTriangle ( v4 , v5 , v6 , DARKBLUE);  
+                    break;
+                }
+                case RING:     // Render ring
+                    DrawCircle(col * TILE_SIZE + (TILE_SIZE / 2.5) , row * TILE_SIZE + (TILE_SIZE / 3) , (TILE_SIZE / 2.5) , GRAY); 
+                    break;
+                case DOOR:    // Render door
+                    DrawRectangle(col * TILE_SIZE, (row * TILE_SIZE - 25) , TILE_SIZE, (TILE_SIZE + 25),  BROWN); 
+                    break;
+                case WATER:    // Render water
+                    DrawRectangle(col * TILE_SIZE, row * TILE_SIZE , TILE_SIZE, TILE_SIZE ,  SKYBLUE); 
+                    break;
+                case FIRE:     // Render fire
+                    DrawRectangle(col * TILE_SIZE, row * TILE_SIZE , TILE_SIZE, TILE_SIZE ,  RED); 
                 
-                DrawTriangle ( v1 , v2 , v3 , DARKGREEN); 
-             }
-            if  (game.map.stage[row][col] == AMETIST) {    // Render ametist gem
-                DrawEllipse( col * TILE_SIZE , row * TILE_SIZE  , (TILE_SIZE/2)  , (TILE_SIZE / 3) ,  PURPLE);
-            }
-            if  (game.map.stage[row][col] == SAPHIRE) {   // Render saphire gem
-               
-                Vector2 v4 = { (col + 0.25)  * TILE_SIZE , row  * TILE_SIZE};
-                Vector2 v5 = { col  * TILE_SIZE , (row + 1)  * TILE_SIZE};
-                Vector2 v6 = { (col + 0.5) * TILE_SIZE , (row + 1)  * TILE_SIZE};
- 
-                DrawTriangle ( v4 , v5 , v6 , DARKBLUE);  
-            }
-            if  (game.map.stage[row][col] == RING) {     // Render ring
-                DrawCircle(col * TILE_SIZE + (TILE_SIZE / 2.5) , row * TILE_SIZE + (TILE_SIZE / 3) , (TILE_SIZE / 2.5) , GRAY); 
-            }
-            if  (game.map.stage[row][col] == DOOR) {    // Render door
-                DrawRectangle(col * TILE_SIZE, (row * TILE_SIZE - 25) , TILE_SIZE, (TILE_SIZE + 25),  BROWN); 
-            }
-            if  (game.map.stage[row][col] == WATER) {    // Render water
-                DrawRectangle(col * TILE_SIZE, row * TILE_SIZE , TILE_SIZE, TILE_SIZE ,  SKYBLUE); 
-            }
-            if  (game.map.stage[row][col] == FIRE) {     // Render fire
-                DrawRectangle(col * TILE_SIZE, row * TILE_SIZE , TILE_SIZE, TILE_SIZE ,  RED); 
-            }  
-            if  (game.map.stage[row][col] == JETPACK) {    // Render jetpack
-                DrawRectangle(col * TILE_SIZE, (row * TILE_SIZE - 8 ) , TILE_SIZE, (TILE_SIZE + 8 ),  ORANGE);
-            }
-            if  (game.map.stage[row][col] == TROPHY) {     // Render trophy
-                
-                Vector2 v7 = { (col + 0.5)  * TILE_SIZE , (row ) * TILE_SIZE};
-                Vector2 v8 = { col  * TILE_SIZE , (row + 1)  * TILE_SIZE};
-                Vector2 v9 = { (col + 1.0) * TILE_SIZE , (row + 1)  * TILE_SIZE};
-                DrawTriangle ( v7 , v8 , v9 , GOLD);
+                    break;
+                case JETPACK:  // Render jetpack
+                    DrawRectangle(col * TILE_SIZE, (row * TILE_SIZE - 8 ) , TILE_SIZE, (TILE_SIZE + 8 ),  ORANGE);
+                    break;
+                case TROPHY: {  // Render trophy
+                    
+                    Vector2 v7 = { (col + 0.5)  * TILE_SIZE , (row ) * TILE_SIZE};
+                    Vector2 v8 = { col  * TILE_SIZE , (row + 1)  * TILE_SIZE};
+                    Vector2 v9 = { (col + 1.0) * TILE_SIZE , (row + 1)  * TILE_SIZE};
+                    DrawTriangle ( v7 , v8 , v9 , GOLD);
+                }
             }
         }
      }
 
-    DrawRectangle(game.dave.position.x * TILE_SIZE, game.dave.position.y * TILE_SIZE, TILE_SIZE, TILE_SIZE, BLUE);
+    DrawRectangle(game->dave.position.x * TILE_SIZE, game->dave.position.y * TILE_SIZE, TILE_SIZE, TILE_SIZE, BLUE);
+    DrawFPS(10, 10);
     EndDrawing();
 }
 

@@ -1,10 +1,14 @@
 #include "game.h"
-#include <stdio.h>
+
 #include <math.h>
+#include <stdio.h>
+
+void move_dave(Game *game, double time);
+void checkInteraction(Game *game);
+Vector2 checkCollision(Game *game, char target);
 
 // Create a new game
-Game newGame()
-{
+Game newGame() {
     // Load first stage map
     Map map = loadMap("assets/stages/mapa1.txt");
 
@@ -34,72 +38,58 @@ Game newGame()
     return game;
 }
 
-/** 
+/**
  * Update the game state based on a single game action.
  * This function only manipulates the velocity of objects based on the
  * action. To update the game object positions, call 'updateGame' after.
- *   
+ *
  * Arguments:
  *     game (Game): Game to be updated
  *     action (Action): Action to handle
  *     time (double): Time elapsed
-*/
-Game handleAction(Game game, Action action, double time)
-{
-    switch (action)
-    {
-    case ACTION_RIGHT:
-        game.dave.speed.x = WALKING_X_SPEED * time;
-        break;
-    case ACTION_LEFT:
-        game.dave.speed.x = -WALKING_X_SPEED * time;
-        break;
-    case ACTION_RELEASE_RIGHT:
-    case ACTION_RELEASE_LEFT:
-        game.dave.speed.x = 0;
-        break;
-    case ACTION_UP:
-        if (!game.dave.jumping)
-        {
-            game.dave.speed.y = -JUMP_INITIAL_SPEED * time;
-            game.dave.jumping = true;
-        }
-        break;
-    default:
-        break;
+ */
+void handleAction(Game *game, Action action, double time) {
+    switch (action) {
+        case ACTION_RIGHT:
+            game->dave.speed.x = WALKING_X_SPEED * time;
+            break;
+        case ACTION_LEFT:
+            game->dave.speed.x = -WALKING_X_SPEED * time;
+            break;
+        case ACTION_RELEASE_RIGHT:
+        case ACTION_RELEASE_LEFT:
+            game->dave.speed.x = 0;
+            break;
+        case ACTION_UP:
+            if (!game->dave.jumping) {
+                game->dave.speed.y = -JUMP_INITIAL_SPEED * time;
+                game->dave.jumping = true;
+            }
+            break;
+        default:
+            break;
     }
-
-    return game;
 }
 
-char getStagePosition(Map map, float x, float y)
-{
-    return map.stage[(int)y][(int)x];
+char getStagePosition(Map *map, float x, float y) {
+    return map->stage[(int)y][(int)x];
 }
 
-/** 
+/**
  * Update the game objects positions and general game state.
- * 
+ *
  * Arguments:
  *     game (Game): Game to be updated
  *     time (double): Time elapsed
-*/
-
-void move_dave(Game *game, double time);
-void dave_death(Game *game);
-
-Game updateGame(Game game, double time)
-{
-
-    move_dave(&game, time);
-    dave_death(&game);
-
-    return game;
+ */
+void updateGame(Game *game, double time) {
+    printf("Score: %d, Jetpack: %d, Vidas: %d, Troféu: %d\n", game->score,
+           game->dave.hasJetpack, game->dave.lives, game->dave.gotTrophy);
+    move_dave(game, time);
+    checkInteraction(game);
 }
 
-void move_dave(Game *game, double time)
-{
-
+void move_dave(Game *game, double time) {
     // Dave X Position Update
 
     // Indicate whether Dave is movind to the right
@@ -112,26 +102,20 @@ void move_dave(Game *game, double time)
     // Objects on the next x position of Dave. It is necessary to check
     // two positions because Dave can be located between two integer
     // y positions
-    char next_position_x = getStagePosition(game->map, nextX, currentY);
-    char next_position_x_forward = getStagePosition(game->map, nextX, yCeil);
+    char next_position_x = getStagePosition(&game->map, nextX, currentY);
+    char next_position_x_forward = getStagePosition(&game->map, nextX, yCeil);
 
-    if (next_position_x != WALL && next_position_x_forward != WALL)
-    {
+    if (next_position_x != WALL && next_position_x_forward != WALL) {
         // If neither position is a wall, update Dave x position
         game->dave.position.x += game->dave.speed.x;
-    }
-    else
-    {
+    } else {
         // Otherwise, correct Dave position in relation to the wall,
         // based on its current movement direction
-        if (goingRight)
-        {
+        if (goingRight) {
             // If he is going to the right, the corrected position is
             // the ceil of the current x position
             game->dave.position.x = ceil(game->dave.position.x);
-        }
-        else
-        {
+        } else {
             // If he is going to the left, the corrected position is the
             // floor of the current x position
             game->dave.position.x = floor(game->dave.position.x);
@@ -148,24 +132,18 @@ void move_dave(Game *game, double time)
     // Objects on the next y position of Dave. It is necessary to check
     // two positions because Dave can be located between two integer
     // x positions
-    char next_position_y = getStagePosition(game->map, currentX, nextY);
-    char next_position_y_r = getStagePosition(game->map, xCeil, nextY);
+    char next_position_y = getStagePosition(&game->map, currentX, nextY);
+    char next_position_y_r = getStagePosition(&game->map, xCeil, nextY);
 
     // If there is no wall on Dave's path on the Y axis
-    if (next_position_y != WALL && next_position_y_r != WALL)
-    {
+    if (next_position_y != WALL && next_position_y_r != WALL) {
         // Update Dave Y pos
         game->dave.position.y += game->dave.speed.y;
-    }
-    else
-    {
+    } else {
         // If there is a wall, corrects Dave Y position
-        if (goingDown)
-        {
+        if (goingDown) {
             game->dave.position.y = ceil(game->dave.position.y);
-        }
-        else
-        {
+        } else {
             game->dave.position.y = floor(game->dave.position.y);
         }
     }
@@ -175,15 +153,14 @@ void move_dave(Game *game, double time)
 
     // Objects below Dave. It is necessary to check two positions
     // because Dave can be located between two integer x positions
-    char stop_y_below = getStagePosition(game->map, currentX, belowDave);
-    char stop_y_below_r = getStagePosition(game->map, xCeil, belowDave);
+    char stop_y_below = getStagePosition(&game->map, currentX, belowDave);
+    char stop_y_below_r = getStagePosition(&game->map, xCeil, belowDave);
 
     // Apply gravity
     game->dave.speed.y += GRAVITY * time;
 
     // If there is a wall below Dave
-    if (stop_y_below == WALL || stop_y_below_r == WALL)
-    {
+    if (stop_y_below == WALL || stop_y_below_r == WALL) {
         // Y speed becomes zero
         game->dave.speed.y = 0;
         // Reset jump flag (so Dave can jump again)
@@ -191,21 +168,49 @@ void move_dave(Game *game, double time)
     }
 }
 
-void dave_death(Game *game)
-{
+void checkInteraction(Game *game) {
+    Vector2 fireCollision = checkCollision(game, FIRE);
+    Vector2 waterCollision = checkCollision(game, WATER);
 
-    char c1, c2, c3, c4;
-
-    c1 = getStagePosition(game->map, game->dave.position.x, game->dave.position.y);
-    c2 = getStagePosition(game->map, ceil(game->dave.position.x), game->dave.position.y);
-    c3 = getStagePosition(game->map, game->dave.position.x, ceil(game->dave.position.y));
-    c4 = getStagePosition(game->map, ceil(game->dave.position.x), ceil(game->dave.position.y));
-
-    if (c1 == FIRE || c1 == WATER || c2 == FIRE || c2 == WATER || c3 == FIRE || c3 == WATER || c4 == FIRE || c4 == WATER)
-    {
-
+    if (fireCollision.x != -1 || fireCollision.y != -1 ||
+        waterCollision.x != -1 || waterCollision.y != -1) {
         game->dave.lives--;
         game->dave.position.y = game->map.daveStart[0];
         game->dave.position.x = game->map.daveStart[1];
+        game->score -= 500;
+        return;
     }
+
+    Vector2 jetpackCollision = checkCollision(game, JETPACK);
+    if (jetpackCollision.x != -1 || jetpackCollision.y != -1) {
+        game->dave.hasJetpack = true;
+        game->map.stage[(int)jetpackCollision.y][(int)jetpackCollision.x] = ' ';
+        return;
+    }
+
+    Vector2 trophyCollision = checkCollision(game, TROPHY);
+    if (trophyCollision.x != -1 || trophyCollision.y != -1) {
+        game->dave.gotTrophy = true;
+        game->score += 1000;
+        game->map.stage[(int)trophyCollision.y][(int)trophyCollision.x] = ' ';
+        return;
+    }
+}
+
+Vector2 checkCollision(Game *game, char target) {
+    Vector2 checkPosition[4] = {
+        {game->dave.position.x, game->dave.position.y},
+        {ceil(game->dave.position.x), game->dave.position.y},
+        {game->dave.position.x, ceil(game->dave.position.y)},
+        {ceil(game->dave.position.x), ceil(game->dave.position.y)},
+    };
+
+    for (int i = 0; i < 4; i++) {
+        char pos = getStagePosition(&game->map, checkPosition[i].x,
+                                    checkPosition[i].y);
+        if (pos == target) {
+            return checkPosition[i];
+        }
+    }
+    return (Vector2){-1, -1};
 }

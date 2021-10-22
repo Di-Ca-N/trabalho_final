@@ -141,31 +141,31 @@ int rankingScreen() {
 }
 
 int gameScreen(Game* game) {
-    renderGame(*game);
+    renderGame(game);
 
     if (IsKeyDown(KEY_RIGHT)) {
-        *game = handleAction(*game, ACTION_RIGHT, GetFrameTime());
+        handleAction(game, ACTION_RIGHT, GetFrameTime());
     }
 
     if (IsKeyDown(KEY_LEFT)) {
-        *game = handleAction(*game, ACTION_LEFT, GetFrameTime());
+        handleAction(game, ACTION_LEFT, GetFrameTime());
     }
 
     if (IsKeyReleased(KEY_LEFT)) {
-        *game = handleAction(*game, ACTION_RELEASE_LEFT, GetFrameTime());
+        handleAction(game, ACTION_RELEASE_LEFT, GetFrameTime());
     }
 
     if (IsKeyReleased(KEY_RIGHT)) {
-        *game = handleAction(*game, ACTION_RELEASE_RIGHT, GetFrameTime());
+        handleAction(game, ACTION_RELEASE_RIGHT, GetFrameTime());
     }
     if (IsKeyDown(KEY_UP)) {
-        *game = handleAction(*game, ACTION_UP, GetFrameTime());
+        handleAction(game, ACTION_UP, GetFrameTime());
     }
 
     if (IsKeyDown(KEY_S)) {
         saveGame(*game);
     }
 
-    *game = updateGame(*game, GetFrameTime());
+    updateGame(game, GetFrameTime());
     return 0;
 }
