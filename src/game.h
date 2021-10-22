@@ -37,6 +37,9 @@ typedef struct {
     Dave dave;
     Map map;
 
+    // SateFlags
+    bool gameOver;
+
     // Current player score
     int score;
 
@@ -44,6 +47,7 @@ typedef struct {
     int stage;
 } Game;
 
+    
 // Recognized game actions. Defined to decouple input 
 // from game actions
 typedef enum {
