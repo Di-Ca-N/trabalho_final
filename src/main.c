@@ -165,6 +165,9 @@ int gameScreen(Game* game) {
     if (IsKeyDown(KEY_S)) {
         saveGame(*game);
     }
+    if (IsKeyDown(KEY_SPACE)) {
+        handleAction(game, ACTION_SPACE, GetFrameTime());
+    }
 
     updateGame(game, GetFrameTime());
     return 0;
