@@ -7,7 +7,9 @@
 static void moveDave(Game *game, double time);
 static void checkInteraction(Game *game);
 
-// Create a new game
+/**
+ * Create a new game, with default values
+ */
 Game newGame() {
     // Load first stage map
     Map map = loadMap("assets/stages/mapa1.txt");
@@ -118,7 +120,7 @@ void updateGame(Game *game, double time) {
  * Arguments:
  *     game (Game*): Pointer to the game to be updated
  *     time (double): Time elapsed
-*/
+ */
 static void moveDave(Game *game, double time) {
     // Dave X Position Update
 
