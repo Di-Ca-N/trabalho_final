@@ -50,7 +50,7 @@ int main() {
     Game game;
 
     // Main game loop
-    while (running) {
+    while (running && !WindowShouldClose()) {
         switch (state) {
             case STATE_MENU: {  
                 int nextState = mainMenuScreen(&menu);
