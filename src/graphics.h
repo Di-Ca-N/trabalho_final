@@ -22,7 +22,7 @@
 // ==== FUNCTIONS ====
 void initGraphics();                            // Init graphics module
 void endGraphics();                             // Tear down graphics
-void renderGame(Game* game);                     // Draw the game
+void renderGame(Game* game);                    // Draw the game
 void renderMainMenu(Menu menu);                 // Draw the main menu
 void renderRanking(Ranking ranking, Menu menu); // Draw the ranking
 

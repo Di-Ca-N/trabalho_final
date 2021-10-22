@@ -60,7 +60,7 @@ typedef enum {
 } Action;
 
 // ==== FUNCTIONS ====
-Game newGame();                                            // Create a new game
+Game newGame();                                             // Create a new game
 void handleAction(Game* game, Action action, double time);  // Update game state according to actions
 void updateGame(Game* game, double time);                   // Apply updates on game
 

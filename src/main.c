@@ -162,11 +162,24 @@ int gameScreen(Game* game) {
         handleAction(game, ACTION_UP, GetFrameTime());
     }
 
+    if (IsKeyDown(KEY_DOWN)) {
+        handleAction(game, ACTION_DOWN, GetFrameTime());
+    }
+    
+    if (IsKeyPressed(KEY_SPACE)) {
+        handleAction(game, ACTION_SPACE, GetFrameTime());
+    }
+    
+    if(IsKeyReleased(KEY_DOWN)) {
+        handleAction(game, ACTION_RELEASE_DOWN, GetFrameTime());
+    }
+    
+    if (IsKeyReleased(KEY_UP)) {
+        handleAction(game, ACTION_RELEASE_UP, GetFrameTime());
+    }
+
     if (IsKeyDown(KEY_S)) {
         saveGame(*game);
-    }
-    if (IsKeyDown(KEY_SPACE)) {
-        handleAction(game, ACTION_SPACE, GetFrameTime());
     }
 
     updateGame(game, GetFrameTime());
