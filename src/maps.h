@@ -9,6 +9,7 @@
 #define MAX_MAP_WIDTH 120 // Max supported map width
 #define MAX_MAP_HEIGHT 30 // Max supported map height
 
+// Recognized map characters
 #define WALL 'x'
 #define TROPHY 'T'
 #define WATER 'A'
@@ -39,6 +40,8 @@ typedef struct{
 } Map;
 
 // ==== FUNCTIONS ====
-Map loadMap(char* filename); // Load a map from disk
+Map loadMap(char* filename);                                      // Load a map from disk
+char getStagePosition(Map *map, float x, float y) ;               // Return the character at some position
+void setStagePosition(Map *map, float x, float y, char newValue); // Set the character at some position
 
 #endif

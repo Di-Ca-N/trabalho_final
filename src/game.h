@@ -9,10 +9,10 @@
 #include "maps.h"
 
 // ==== CONSTANTS ====
-#define GRAVITY 2            // Game gravity
+#define GRAVITY 2              // Game gravity
 #define WALKING_X_SPEED 8      // Dave's walking speed
 #define JUMP_INITIAL_SPEED 27  // Dave's jump impulse
-#define FLYING_SPEED 10         // Dave's flying speed (with jetpack)
+#define FLYING_SPEED 10        // Dave's flying speed (with jetpack)
 
 // ==== TYPEDEFS ====
 
@@ -22,6 +22,7 @@ typedef struct {
     Vector2 position;
     Vector2 speed;
 
+    // Remaining Dave lives
     int lives;
 
     // State flags
@@ -37,7 +38,7 @@ typedef struct {
     Dave dave;
     Map map;
 
-    // SateFlags
+    // Game over flag
     bool gameOver;
 
     // Current player score

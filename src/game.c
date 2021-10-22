@@ -3,8 +3,9 @@
 #include <math.h>
 #include <stdio.h>
 
-void moveDave(Game *game, double time);
-void checkInteraction(Game *game);
+// Static functions prototypes, only to be used inside this module
+static void moveDave(Game *game, double time);
+static void checkInteraction(Game *game);
 
 // Create a new game
 Game newGame() {
@@ -99,25 +100,26 @@ void handleAction(Game *game, Action action, double time) {
     }
 }
 
-char getStagePosition(Map *map, float x, float y) {
-    return map->stage[(int)y][(int)x];
-}
-
 /**
  * Update the game objects positions and general game state.
  *
  * Arguments:
- *     game (Game): Game to be updated
+ *     game (Game*): Game to be updated
  *     time (double): Time elapsed
  */
 void updateGame(Game *game, double time) {
-    printf("Score: %d, Jetpack: %d, Vidas: %d, Troféu: %d\n", game->score,
-           game->dave.hasJetpack, game->dave.lives, game->dave.gotTrophy);
     moveDave(game, time);
     checkInteraction(game);
 }
 
-void moveDave(Game *game, double time) {
+/**
+ * Update Dave position based on the current game state
+ * 
+ * Arguments:
+ *     game (Game*): Pointer to the game to be updated
+ *     time (double): Time elapsed
+*/
+static void moveDave(Game *game, double time) {
     // Dave X Position Update
 
     // Indicate whether Dave is movind to the right
@@ -198,68 +200,93 @@ void moveDave(Game *game, double time) {
     }
 }
 
-void checkInteraction(Game *game) {
+/**
+ * Process Dave interactions with the stage environment
+ * 
+ * Arguments:
+ *     game (Game*): Pointer to the Game to be updated
+*/
+static void checkInteraction(Game *game) {
+    // Positions to be checked for colisions
     Vector2 checkPosition[4] = {
+        // Current Dave position
         {game->dave.position.x, game->dave.position.y},
+
+        // Positions that Dave spans if its coordinates are not integers
         {ceil(game->dave.position.x), game->dave.position.y},
         {game->dave.position.x, ceil(game->dave.position.y)},
         {ceil(game->dave.position.x), ceil(game->dave.position.y)},
     };
 
+    // For each position to be checked
     for (int i = 0; i < 4; i++) {
-        char pos = getStagePosition(&game->map, checkPosition[i].x,
+        // Get the char on that map position
+        char pos = getStagePosition(&game->map, 
+                                    checkPosition[i].x,
                                     checkPosition[i].y);
+        // If the position contains
         switch (pos) {
+            // Water or fire
             case WATER:
             case FIRE:
+                // Dave loses a life
                 game->dave.lives--;
+                // Stops flying
                 game->dave.flying = false;
+                // Return to the starting position
                 game->dave.position.y = game->map.daveStart[0];
                 game->dave.position.x = game->map.daveStart[1];
+                // And loses 500 score
                 game->score -= 500;
                 break;
+            
+            // Jetpack
             case JETPACK:
+                // Update jetpack flag 
                 game->dave.hasJetpack = true;
-                game->map
-                    .stage[(int)checkPosition[i].y][(int)checkPosition[i].x] =
-                    ' ';
+                // Remove it from the map
+                setStagePosition(&game->map, checkPosition[i].x,
+                                 checkPosition[i].y, ' ');
                 break;
+
+            // Trophy
             case TROPHY:
+                // Update trophy flag
                 game->dave.gotTrophy = true;
+                // Give Dave 1000 score
                 game->score += 1000;
-                game->map
-                    .stage[(int)checkPosition[i].y][(int)checkPosition[i].x] =
-                    ' ';
+                // Remove it from the map
+                setStagePosition(&game->map, checkPosition[i].x,
+                                 checkPosition[i].y, ' ');
                 break;
+            
+            // With any other collectible, give the correspondent score 
+            // and remove them from the map
             case SAPHIRE:
                 game->score += 100;
-                game->map
-                    .stage[(int)checkPosition[i].y][(int)checkPosition[i].x] =
-                    ' ';
+                
+                setStagePosition(&game->map, checkPosition[i].x,
+                                 checkPosition[i].y, ' ');
                 break;
             case AMETHYST:
                 game->score += 50;
-                game->map
-                    .stage[(int)checkPosition[i].y][(int)checkPosition[i].x] =
-                    ' ';
+                setStagePosition(&game->map, checkPosition[i].x,
+                                 checkPosition[i].y, ' ');
                 break;
             case CROWN:
                 game->score += 300;
-                game->map
-                    .stage[(int)checkPosition[i].y][(int)checkPosition[i].x] =
-                    ' ';
+                setStagePosition(&game->map, checkPosition[i].x,
+                                 checkPosition[i].y, ' ');
                 break;
             case RUBY:
                 game->score += 300;
-                game->map
-                    .stage[(int)checkPosition[i].y][(int)checkPosition[i].x] =
-                    ' ';
+                setStagePosition(&game->map, checkPosition[i].x,
+                                 checkPosition[i].y, ' ');
                 break;
             case RING:
                 game->score += 200;
-                game->map
-                    .stage[(int)checkPosition[i].y][(int)checkPosition[i].x] =
-                    ' ';
+                setStagePosition(&game->map, checkPosition[i].x,
+                                 checkPosition[i].y, ' ');
                 break;
         }
     }

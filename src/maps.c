@@ -48,3 +48,29 @@ Map loadMap(char *filename)  // Loading a map from disk
 
     return newMap; 
 }
+
+/**
+ * Return the character located on some position of the stage
+ *
+ * Arguments:
+ *     map (Map*): Pointer to the map to get position
+ *     x (float): x position of the wanted character
+ *     y (float): y position of the wanted character
+ */
+char getStagePosition(Map *map, float x, float y) {
+    return map->stage[(int)y][(int)x];
+}
+
+/**
+ * Set the character located on some position of the stage to a new 
+ * value
+ *
+ * Arguments:
+ *     map (Map*): Pointer to the map to get position
+ *     x (float): x position of the wanted character
+ *     y (float): y position of the wanted character
+ *     newValue (char): New value of the character
+ */
+void setStagePosition(Map *map, float x, float y, char newValue) {
+    map->stage[(int)y][(int)x] = newValue;
+}
