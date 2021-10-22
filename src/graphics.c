@@ -137,8 +137,8 @@ void renderGame(Game *game) {  // Render game icons from map
                     DrawTriangle(v1, v2, v3, DARKGREEN);
                     break;
                 }
-                case AMETHYST:  // Render ametist gem
-                    DrawEllipse(col * TILE_SIZE, row * TILE_SIZE,
+                case AMETHYST:  // Render amethyst gem
+                    DrawEllipse(col * TILE_SIZE, (row + .5) * TILE_SIZE,
                                 (TILE_SIZE / 2), (TILE_SIZE / 3), PURPLE);
                     break;
                 case SAPHIRE: {  // Render saphire gem
