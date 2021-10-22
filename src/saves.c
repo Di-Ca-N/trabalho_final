@@ -1,4 +1,5 @@
 #include "saves.h"
+
 #include <stdio.h>
 
 // Load a game save from disk

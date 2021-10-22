@@ -1,7 +1,8 @@
+#include "ranking.h"
+
 #include <stdio.h>  // fopen, fread, fwrite
 #include "raylib.h" // FileExists
 
-#include "ranking.h"
 
 // Write ranking struct to file in disk
 void writeRanking(Ranking ranking) {
