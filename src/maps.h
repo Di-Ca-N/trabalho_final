@@ -21,7 +21,7 @@
 #define CROWN '%'
 #define RUBY '#'
 #define SAPHIRE '@'
-#define AMETIST '!'
+#define AMETHYST '!'
 
 // ==== TYPES ====
 

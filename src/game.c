@@ -237,7 +237,7 @@ void checkInteraction(Game *game) {
                     .stage[(int)checkPosition[i].y][(int)checkPosition[i].x] =
                     ' ';
                 break;
-            case AMETIST:
+            case AMETHYST:
                 game->score += 50;
                 game->map
                     .stage[(int)checkPosition[i].y][(int)checkPosition[i].x] =

@@ -137,7 +137,7 @@ void renderGame(Game *game) {  // Render game icons from map
                     DrawTriangle(v1, v2, v3, DARKGREEN);
                     break;
                 }
-                case AMETIST:  // Render ametist gem
+                case AMETHYST:  // Render ametist gem
                     DrawEllipse(col * TILE_SIZE, row * TILE_SIZE,
                                 (TILE_SIZE / 2), (TILE_SIZE / 3), PURPLE);
                     break;
