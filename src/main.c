@@ -183,5 +183,7 @@ int gameScreen(Game* game) {
     }
 
     updateGame(game, GetFrameTime());
+
+    printf("Pontuação: %d, Vidas: %d\n", game->score, game->dave.lives);
     return 0;
 }
