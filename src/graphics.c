@@ -88,92 +88,109 @@ void renderRanking(Ranking ranking, Menu menu) {
     drawMenu(menu, TILE_SIZE * 3, menuYPos);
     EndDrawing();
 }
-
-void renderGame(Game *game) {  // Render game icons from map
+    
+    // Render game icons from map
+void renderGame(Game *game) {  
     SetWindowSize(game->map.width * TILE_SIZE,
                   (game->map.height + 2) * TILE_SIZE);
     BeginDrawing();
     ClearBackground(RAYWHITE);
-
+    // Show current score on screen at top left corner                               
     DrawText("PONTUAÇÃO: 1000", TILE_SIZE * 0.5, TILE_SIZE * 0.8, TEXT_MAP_SIZE,
              BLACK);
-
-    DrawText("3 VIDAS", TILE_SIZE * 15.0, TILE_SIZE * 0.8, TEXT_MAP_SIZE,
+    // Show remaining lives on screen
+    DrawText("3 VIDAS", TILE_SIZE * 15.0, TILE_SIZE * 0.8, TEXT_MAP_SIZE, 
              MAROON);
-
-    DrawText("NIVEL: 1", TILE_SIZE * 25.0, TILE_SIZE * 0.8, TEXT_MAP_SIZE,
+    // Show current level on screen
+    DrawText("NIVEL: 1", TILE_SIZE * 25.0, TILE_SIZE * 0.8, TEXT_MAP_SIZE, 
              BLACK);
-
-    if (game->dave.hasJetpack) {
-        DrawText("JETPACK ATIVADO", TILE_SIZE * 35.0, TILE_SIZE * 0.8,
+    // Show message on screen if Dave collects the trophy
+    if (game->dave.gotTrophy) {                                         
+        DrawText("TROFEU CONQUISTADO", TILE_SIZE * 35.0, TILE_SIZE * 0.8,
                  TEXT_MAP_SIZE, BLACK);
     }
-
-    if (game->dave.gotTrophy) {
-        DrawText("TROFEU CONQUISTADO", TILE_SIZE * 52.0, TILE_SIZE * 0.8,
+     // Show message on screen if Dave acquires the jetpack 
+    if (game->dave.hasJetpack) {                                     
+        DrawText("JETPACK ADQUIRIDO", TILE_SIZE * 52.0, TILE_SIZE * 0.8,
                  TEXT_MAP_SIZE, BLACK);
     }
+     // Show message on screen if jetpack is active
+    if (game->dave.flying) {                                         
+        DrawText("JETPACK ATIVADO", TILE_SIZE * 67.0, TILE_SIZE * 0.8,
+                 TEXT_MAP_SIZE, BLACK);
+    }
+    
+    
+    
 
     for (int row = 2; (row - 2) < game->map.height; row++) {
         for (int col = 0; col < game->map.width; col++) {
             switch (game->map.stage[row - 2][col]) {
-                case WALL:  // Render walls
+                case WALL:  
+                // Render walls
                     DrawRectangle(col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE,
                                   TILE_SIZE, GREEN);
                     break;
-                case CROWN:  // Render crown
+                case CROWN:  
+                // Render crown
                     DrawCircle(col * TILE_SIZE + (TILE_SIZE / 2),
                                row * TILE_SIZE + (TILE_SIZE / 2),
                                (TILE_SIZE / 2), YELLOW);
                     break;
-                case RUBY: {  // Render ruby gem
+                case RUBY: {  
+                // Render ruby 
 
                     Vector2 v1 = {col * TILE_SIZE, row * TILE_SIZE};
-                    Vector2 v2 = {(col - 0.4) * TILE_SIZE,
-                                  (row + 1) * TILE_SIZE};
-                    Vector2 v3 = {(col + 0.4) * TILE_SIZE,
-                                  (row + 1) * TILE_SIZE};
+                    Vector2 v2 = {(col - 0.4) * TILE_SIZE,(row + 1) * TILE_SIZE};
+                    Vector2 v3 = {(col + 0.4) * TILE_SIZE, (row + 1) * TILE_SIZE};
 
                     DrawTriangle(v1, v2, v3, DARKGREEN);
                     break;
                 }
-                case AMETHYST:  // Render amethyst gem
+                case AMETHYST:  
+                // Render amethyst gem
                     DrawEllipse(col * TILE_SIZE, (row + .5) * TILE_SIZE,
                                 (TILE_SIZE / 2), (TILE_SIZE / 3), PURPLE);
                     break;
-                case SAPHIRE: {  // Render saphire gem
+                case SAPHIRE: {  
+                // Render saphire gem
 
                     Vector2 v4 = {(col + 0.25) * TILE_SIZE, row * TILE_SIZE};
                     Vector2 v5 = {col * TILE_SIZE, (row + 1) * TILE_SIZE};
-                    Vector2 v6 = {(col + 0.5) * TILE_SIZE,
-                                  (row + 1) * TILE_SIZE};
+                    Vector2 v6 = {(col + 0.5) * TILE_SIZE, (row + 1) * TILE_SIZE};
 
                     DrawTriangle(v4, v5, v6, DARKBLUE);
                     break;
                 }
-                case RING:  // Render ring
+                case RING:  
+                // Render ring
                     DrawCircle(col * TILE_SIZE + (TILE_SIZE / 2.5),
                                row * TILE_SIZE + (TILE_SIZE / 3),
                                (TILE_SIZE / 2.5), GRAY);
                     break;
-                case DOOR:  // Render door
-                    DrawRectangle(col * TILE_SIZE, (row * TILE_SIZE - 25),
-                                  TILE_SIZE, (TILE_SIZE + 25), BROWN);
+                case DOOR:  
+                // Render door
+                    DrawRectangle(col * TILE_SIZE, row * TILE_SIZE,
+                                  TILE_SIZE, TILE_SIZE , BROWN);
                     break;
-                case WATER:  // Render water
+                case WATER:  
+                // Render water
                     DrawRectangle(col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE,
                                   TILE_SIZE, SKYBLUE);
                     break;
-                case FIRE:  // Render fire
+                case FIRE:  
+                // Render fire
                     DrawRectangle(col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE,
                                   TILE_SIZE, RED);
 
                     break;
-                case JETPACK:  // Render jetpack
-                    DrawRectangle(col * TILE_SIZE, (row * TILE_SIZE - 8),
-                                  TILE_SIZE, (TILE_SIZE + 8), ORANGE);
+                case JETPACK:  
+                // Render jetpack
+                    DrawRectangle(col * TILE_SIZE, row * TILE_SIZE ,
+                                  TILE_SIZE, TILE_SIZE , ORANGE);
                     break;
-                case TROPHY: {  // Render trophy
+                case TROPHY: {  
+                // Render trophy
 
                     Vector2 v7 = {(col + 0.5) * TILE_SIZE, (row)*TILE_SIZE};
                     Vector2 v8 = {col * TILE_SIZE, (row + 1) * TILE_SIZE};
