@@ -16,7 +16,7 @@
 #define NUM_TILES_WIDTH 35   // Number of tiles in the width of the window
 #define HEADER_FONT_SIZE 30  // Font size of headers
 #define TEXT_FONT_SIZE 21    // Font size of text
-#define TEXT_MAP_SIZE 18    // Map size of text
+#define TEXT_MAP_SIZE 18     // Font size of text on the game screen
 
 
 // ==== FUNCTIONS ====
