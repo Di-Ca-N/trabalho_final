@@ -15,11 +15,21 @@ Para compilar o programa, verifique a seção [**compilação**](#Compilação)
 - Processamento da pontuação do jogador
 - Morte e respawn do Dave
 - Salvamento e carregamento do jogo
+- Persistência do ranking
 
 ## Funcionalidades ainda não implementadas
 - Confirmação de saída
 - Passar de fase
 - Fim de jogo
+
+## Estrutura do projeto
+O projeto consiste em seis módulos com responsabilidades distintas:
+- game: Lógica central do jogo (movimentação de personagem, itens, pontuação, progressão de fase...)
+- graphics: Exibição do jogo e demais componentes na tela
+- ranking: Gerenciamento do ranking de pontuações
+- maps: Carregamento e manipulação dos mapas do jogo
+- saves: Salvamento e carregamento do jogo
+- menus: Funcionalidade dos menus do jogo
 
 ## Compilação
 
