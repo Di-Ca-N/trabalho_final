@@ -1,6 +1,6 @@
 # Dangerous Dave
 
-Jogo desenvolvido como trabalho final do componente curricular "Algoritmos e Programação", ministrado pelo Prof. Lucas Rafael Costella Pessutto.
+Jogo desenvolvido como trabalho final do componente curricular "Algoritmos e Programação", ministrado pelo Prof. Lucas Rafael Costella Pessutto. Esse jogo é inspirado em [Dangerous Dave](https://en.wikipedia.org/wiki/Dangerous_Dave), um jogo de 1988 desenvolvido por John Romero.
 
 
 Para compilar o programa, verifique a seção [**compilação**](#Compilação)
@@ -33,5 +33,4 @@ cmake . -G "MinGW Makefiles"
 mingw32-make
 ```
 
-Atenção: Devido ao funcionamento do CMake, o caminho do projeto não pode conter caracteres
-não ASCII (como letras com acentos ou cedilha).
+Atenção: Devido a limitações do MinGW, o caminho do projeto não pode conter caracteres não ASCII (como letras com acentos ou cedilha).
