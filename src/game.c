@@ -247,8 +247,8 @@ static void checkInteraction(Game *game) {
                 // Update jetpack flag 
                 game->dave.hasJetpack = true;
                 // Remove it from the map
-                setStagePosition(&game->map, checkPosition[i].x,
-                                 checkPosition[i].y, ' ');
+                clearStagePosition(&game->map, checkPosition[i].x,
+                                 checkPosition[i].y);
                 break;
 
             // Trophy
@@ -258,8 +258,8 @@ static void checkInteraction(Game *game) {
                 // Give Dave 1000 score
                 game->score += 1000;
                 // Remove it from the map
-                setStagePosition(&game->map, checkPosition[i].x,
-                                 checkPosition[i].y, ' ');
+                clearStagePosition(&game->map, checkPosition[i].x,
+                                 checkPosition[i].y);
                 break;
             
             // With any other collectible, give the correspondent score 
@@ -267,28 +267,28 @@ static void checkInteraction(Game *game) {
             case SAPHIRE:
                 game->score += 100;
                 
-                setStagePosition(&game->map, checkPosition[i].x,
-                                 checkPosition[i].y, ' ');
+                clearStagePosition(&game->map, checkPosition[i].x,
+                                 checkPosition[i].y);
                 break;
             case AMETHYST:
                 game->score += 50;
-                setStagePosition(&game->map, checkPosition[i].x,
-                                 checkPosition[i].y, ' ');
+                clearStagePosition(&game->map, checkPosition[i].x,
+                                 checkPosition[i].y);
                 break;
             case CROWN:
                 game->score += 300;
-                setStagePosition(&game->map, checkPosition[i].x,
-                                 checkPosition[i].y, ' ');
+                clearStagePosition(&game->map, checkPosition[i].x,
+                                 checkPosition[i].y);
                 break;
             case RUBY:
                 game->score += 300;
-                setStagePosition(&game->map, checkPosition[i].x,
-                                 checkPosition[i].y, ' ');
+                clearStagePosition(&game->map, checkPosition[i].x,
+                                 checkPosition[i].y);
                 break;
             case RING:
                 game->score += 200;
-                setStagePosition(&game->map, checkPosition[i].x,
-                                 checkPosition[i].y, ' ');
+                clearStagePosition(&game->map, checkPosition[i].x,
+                                 checkPosition[i].y);
                 break;
         }
     }

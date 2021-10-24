@@ -75,8 +75,7 @@ char getStagePosition(Map *map, float x, float y) {
  *     map (Map*): Pointer to the map to get position
  *     x (float): x position of the wanted character
  *     y (float): y position of the wanted character
- *     newValue (char): New value of the character
  */
-void setStagePosition(Map *map, float x, float y, char newValue) {
-    map->stage[(int)y][(int)x] = newValue;
+void clearStagePosition(Map *map, float x, float y) {
+    map->stage[(int)y][(int)x] = ' ';
 }

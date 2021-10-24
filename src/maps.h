@@ -40,8 +40,8 @@ typedef struct{
 } Map;
 
 // ==== FUNCTIONS ====
-Map loadMap(char* filename);                                      // Load a map from disk
-char getStagePosition(Map *map, float x, float y) ;               // Return the character at some position
-void setStagePosition(Map *map, float x, float y, char newValue); // Set the character at some position
+Map loadMap(char* filename);                         // Load a map from disk
+char getStagePosition(Map *map, float x, float y) ;  // Return the char at some position
+void clearStagePosition(Map *map, float x, float y); // Clear the char at some position
 
 #endif
