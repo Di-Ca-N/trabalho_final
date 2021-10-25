@@ -116,7 +116,7 @@ void updateGame(Game *game, double time) {
 
 /**
  * Update Dave position based on the current game state
- * 
+ *
  * Arguments:
  *     game (Game*): Pointer to the game to be updated
  *     time (double): Time elapsed
@@ -204,12 +204,12 @@ static void moveDave(Game *game, double time) {
 
 /**
  * Process Dave interactions with the stage environment
- * 
+ *
  * Arguments:
  *     game (Game*): Pointer to the Game to be updated
-*/
+ */
 static void checkInteraction(Game *game) {
-    // Positions to be checked for colisions
+    // Positions to be checked for collisions
     Vector2 checkPosition[4] = {
         // Current Dave position
         {game->dave.position.x, game->dave.position.y},
@@ -219,36 +219,42 @@ static void checkInteraction(Game *game) {
         {game->dave.position.x, ceil(game->dave.position.y)},
         {ceil(game->dave.position.x), ceil(game->dave.position.y)},
     };
+    // Flag to indicate that if damage was processed on the current
+    // update. On each update, the damage must be processed only once.
+    bool processedDamage = false;
 
     // For each position to be checked
     for (int i = 0; i < 4; i++) {
         // Get the char on that map position
-        char pos = getStagePosition(&game->map, 
-                                    checkPosition[i].x,
+        char pos = getStagePosition(&game->map, checkPosition[i].x,
                                     checkPosition[i].y);
         // If the position contains
         switch (pos) {
             // Water or fire
             case WATER:
             case FIRE:
-                // Dave loses a life
-                game->dave.lives--;
-                // Stops flying
-                game->dave.flying = false;
-                // Return to the starting position
-                game->dave.position.y = game->map.daveStart[0];
-                game->dave.position.x = game->map.daveStart[1];
-                // And loses 500 score
-                game->score -= 500;
-                break;
-            
+                // If damage was not processed on the current update
+                if (!processedDamage) {
+                    // Set processed damage flag
+                    processedDamage = true;
+                    // Dave loses a life
+                    game->dave.lives--;
+                    // Stops flying
+                    game->dave.flying = false;
+                    // Return to the starting position
+                    game->dave.position.y = game->map.daveStart[0];
+                    game->dave.position.x = game->map.daveStart[1];
+                    // And loses 500 score
+                    game->score -= 500;
+                    break;
+                }
             // Jetpack
             case JETPACK:
-                // Update jetpack flag 
+                // Update jetpack flag
                 game->dave.hasJetpack = true;
                 // Remove it from the map
                 clearStagePosition(&game->map, checkPosition[i].x,
-                                 checkPosition[i].y);
+                                   checkPosition[i].y);
                 break;
 
             // Trophy
@@ -259,36 +265,35 @@ static void checkInteraction(Game *game) {
                 game->score += 1000;
                 // Remove it from the map
                 clearStagePosition(&game->map, checkPosition[i].x,
-                                 checkPosition[i].y);
+                                   checkPosition[i].y);
                 break;
-            
-            // With any other collectible, give the correspondent score 
+
+            // With any other collectible, give the correspondent score
             // and remove them from the map
             case SAPHIRE:
                 game->score += 100;
-                
                 clearStagePosition(&game->map, checkPosition[i].x,
-                                 checkPosition[i].y);
+                                   checkPosition[i].y);
                 break;
             case AMETHYST:
                 game->score += 50;
                 clearStagePosition(&game->map, checkPosition[i].x,
-                                 checkPosition[i].y);
+                                   checkPosition[i].y);
                 break;
             case CROWN:
                 game->score += 300;
                 clearStagePosition(&game->map, checkPosition[i].x,
-                                 checkPosition[i].y);
+                                   checkPosition[i].y);
                 break;
             case RUBY:
                 game->score += 300;
                 clearStagePosition(&game->map, checkPosition[i].x,
-                                 checkPosition[i].y);
+                                   checkPosition[i].y);
                 break;
             case RING:
                 game->score += 200;
                 clearStagePosition(&game->map, checkPosition[i].x,
-                                 checkPosition[i].y);
+                                   checkPosition[i].y);
                 break;
         }
     }

@@ -21,6 +21,7 @@
 #include "menus.h"
 #include "saves.h"
 
+// States of the game
 typedef enum {
     STATE_MENU = 1,
     STATE_PLAYING,
@@ -30,9 +31,10 @@ typedef enum {
     STATE_WAITING_EXIT,
 } GameState;
 
-int mainMenuScreen(Menu* menu);
-int rankingScreen();
-int gameScreen(Game* game);
+// Game screens prototypes
+int mainMenuScreen(Menu* menu); // Manage main menu screen
+int rankingScreen();            // Manage ranking screen
+int gameScreen(Game* game);     // Manage game screen
 
 int main() {
     // Init graphics module
@@ -52,44 +54,66 @@ int main() {
     // Main game loop
     while (running && !WindowShouldClose()) {
         switch (state) {
-            case STATE_MENU: {  
+            // Main Menu state
+            case STATE_MENU: {
+                // Run the main menu screen  
                 int nextState = mainMenuScreen(&menu);
+
+                // If the next state returned is valid (i.e. != 0)
                 if (nextState != 0)
+                    // Update state
                     state = nextState;
                 break;
             }
 
+            // Wating exit state
             case STATE_WAITING_EXIT:
+                // ToDo: Ask for confirmation before exit
                 running = false;
                 break;
+            // New game state
+            case STATE_NEW_GAME:
+                // Create a new game
+                game = newGame();
+                // Set the state to playing
+                state = STATE_PLAYING;
+                break;
 
+            // Load game state
             case STATE_LOAD_GAME: {
+                // Load the game save
                 game = loadGame();
+                // Set the state to playing
                 state = STATE_PLAYING;
                 break;
             }
 
+            // Playing game state
             case STATE_PLAYING: {
+                // Run the game screen
                 int nextState = gameScreen(&game);
-
+                
+                // If it returns a valid next state (i.e. != 0)
                 if (nextState != 0) {
+                    // Update state
                     state = nextState;
                 }
                 break;
             }
+            
+            // Ranking state
             case STATE_RANKING: {
+                // Run the ranking screen
                 int nextState = rankingScreen();
+                // If the screen return a valid next state (i.e. != 0)
                 if (nextState != 0) {
+                    // Update the next state
                     state = nextState;
+                    // Reset main menu selection
                     menu.selectionDone = false;
                 }
                 break;
             }
-            case STATE_NEW_GAME:
-                state = STATE_PLAYING;
-                game = newGame();
-                menu.selectionDone = false;
-                break;
         }
     }
 
@@ -99,9 +123,17 @@ int main() {
     return 0;
 }
 
+/**
+ * Manage the main menu screen.
+ * 
+ * Arguments:
+ *     menu (Menu*): Pointer to the current main menu, to be managed
+*/
 int mainMenuScreen(Menu *menu) {
+    // Draw menu on the screen
     renderMainMenu(*menu);
 
+    // Handling of menu actions
     if(IsKeyPressed(KEY_DOWN))
         *menu = updateMenu(*menu, ACTION_DOWN);
     if(IsKeyPressed(KEY_UP))
@@ -109,40 +141,68 @@ int mainMenuScreen(Menu *menu) {
     if(IsKeyPressed(KEY_ENTER))
         *menu = updateMenu(*menu, ACTION_YES);
 
+    // Process option if it was selected
     if (menu->selectionDone) {
+        // Each selected option correspond to a new state
         switch (menu->selectedOption) {
-        case 0:
-            return STATE_NEW_GAME;
-        case 1:
-            return STATE_LOAD_GAME;
-        case 2:
-            return STATE_RANKING;
-        case 3:
-            return STATE_WAITING_EXIT;
-        default:
-            return 0;
+            case 0:
+                return STATE_NEW_GAME;
+            case 1:
+                return STATE_LOAD_GAME;
+            case 2:
+                return STATE_RANKING;
+            case 3:
+                return STATE_WAITING_EXIT;
+            default:
+                // Every other return code should not occur. Returns 0
+                // to keep the current state
+                return 0;
         }
     }
     return 0;
 }
 
+/**
+ * Manage the ranking screen.
+*/
 int rankingScreen() {
+    // Get the current ranking
     Ranking ranking = getRanking();
+    // Get the ranking menu. The menu contains only one option, so it
+    // can be reloaded every update
     Menu menu = getMenu(MENU_RANKING);
 
+    // Draw ranking on the screen
     renderRanking(ranking, menu);
-    if(IsKeyPressed(KEY_ENTER))
-        menu = updateMenu(menu, ACTION_YES);
 
+    // Handling menu action
+    if(IsKeyPressed(KEY_ENTER)) {
+        menu = updateMenu(menu, ACTION_YES);
+    }
+
+    // As there is only one option on the menu. If the selection is done,
+    // return the next state
     if (menu.selectionDone) {
         return STATE_MENU; 
     }
+
+    // If no option was selected, return 0 (keep the same state)
     return 0;
 }
 
+/**
+ * Manage the game screen
+ * 
+ * Arguments:
+ *     game (Game*): Pointer to the current game to be managed
+*/
 int gameScreen(Game* game) {
+    // Draw game on the screen
     renderGame(game);
 
+    // Handling game actions
+
+    // Movement actions
     if (IsKeyDown(KEY_RIGHT)) {
         handleAction(game, ACTION_RIGHT, GetFrameTime());
     }
@@ -170,7 +230,7 @@ int gameScreen(Game* game) {
         handleAction(game, ACTION_SPACE, GetFrameTime());
     }
     
-    if(IsKeyReleased(KEY_DOWN)) {
+    if (IsKeyReleased(KEY_DOWN)) {
         handleAction(game, ACTION_RELEASE_DOWN, GetFrameTime());
     }
     
@@ -178,12 +238,13 @@ int gameScreen(Game* game) {
         handleAction(game, ACTION_RELEASE_UP, GetFrameTime());
     }
 
+    // Save action
     if (IsKeyDown(KEY_S)) {
         saveGame(*game);
     }
-
+    
+    // Update the game based on the actions taken by the user
     updateGame(game, GetFrameTime());
 
-    printf("Pontuação: %d, Vidas: %d\n", game->score, game->dave.lives);
     return 0;
 }
