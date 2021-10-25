@@ -219,7 +219,7 @@ static void checkInteraction(Game *game) {
         {game->dave.position.x, ceil(game->dave.position.y)},
         {ceil(game->dave.position.x), ceil(game->dave.position.y)},
     };
-    // Flag to indicate that if damage was processed on the current
+    // Flag to indicate that damage was processed on the current
     // update. On each update, the damage must be processed only once.
     bool processedDamage = false;
 
