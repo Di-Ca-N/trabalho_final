@@ -246,8 +246,8 @@ static void checkInteraction(Game *game) {
                     game->dave.position.x = game->map.daveStart[1];
                     // And loses 500 score
                     game->score -= 500;
-                    break;
                 }
+                break;
             // Jetpack
             case JETPACK:
                 // Update jetpack flag
