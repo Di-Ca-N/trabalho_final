@@ -149,7 +149,7 @@ void renderGame(Game *game) {
                 }
                 case AMETHYST:  
                 // Render amethyst gem
-                    DrawEllipse(col * TILE_SIZE, (row + .5) * TILE_SIZE,
+                    DrawEllipse((col + .5) * TILE_SIZE, (row + .5) * TILE_SIZE,
                                 (TILE_SIZE / 2), (TILE_SIZE / 3), PURPLE);
                     break;
                 case SAPHIRE: {  
