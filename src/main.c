@@ -34,7 +34,7 @@ typedef enum {
 // Game screens prototypes
 int mainMenuScreen(Menu* menu); // Manage main menu screen
 int rankingScreen();            // Manage ranking screen
-int gameScreen(Game* game);     // Manage game screen
+int gameScreen(Game* game, double lastTime);     // Manage game screen
 
 int main() {
     // Init graphics module
@@ -46,6 +46,7 @@ int main() {
     // Flag that indicate if the game is running
     bool running = true;
 
+    double lastTime;
     // Init game menu 
     Menu menu = getMenu(MENU_MAIN);
     
@@ -77,6 +78,7 @@ int main() {
                 game = newGame();
                 // Set the state to playing
                 state = STATE_PLAYING;
+                lastTime = GetTime();
                 break;
 
             // Load game state
@@ -91,8 +93,10 @@ int main() {
             // Playing game state
             case STATE_PLAYING: {
                 // Run the game screen
-                int nextState = gameScreen(&game);
-                
+                double nextTime = GetTime();
+                int nextState = gameScreen(&game, nextTime - lastTime);
+                lastTime = nextTime;
+
                 // If it returns a valid next state (i.e. != 0)
                 if (nextState != 0) {
                     // Update state
@@ -195,8 +199,9 @@ int rankingScreen() {
  * 
  * Arguments:
  *     game (Game*): Pointer to the current game to be managed
+ *     timeDelta (double): Time elapsed since last update
 */
-int gameScreen(Game* game) {
+int gameScreen(Game* game, double timeDelta) {
     // Draw game on the screen
     renderGame(game);
 
@@ -204,47 +209,48 @@ int gameScreen(Game* game) {
 
     // Movement actions
     if (IsKeyDown(KEY_RIGHT)) {
-        handleAction(game, ACTION_RIGHT, GetFrameTime());
+        handleAction(game, ACTION_RIGHT);
     }
 
     if (IsKeyDown(KEY_LEFT)) {
-        handleAction(game, ACTION_LEFT, GetFrameTime());
+        handleAction(game, ACTION_LEFT);
     }
 
     if (IsKeyReleased(KEY_LEFT)) {
-        handleAction(game, ACTION_RELEASE_LEFT, GetFrameTime());
+        handleAction(game, ACTION_RELEASE_LEFT);
     }
 
     if (IsKeyReleased(KEY_RIGHT)) {
-        handleAction(game, ACTION_RELEASE_RIGHT, GetFrameTime());
+        handleAction(game, ACTION_RELEASE_RIGHT);
     }
+
     if (IsKeyDown(KEY_UP)) {
-        handleAction(game, ACTION_UP, GetFrameTime());
+        handleAction(game, ACTION_UP);
     }
 
     if (IsKeyDown(KEY_DOWN)) {
-        handleAction(game, ACTION_DOWN, GetFrameTime());
+        handleAction(game, ACTION_DOWN);
     }
     
     if (IsKeyPressed(KEY_SPACE)) {
-        handleAction(game, ACTION_SPACE, GetFrameTime());
+        handleAction(game, ACTION_SPACE);
     }
     
     if (IsKeyReleased(KEY_DOWN)) {
-        handleAction(game, ACTION_RELEASE_DOWN, GetFrameTime());
+        handleAction(game, ACTION_RELEASE_DOWN);
     }
     
     if (IsKeyReleased(KEY_UP)) {
-        handleAction(game, ACTION_RELEASE_UP, GetFrameTime());
+        handleAction(game, ACTION_RELEASE_UP);
     }
 
     // Save action
     if (IsKeyDown(KEY_S)) {
         saveGame(*game);
     }
-    
+
     // Update the game based on the actions taken by the user
-    updateGame(game, GetFrameTime());
+    updateGame(game, timeDelta);
 
     return 0;
 }

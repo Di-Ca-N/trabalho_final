@@ -9,10 +9,10 @@
 #include "maps.h"
 
 // ==== CONSTANTS ====
-#define GRAVITY 2              // Game gravity
-#define WALKING_X_SPEED 8      // Dave's walking speed
-#define JUMP_INITIAL_SPEED 27  // Dave's jump impulse
-#define FLYING_SPEED 10        // Dave's flying speed (with jetpack)
+#define GRAVITY 50             // Game gravity
+#define WALKING_X_SPEED 6      // Dave's walking speed
+#define JUMP_INITIAL_SPEED 18  // Dave's jump impulse
+#define FLYING_SPEED 8         // Dave's flying speed (with jetpack)
 
 // ==== TYPEDEFS ====
 
@@ -61,8 +61,8 @@ typedef enum {
 } Action;
 
 // ==== FUNCTIONS ====
-Game newGame();                                             // Create a new game
-void handleAction(Game* game, Action action, double time);  // Update game state according to actions
-void updateGame(Game* game, double time);                   // Apply updates on game
+Game newGame();                                // Create a new game
+void handleAction(Game* game, Action action);  // Update game state according to actions
+void updateGame(Game* game, double timeDelta); // Apply updates on game
 
 #endif

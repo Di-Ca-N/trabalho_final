@@ -48,22 +48,21 @@ Game newGame() {
  * Arguments:
  *     game (Game): Game to be updated
  *     action (Action): Action to handle
- *     time (double): Time elapsed
  */
-void handleAction(Game *game, Action action, double time) {
+void handleAction(Game *game, Action action) {
     switch (action) {
         case ACTION_RIGHT:
             if (game->dave.flying) {
-                game->dave.speed.x = FLYING_SPEED * time;
+                game->dave.speed.x = FLYING_SPEED;
             } else {
-                game->dave.speed.x = WALKING_X_SPEED * time;
+                game->dave.speed.x = WALKING_X_SPEED;
             }
             break;
         case ACTION_LEFT:
             if (game->dave.flying) {
-                game->dave.speed.x = -FLYING_SPEED * time;
+                game->dave.speed.x = -FLYING_SPEED;
             } else {
-                game->dave.speed.x = -WALKING_X_SPEED * time;
+                game->dave.speed.x = -WALKING_X_SPEED;
             }
             break;
         case ACTION_RELEASE_RIGHT:
@@ -73,11 +72,11 @@ void handleAction(Game *game, Action action, double time) {
         case ACTION_UP:
             if (!game->dave.flying) {
                 if (!game->dave.jumping) {
-                    game->dave.speed.y = -JUMP_INITIAL_SPEED * time;
+                    game->dave.speed.y = -JUMP_INITIAL_SPEED;
                     game->dave.jumping = true;
                 }
             } else {
-                game->dave.speed.y = -FLYING_SPEED * time;
+                game->dave.speed.y = -FLYING_SPEED;
             }
             break;
         case ACTION_SPACE:
@@ -88,7 +87,7 @@ void handleAction(Game *game, Action action, double time) {
             break;
         case ACTION_DOWN:
             if (game->dave.flying) {
-                game->dave.speed.y = FLYING_SPEED * time;
+                game->dave.speed.y = FLYING_SPEED;
             }
             break;
         case ACTION_RELEASE_UP:
@@ -107,12 +106,11 @@ void handleAction(Game *game, Action action, double time) {
  *
  * Arguments:
  *     game (Game*): Game to be updated
- *     time (double): Time elapsed
+ *     timeDelta (double): Time elapsed since last update
  */
-void updateGame(Game *game, double time) {
-    moveDave(game, time);
+void updateGame(Game *game, double timeDelta) {
+    moveDave(game, timeDelta);
     checkInteraction(game);
-    printf("Vidas restantes: %d, Pontuacao: %d\n", game->dave.lives, game->score);
 }
 
 /**
@@ -120,15 +118,15 @@ void updateGame(Game *game, double time) {
  *
  * Arguments:
  *     game (Game*): Pointer to the game to be updated
- *     time (double): Time elapsed
+ *     timeDelta (double): Time elapsed
  */
-static void moveDave(Game *game, double time) {
+static void moveDave(Game *game, double timeDelta) {
     // Dave X Position Update
 
     // Indicate whether Dave is movind to the right
     int goingRight = game->dave.speed.x > 0;
 
-    float nextX = game->dave.position.x + game->dave.speed.x + goingRight;
+    float nextX = game->dave.position.x + game->dave.speed.x * timeDelta + goingRight;
     float currentY = game->dave.position.y;
     float yCeil = ceil(game->dave.position.y);
 
@@ -140,7 +138,7 @@ static void moveDave(Game *game, double time) {
 
     if (next_position_x != WALL && next_position_x_forward != WALL) {
         // If neither position is a wall, update Dave x position
-        game->dave.position.x += game->dave.speed.x;
+        game->dave.position.x += game->dave.speed.x * timeDelta;
     } else {
         // Otherwise, correct Dave position in relation to the wall,
         // based on its current movement direction
@@ -158,7 +156,7 @@ static void moveDave(Game *game, double time) {
     // Dave Y position update
     int goingDown = game->dave.speed.y > 0;
 
-    float nextY = game->dave.position.y + game->dave.speed.y + goingDown;
+    float nextY = game->dave.position.y + game->dave.speed.y * timeDelta + goingDown;
     float currentX = game->dave.position.x;
     float xCeil = ceil(game->dave.position.x);
 
@@ -171,7 +169,7 @@ static void moveDave(Game *game, double time) {
     // If there is no wall on Dave's path on the Y axis
     if (next_position_y != WALL && next_position_y_r != WALL) {
         // Update Dave Y pos
-        game->dave.position.y += game->dave.speed.y;
+        game->dave.position.y += game->dave.speed.y * timeDelta;
     } else {
         // If there is a wall, corrects Dave Y position
         if (goingDown) {
@@ -182,7 +180,7 @@ static void moveDave(Game *game, double time) {
     }
 
     // Dave floor interaction
-    float belowDave = game->dave.position.y + game->dave.speed.y + 1;
+    float belowDave = game->dave.position.y + game->dave.speed.y * timeDelta + 1;
 
     // Objects below Dave. It is necessary to check two positions
     // because Dave can be located between two integer x positions
@@ -191,7 +189,7 @@ static void moveDave(Game *game, double time) {
 
     // Apply gravity
     if (!game->dave.flying) {
-        game->dave.speed.y += GRAVITY * time;
+        game->dave.speed.y += GRAVITY * timeDelta;
     }
 
     // If there is a wall below Dave
