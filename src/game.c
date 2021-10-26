@@ -112,6 +112,7 @@ void handleAction(Game *game, Action action, double time) {
 void updateGame(Game *game, double time) {
     moveDave(game, time);
     checkInteraction(game);
+    printf("Vidas restantes: %d, Pontuacao: %d\n", game->dave.lives, game->score);
 }
 
 /**
@@ -246,6 +247,9 @@ static void checkInteraction(Game *game) {
                     game->dave.position.x = game->map.daveStart[1];
                     // And loses 500 score
                     game->score -= 500;
+
+                    // Log
+                    printf("Dave levou dano!\n");
                 }
                 break;
             // Jetpack
