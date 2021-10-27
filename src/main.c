@@ -87,6 +87,7 @@ int main() {
                 game = loadGame();
                 // Set the state to playing
                 state = STATE_PLAYING;
+                lastTime = GetTime();
                 break;
             }
 

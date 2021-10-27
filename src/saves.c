@@ -23,7 +23,17 @@ Game loadGame() {
 
 // Save a game to the disk
 void saveGame(Game game) {
+    // Reset Dave speed before save. The speeds must be recalculated
+    // every time the game is loaded
+    game.dave.speed.x = 0;
+    game.dave.speed.y = 0;
+
+    // Open save file
     FILE *saveFile = fopen(SAVE_PATH, "wb");
+
+    // Write game to file
     fwrite(&game, sizeof(Game), 1, saveFile);
+
+    // Close file
     fclose(saveFile);
 }
