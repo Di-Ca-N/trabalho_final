@@ -5,7 +5,7 @@ Menu getMenu(MenuType type) {
     switch (type) {
     case MENU_MAIN: {
         Menu menu = {
-            .options = {"New game", "Load game", "Ranking", "Exit"},
+            .options = {"Novo Jogo", "Carregar Jogo", "Ranking", "Sair"},
             .numOptions = 4,
             .selectedOption = 0,
             .selectionDone = false,
