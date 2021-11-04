@@ -19,7 +19,7 @@ Game newGame() {
         .position = {map.daveStart[1], map.daveStart[0]},
         .speed = {0, 0},
 
-        .lives = 1,
+        .lives = 3,
 
         .jumping = false,
         .flying = false,
@@ -31,7 +31,7 @@ Game newGame() {
     Game game = {
         .map = map,
         .dave = dave,
-        .stage = 3,
+        .stage = 1,
         .score = 0,
         .nextStage = false,
         .gameOver = false,
