@@ -23,7 +23,7 @@ typedef struct {
 
 // Enum members differentiate the various game menus
 typedef enum {
-    MENU_MAIN, MENU_EXIT, MENU_OK, MENU_GAME_OVER
+    MENU_MAIN, MENU_EXIT, MENU_OK, MENU_GAME_OVER, MENU_YES_NO
 } MenuType;
 
 // ==== FUNCTIONS ====

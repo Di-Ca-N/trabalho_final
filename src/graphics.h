@@ -27,5 +27,6 @@ void renderMainMenu(Menu menu);                 // Draw the main menu
 void renderRanking(Ranking ranking, Menu menu); // Draw the ranking
 void renderGameOver(Game* game, Menu menu);     // Draw the game over screen
 void renderScoreMenu(Game *game , char *username , Menu menu); // Draw the score menu
+void drawConfirmationDialog(char* message, Menu menu);
 
 #endif

@@ -32,6 +32,16 @@ Menu getMenu(MenuType type) {
         return menu;
     }
 
+    case MENU_YES_NO: {
+        Menu menu = {
+            .options = {"Sim", "Não"},
+            .numOptions = 2,
+            .selectedOption = 0,
+            .selectionDone = false,
+        };
+        return menu;
+    }
+
     default:
         return menu;
         break;

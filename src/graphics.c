@@ -264,4 +264,19 @@ void renderScoreMenu(Game *game ,char *username , Menu menu) {
     
 }
 
+void drawConfirmationDialog(char* message, Menu menu) {
+    int height = GetScreenHeight();
+    int width = GetScreenWidth();
+    int centerHeight = height / 2;
+    int centerWidth = width / 2;
+
+    Rectangle dialogBox = {centerWidth - 175, centerHeight - 75, 350, 150};
+
+    BeginDrawing();
+    DrawRectangle(dialogBox.x, dialogBox.y, dialogBox.width, dialogBox.height, LIGHTGRAY);
+    DrawText(message, dialogBox.x + 15, dialogBox.y + 30, TEXT_FONT_SIZE, BLACK);
+    drawMenu(menu, dialogBox.x + 15, dialogBox.y + 30 + HEADER_FONT_SIZE);
+    EndDrawing();
+}
+
 void endGraphics() { CloseWindow(); }

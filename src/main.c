@@ -22,25 +22,26 @@
 #include "saves.h"
 
 // States of the game
-typedef enum
-{
+typedef enum {
     STATE_MENU = 1,
     STATE_PLAYING,
     STATE_NEW_GAME,
     STATE_LOAD_GAME,
     STATE_RANKING,
-    STATE_WAITING_EXIT,
     STATE_GAME_OVER,
+    STATE_EXIT,
+    STATE_WAITING_NEW_GAME,
+    STATE_WAITING_EXIT_GAME,
 } GameState;
 
 // Game screens prototypes
-int mainMenuScreen(Menu *menu);                             // Manage main menu screen
-int rankingScreen();                                        // Manage ranking screen
-int gameScreen(Game *game, double lastTime);                // Manage game screen
-int gameOverScreen(char *username, Game *game); // Manage game over screen
+int mainMenuScreen(Menu *menu);                  // Manage main menu screen
+int rankingScreen();                             // Manage ranking screen
+int gameScreen(Game *game, double lastTime);     // Manage game screen
+int gameOverScreen(char *username, Game *game);  // Manage game over screen
+int confirmationScreen(char* message, Menu* menu);
 
-int main()
-{
+int main() {
     // Init graphics module
     initGraphics();
 
@@ -51,102 +52,125 @@ int main()
     bool running = true;
 
     double lastTime;
+
+    int nextState;
     // Init game menu
     Menu menu = getMenu(MENU_MAIN);
     Game game;
-    char username[MAX_USERNAME_LENGTH];
+    char username[MAX_USERNAME_LENGTH] = "\0";
 
     // Main game loop
-    while (running && !WindowShouldClose())
-    {
-        switch (state)
-        {
-        // Main Menu state
-        case STATE_MENU:
-        {
-            // Run the main menu screen
-            int nextState = mainMenuScreen(&menu);
+    while (running && !WindowShouldClose()) {
+        switch (state) {
+            // Main Menu state
+            case STATE_MENU:
+                // Run the main menu screen
+                nextState = mainMenuScreen(&menu);
 
-            // If the next state returned is valid (i.e. != 0)
-            if (nextState != 0)
-                // Update state
-                state = nextState;
-            break;
-        }
+                // If the next state returned is valid (i.e. != 0)
+                if (nextState != 0)
+                    // Update state
+                    state = nextState;
+                break;
 
-        // Wating exit state
-        case STATE_WAITING_EXIT:
-            // ToDo: Ask for confirmation before exit
-            running = false;
-            break;
-        // New game state
-        case STATE_NEW_GAME:
-            // Create a new game
-            game = newGame();
-            // Set the state to playing
-            state = STATE_PLAYING;
-            lastTime = GetTime();
-            break;
+            // Wating exit state
+            case STATE_EXIT:
+                // ToDo: Ask for confirmation before exit
+                running = false;
+                break;
 
-        // Load game state
-        case STATE_LOAD_GAME:
-        {
-            // Load the game save
-            game = loadGame();
-            // Set the state to playing
-            state = STATE_PLAYING;
-            lastTime = GetTime();
-            break;
-        }
+            // New game state
+            case STATE_NEW_GAME:
+                // Create a new game
+                game = newGame();
+                // Set the state to playing
+                state = STATE_PLAYING;
+                lastTime = GetTime();
+                break;
 
-        // Playing game state
-        case STATE_PLAYING:
-        {
-            // Run the game screen
-            double nextTime = GetTime();
-            int nextState = gameScreen(&game, nextTime - lastTime);
-            lastTime = nextTime;
+            // Load game state
+            case STATE_LOAD_GAME:
+                // Load the game save
+                game = loadGame();
+                // Set the state to playing
+                state = STATE_PLAYING;
+                lastTime = GetTime();
+                break;
 
-            // If it returns a valid next state (i.e. != 0)
-            if (nextState != 0)
-            {
-                // Update state
-                state = nextState;
-            }
-            break;
-        }
+            // Playing game state
+            case STATE_PLAYING: {
+                // Run the game screen
+                double nextTime = GetTime();
+                nextState = gameScreen(&game, nextTime - lastTime);
+                lastTime = nextTime;
 
-        // Ranking state
-        case STATE_RANKING:
-        {
-            // Run the ranking screen
-            int nextState = rankingScreen();
-            // If the screen return a valid next state (i.e. != 0)
-            if (nextState != 0)
-            {
-                // Update the next state
-                state = nextState;
-                // Reset main menu selection
-                menu.selectionDone = false;
-            }
-            break;
-        }
+                // If it returns a valid next state (i.e. != 0)
+                if (nextState != 0) {
+                    // Update state
+                    state = nextState;
 
-        case STATE_GAME_OVER:
-        {
-            int nextState = gameOverScreen(username, &game);
-            if (nextState != 0)
-            {
-                // Update the next state
-                state = nextState;
-
-                if (state == STATE_MENU)
-                {
-                    menu = getMenu(MENU_MAIN);
+                    if (state == STATE_WAITING_NEW_GAME || state == STATE_WAITING_EXIT_GAME) {
+                        menu = getMenu(MENU_YES_NO);
+                    }
                 }
+                break;
             }
-            break;
-        }
+
+            // Ranking state
+            case STATE_RANKING:
+                // Run the ranking screen
+                nextState = rankingScreen();
+                // If the screen return a valid next state (i.e. != 0)
+                if (nextState != 0) {
+                    // Update the next state
+                    state = nextState;
+                    // Reset main menu selection
+                    menu.selectionDone = false;
+                }
+                break;
+
+            case STATE_GAME_OVER: 
+                nextState = gameOverScreen(username, &game);
+                if (nextState != 0) {
+                    // Update the next state
+                    state = nextState;
+
+                    if (state == STATE_MENU) {
+                        menu = getMenu(MENU_MAIN);
+                    }
+                }
+                break;
+
+            case STATE_WAITING_NEW_GAME: {
+                int selection = confirmationScreen("Deseja iniciar um novo jogo?", &menu);
+                if (selection != -1) {
+                    if (selection == 0) {
+                        state = STATE_NEW_GAME;
+                    } else {
+                        state = STATE_PLAYING;
+                        lastTime = GetTime();
+                        game.dave.speed.x = 0;
+                        game.dave.speed.y = 0;
+                    }
+                }
+                break;
+            }
+
+            case STATE_WAITING_EXIT_GAME: {
+                int selection = confirmationScreen("Deseja abandonar o jogo?", &menu);
+                if (selection != -1) {
+                    if (selection == 0) {
+                        state = STATE_MENU;
+                        menu = getMenu(MENU_MAIN);
+                    } else {
+                        state = STATE_PLAYING;
+                        lastTime = GetTime();
+                        game.dave.speed.x = 0;
+                        game.dave.speed.y = 0;
+                    }
+                }
+                break;
+            }
         }
     }
 
@@ -162,37 +186,31 @@ int main()
  * Arguments:
  *     menu (Menu*): Pointer to the current main menu, to be managed
  */
-int mainMenuScreen(Menu *menu)
-{
+int mainMenuScreen(Menu *menu) {
     // Draw menu on the screen
     renderMainMenu(*menu);
 
     // Handling of menu actions
-    if (IsKeyPressed(KEY_DOWN))
-        *menu = updateMenu(*menu, ACTION_DOWN);
-    if (IsKeyPressed(KEY_UP))
-        *menu = updateMenu(*menu, ACTION_UP);
-    if (IsKeyPressed(KEY_ENTER))
-        *menu = updateMenu(*menu, ACTION_YES);
+    if (IsKeyPressed(KEY_DOWN)) *menu = updateMenu(*menu, ACTION_DOWN);
+    if (IsKeyPressed(KEY_UP)) *menu = updateMenu(*menu, ACTION_UP);
+    if (IsKeyPressed(KEY_ENTER)) *menu = updateMenu(*menu, ACTION_YES);
 
     // Process option if it was selected
-    if (menu->selectionDone)
-    {
+    if (menu->selectionDone) {
         // Each selected option correspond to a new state
-        switch (menu->selectedOption)
-        {
-        case 0:
-            return STATE_NEW_GAME;
-        case 1:
-            return STATE_LOAD_GAME;
-        case 2:
-            return STATE_RANKING;
-        case 3:
-            return STATE_WAITING_EXIT;
-        default:
-            // Every other return code should not occur. Returns 0
-            // to keep the current state
-            return 0;
+        switch (menu->selectedOption) {
+            case 0:
+                return STATE_NEW_GAME;
+            case 1:
+                return STATE_LOAD_GAME;
+            case 2:
+                return STATE_RANKING;
+            case 3:
+                return STATE_EXIT;
+            default:
+                // Every other return code should not occur. Returns 0
+                // to keep the current state
+                return 0;
         }
     }
     return 0;
@@ -201,10 +219,10 @@ int mainMenuScreen(Menu *menu)
 /**
  * Manage the ranking screen.
  */
-int rankingScreen()
-{
+int rankingScreen() {
     // Get the current ranking
     Ranking ranking = getRanking();
+
     // Get the ranking menu. The menu contains only one option, so it
     // can be reloaded every update
     Menu menu = getMenu(MENU_OK);
@@ -213,15 +231,13 @@ int rankingScreen()
     renderRanking(ranking, menu);
 
     // Handling menu action
-    if (IsKeyPressed(KEY_ENTER))
-    {
+    if (IsKeyPressed(KEY_ENTER)) {
         menu = updateMenu(menu, ACTION_YES);
     }
 
     // As there is only one option on the menu. If the selection is done,
     // return the next state
-    if (menu.selectionDone)
-    {
+    if (menu.selectionDone) {
         return STATE_MENU;
     }
 
@@ -236,147 +252,99 @@ int rankingScreen()
  *     game (Game*): Pointer to the current game to be managed
  *     timeDelta (double): Time elapsed since last update
  */
-int gameScreen(Game *game, double timeDelta)
-{
+int gameScreen(Game *game, double timeDelta) {
     // Draw game on the screen
     renderGame(game);
 
     // Handling game actions
 
     // Movement actions
-    if (IsKeyDown(KEY_RIGHT))
-    {
-        handleAction(game, ACTION_RIGHT);
-    }
+    if (IsKeyDown(KEY_RIGHT)) handleAction(game, ACTION_RIGHT);
+    if (IsKeyDown(KEY_LEFT)) handleAction(game, ACTION_LEFT);
+    if (IsKeyReleased(KEY_LEFT)) handleAction(game, ACTION_RELEASE_LEFT);
+    if (IsKeyReleased(KEY_RIGHT)) handleAction(game, ACTION_RELEASE_RIGHT);
+    if (IsKeyDown(KEY_UP)) handleAction(game, ACTION_UP);
+    if (IsKeyDown(KEY_DOWN)) handleAction(game, ACTION_DOWN);
+    if (IsKeyPressed(KEY_SPACE)) handleAction(game, ACTION_SPACE);
+    if (IsKeyReleased(KEY_DOWN)) handleAction(game, ACTION_RELEASE_DOWN);
+    if (IsKeyReleased(KEY_UP)) handleAction(game, ACTION_RELEASE_UP);
 
-    if (IsKeyDown(KEY_LEFT))
-    {
-        handleAction(game, ACTION_LEFT);
-    }
-
-    if (IsKeyReleased(KEY_LEFT))
-    {
-        handleAction(game, ACTION_RELEASE_LEFT);
-    }
-
-    if (IsKeyReleased(KEY_RIGHT))
-    {
-        handleAction(game, ACTION_RELEASE_RIGHT);
-    }
-
-    if (IsKeyDown(KEY_UP))
-    {
-        handleAction(game, ACTION_UP);
-    }
-
-    if (IsKeyDown(KEY_DOWN))
-    {
-        handleAction(game, ACTION_DOWN);
-    }
-
-    if (IsKeyPressed(KEY_SPACE))
-    {
-        handleAction(game, ACTION_SPACE);
-    }
-
-    if (IsKeyReleased(KEY_DOWN))
-    {
-        handleAction(game, ACTION_RELEASE_DOWN);
-    }
-
-    if (IsKeyReleased(KEY_UP))
-    {
-        handleAction(game, ACTION_RELEASE_UP);
-    }
-
-    // Save action
-    if (IsKeyDown(KEY_S))
-    {
-        saveGame(*game);
-    }
+    // Special actions
+    if (IsKeyPressed(KEY_S)) saveGame(*game);
+    if (IsKeyPressed(KEY_N)) return STATE_WAITING_NEW_GAME;
+    if (IsKeyPressed(KEY_ESCAPE)) return STATE_WAITING_EXIT_GAME;
 
     // Update the game based on the actions taken by the user
     updateGame(game, timeDelta);
 
-    if (game->dave.lives == 0)
-    {
-        return STATE_GAME_OVER;
+    // Game events
+    if (game->gameOver) return STATE_GAME_OVER;
+    if (game->nextStage) loadNextStage(game);
+
+    return 0;
+}
+
+int gameOverScreen(char *username, Game *game) {
+    Menu menu = getMenu(MENU_OK);
+    Ranking ranking = getRanking();
+
+    if (game->score > ranking.entries[4].score) {
+        renderScoreMenu(game, username, menu);
+
+        int letterCount = strlen(username);
+
+        int key = GetCharPressed();
+
+        while (key > 0) {
+            if ((key >= 32) && (key <= 125) &&
+                (letterCount < MAX_USERNAME_LENGTH)) {
+                username[letterCount] = (char)key;
+                username[letterCount + 1] = '\0';
+                letterCount++;
+            }
+
+            key = GetCharPressed();
+        }
+
+        if (IsKeyPressed(KEY_BACKSPACE)) {
+            letterCount--;
+            if (letterCount < 0) letterCount = 0;
+            username[letterCount] = '\0';
+        }
+
+        if (IsKeyPressed(KEY_ENTER) && letterCount) {
+            menu = updateMenu(menu, ACTION_YES);
+            RankingEntry Entry;
+            Entry.score = game->score;
+            strcpy(Entry.username, username);
+            saveOnRanking(Entry);
+            strcpy(username, "\0");
+        }
+    } else {
+        renderGameOver(game, menu);
+  
+        if (IsKeyPressed(KEY_ENTER)) {
+            menu = updateMenu(menu, ACTION_YES);
+        }
     }
 
-    if (game->nextStage)
-    {
-        loadNextStage(game);
+    if (menu.selectionDone) {
+        return STATE_RANKING;
     }
 
     return 0;
 }
 
-int gameOverScreen(char *username, Game *game)
-{
-   Menu menu = getMenu(MENU_OK);
-    Ranking ranking = getRanking();
+int confirmationScreen(char* message, Menu* menu) {
+    drawConfirmationDialog(message, *menu);
 
-    printf("%d", ranking.entries[0].score);
-    if (game->score > ranking.entries[4].score)
-    {
-        //renderRankingRecord();
-        printf("Salvar no ranking\n");
-        renderScoreMenu(game, username, menu);
+    // Handling of menu actions
+    if (IsKeyPressed(KEY_DOWN)) *menu = updateMenu(*menu, ACTION_DOWN);
+    if (IsKeyPressed(KEY_UP)) *menu = updateMenu(*menu, ACTION_UP);
+    if (IsKeyPressed(KEY_ENTER)) *menu = updateMenu(*menu, ACTION_YES);
 
-        int letterCount = strlen(username);
-
-        // Get char pressed (unicode character) on the queue
-        int key = GetCharPressed();
-
-        // Check if more characters have been pressed on the same frame
-        while (key > 0)
-        {
-            // NOTE: Only allow keys in range [32..125]
-            if ((key >= 32) && (key <= 125) && (letterCount < MAX_USERNAME_LENGTH))
-            {
-                username[letterCount] = (char)key;
-                username[letterCount + 1] = '\0'; // Add null terminator at the end of the string.
-                letterCount++;
-            }
-
-            key = GetCharPressed(); // Check next character in the queue
-        }
-
-        if (IsKeyPressed(KEY_BACKSPACE))
-        {
-            letterCount--;
-            if (letterCount < 0)
-                letterCount = 0;
-            username[letterCount] = '\0';
-        }
-        
-        if (IsKeyPressed(KEY_ENTER))
-        {
-           menu = updateMenu (menu , ACTION_YES);
-           RankingEntry Entry;
-           Entry.score = game->score;
-          strcpy(Entry.username , username); 
-           saveOnRanking(Entry);
-           strcpy(username , "\0");
-        }
+    if (menu->selectionDone) {
+        return menu->selectedOption;
     }
-    else
-    {
-        renderGameOver(game, menu);
-        // Handling of menu actions
-
-        if (IsKeyPressed(KEY_ENTER))
-        {
-            menu = updateMenu(menu, ACTION_YES);
-        }
-
-        // As there is only one option on the menu. If the selection is done,
-        // return the next state
-    }
-    if (menu.selectionDone)
-        {
-            return STATE_RANKING;
-        }
-
-    return 0;
+    return -1;
 }

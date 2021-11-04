@@ -19,7 +19,7 @@ Game newGame() {
         .position = {map.daveStart[1], map.daveStart[0]},
         .speed = {0, 0},
 
-        .lives = 1, // ToDo: Alterar
+        .lives = 1,
 
         .jumping = false,
         .flying = false,
@@ -31,7 +31,7 @@ Game newGame() {
     Game game = {
         .map = map,
         .dave = dave,
-        .stage = 1,
+        .stage = 3,
         .score = 0,
         .nextStage = false,
         .gameOver = false,
@@ -241,6 +241,11 @@ static void checkInteraction(Game *game) {
                     processedDamage = true;
                     // Dave loses a life
                     game->dave.lives--;
+
+                    if (game->dave.lives == 0) {
+                        game->gameOver = true;
+                    }
+
                     // Stops flying
                     game->dave.flying = false;
                     // Return to the starting position
@@ -311,14 +316,20 @@ void loadNextStage(Game *game) {
 
     char fase[30];
     snprintf(fase, 30, "assets/stages/fase_%02d.txt", game->stage);
-    game->map = loadMap(fase);
 
-    game->dave.gotTrophy = false;
-    game->dave.hasJetpack = false;
-    game->dave.flying = false;
-    game->dave.position.x = game->map.daveStart[1];
-    game->dave.position.y = game->map.daveStart[0];
-    game->dave.speed.x = 0;
-    game->dave.speed.y = 0;
-    game->nextStage = false;
+    if (FileExists(fase)) {
+        game->map = loadMap(fase);
+
+        game->dave.gotTrophy = false;
+        game->dave.hasJetpack = false;
+        game->dave.flying = false;
+        game->dave.position.x = game->map.daveStart[1];
+        game->dave.position.y = game->map.daveStart[0];
+        game->dave.speed.x = 0;
+        game->dave.speed.y = 0;
+        game->nextStage = false;
+    } else {
+        game->gameOver = true;
+    }
+   
 }
