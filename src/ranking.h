@@ -6,7 +6,7 @@
 #define RANKING_H
 
 // ==== CONSTANTS ====
-#define MAX_USERNAME_LENGTH 100 // Maximum allowed username length on ranking
+#define MAX_USERNAME_LENGTH 15 // Maximum allowed username length on ranking
 
 // ==== TYPES ====
 

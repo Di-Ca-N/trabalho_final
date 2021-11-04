@@ -23,11 +23,12 @@ O projeto consiste em seis módulos com responsabilidades distintas:
 - Morte e respawn do Dave
 - Salvamento e carregamento do jogo
 - Persistência do ranking
+- Passar de fase
+- Fim de jogo
 
 ## Funcionalidades ainda não implementadas
 - Confirmação de saída
-- Passar de fase
-- Fim de jogo
+- Adição do nome do jogador no ranking
 
 ## Compilação
 

@@ -19,13 +19,12 @@ Game newGame() {
         .position = {map.daveStart[1], map.daveStart[0]},
         .speed = {0, 0},
 
-        .lives = 3,
+        .lives = 1, // ToDo: Alterar
 
         .jumping = false,
         .flying = false,
         .gotTrophy = false,
         .hasJetpack = false,
-
     };
 
     // New game
@@ -36,7 +35,6 @@ Game newGame() {
         .score = 0,
         .nextStage = false,
         .gameOver = false,
-
     };
 
     return game;
@@ -128,7 +126,8 @@ static void moveDave(Game *game, double timeDelta) {
     // Indicate whether Dave is movind to the right
     int goingRight = game->dave.speed.x > 0;
 
-    float nextX = game->dave.position.x + game->dave.speed.x * timeDelta + goingRight;
+    float nextX =
+        game->dave.position.x + game->dave.speed.x * timeDelta + goingRight;
     float currentY = game->dave.position.y;
     float yCeil = ceil(game->dave.position.y);
 
@@ -158,7 +157,8 @@ static void moveDave(Game *game, double timeDelta) {
     // Dave Y position update
     int goingDown = game->dave.speed.y > 0;
 
-    float nextY = game->dave.position.y + game->dave.speed.y * timeDelta + goingDown;
+    float nextY =
+        game->dave.position.y + game->dave.speed.y * timeDelta + goingDown;
     float currentX = game->dave.position.x;
     float xCeil = ceil(game->dave.position.x);
 
@@ -182,7 +182,8 @@ static void moveDave(Game *game, double timeDelta) {
     }
 
     // Dave floor interaction
-    float belowDave = game->dave.position.y + game->dave.speed.y * timeDelta + 1;
+    float belowDave =
+        game->dave.position.y + game->dave.speed.y * timeDelta + 1;
 
     // Objects below Dave. It is necessary to check two positions
     // because Dave can be located between two integer x positions
@@ -300,27 +301,24 @@ static void checkInteraction(Game *game) {
                                    checkPosition[i].y);
                 break;
             case DOOR:
-                if (game->dave.gotTrophy) 
-                 game->nextStage = true;
+                if (game->dave.gotTrophy) game->nextStage = true;
         }
     }
 }
 
-void loadNextStage (Game *game) {
+void loadNextStage(Game *game) {
+    game->stage++;
 
-        game->stage++;
+    char fase[30];
+    snprintf(fase, 30, "assets/stages/fase_%02d.txt", game->stage);
+    game->map = loadMap(fase);
 
-           char fase[30];
-            snprintf(fase, 30 , "assets/stages/fase_%02d.txt" ,
-               game->stage);
-   game->map = loadMap (fase);
-
-         game->dave.gotTrophy = false;
-         game->dave.hasJetpack = false;
-         game->dave.flying = false;
-         game->dave.position.x = game->map.daveStart[1];
-         game->dave.position.y = game->map.daveStart[0];
-         game->dave.speed.x = 0;
-         game->dave.speed.y = 0;
-         game->nextStage = false;
+    game->dave.gotTrophy = false;
+    game->dave.hasJetpack = false;
+    game->dave.flying = false;
+    game->dave.position.x = game->map.daveStart[1];
+    game->dave.position.y = game->map.daveStart[0];
+    game->dave.speed.x = 0;
+    game->dave.speed.y = 0;
+    game->nextStage = false;
 }

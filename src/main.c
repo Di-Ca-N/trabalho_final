@@ -1,24 +1,23 @@
 /**
  * ==== Dangerous Dave ====
- * 
- * Esse trabalho se trata de um jogo inspirado no jogo Dangerous Dave, 
+ *
+ * Esse trabalho se trata de um jogo inspirado no jogo Dangerous Dave,
  * de 1988
- * 
- * Jogo desenvolvido como trabalho final da disciplina 
+ *
+ * Jogo desenvolvido como trabalho final da disciplina
  * INF-01202 - Algoritmos e Programação
- * 
+ *
  * Professor: Lucas Rafael Costella Pessuto
  * Estudantes: Diego Cardoso Nunes, Enzo Sergi Berquo Xavier
-*/
+ */
 
 #include <stdio.h>
 
-#include "raylib.h"
-
-#include "graphics.h"
 #include "game.h"
-#include "ranking.h"
+#include "graphics.h"
 #include "menus.h"
+#include "ranking.h"
+#include "raylib.h"
 #include "saves.h"
 
 // States of the game
@@ -29,12 +28,14 @@ typedef enum {
     STATE_LOAD_GAME,
     STATE_RANKING,
     STATE_WAITING_EXIT,
+    STATE_GAME_OVER,
 } GameState;
 
 // Game screens prototypes
-int mainMenuScreen(Menu* menu); // Manage main menu screen
-int rankingScreen();            // Manage ranking screen
-int gameScreen(Game* game, double lastTime);     // Manage game screen
+int mainMenuScreen(Menu* menu);               // Manage main menu screen
+int rankingScreen();                          // Manage ranking screen
+int gameScreen(Game* game, double lastTime);  // Manage game screen
+int gameOverScreen(Game* game, Menu *menu);    // Manage game over screen
 
 int main() {
     // Init graphics module
@@ -47,17 +48,17 @@ int main() {
     bool running = true;
 
     double lastTime;
-    // Init game menu 
+    // Init game menu
     Menu menu = getMenu(MENU_MAIN);
-    
     Game game;
+    char username[MAX_USERNAME_LENGTH];
 
     // Main game loop
     while (running && !WindowShouldClose()) {
         switch (state) {
             // Main Menu state
             case STATE_MENU: {
-                // Run the main menu screen  
+                // Run the main menu screen
                 int nextState = mainMenuScreen(&menu);
 
                 // If the next state returned is valid (i.e. != 0)
@@ -102,10 +103,14 @@ int main() {
                 if (nextState != 0) {
                     // Update state
                     state = nextState;
+
+                    if (state == STATE_GAME_OVER) {
+                        menu = getMenu(MENU_GAME_OVER);
+                    }
                 }
                 break;
             }
-            
+
             // Ranking state
             case STATE_RANKING: {
                 // Run the ranking screen
@@ -116,6 +121,19 @@ int main() {
                     state = nextState;
                     // Reset main menu selection
                     menu.selectionDone = false;
+                }
+                break;
+            }
+
+            case STATE_GAME_OVER: {
+                int nextState = gameOverScreen(&game, &menu);
+                if (nextState != 0) {
+                    // Update the next state
+                    state = nextState;
+                    
+                    if (state == STATE_MENU) {
+                        menu = getMenu(MENU_MAIN);
+                    }
                 }
                 break;
             }
@@ -130,21 +148,18 @@ int main() {
 
 /**
  * Manage the main menu screen.
- * 
+ *
  * Arguments:
  *     menu (Menu*): Pointer to the current main menu, to be managed
-*/
-int mainMenuScreen(Menu *menu) {
+ */
+int mainMenuScreen(Menu* menu) {
     // Draw menu on the screen
     renderMainMenu(*menu);
 
     // Handling of menu actions
-    if(IsKeyPressed(KEY_DOWN))
-        *menu = updateMenu(*menu, ACTION_DOWN);
-    if(IsKeyPressed(KEY_UP))
-        *menu = updateMenu(*menu, ACTION_UP);
-    if(IsKeyPressed(KEY_ENTER))
-        *menu = updateMenu(*menu, ACTION_YES);
+    if (IsKeyPressed(KEY_DOWN)) *menu = updateMenu(*menu, ACTION_DOWN);
+    if (IsKeyPressed(KEY_UP)) *menu = updateMenu(*menu, ACTION_UP);
+    if (IsKeyPressed(KEY_ENTER)) *menu = updateMenu(*menu, ACTION_YES);
 
     // Process option if it was selected
     if (menu->selectionDone) {
@@ -169,7 +184,7 @@ int mainMenuScreen(Menu *menu) {
 
 /**
  * Manage the ranking screen.
-*/
+ */
 int rankingScreen() {
     // Get the current ranking
     Ranking ranking = getRanking();
@@ -181,14 +196,14 @@ int rankingScreen() {
     renderRanking(ranking, menu);
 
     // Handling menu action
-    if(IsKeyPressed(KEY_ENTER)) {
+    if (IsKeyPressed(KEY_ENTER)) {
         menu = updateMenu(menu, ACTION_YES);
     }
 
     // As there is only one option on the menu. If the selection is done,
     // return the next state
     if (menu.selectionDone) {
-        return STATE_MENU; 
+        return STATE_MENU;
     }
 
     // If no option was selected, return 0 (keep the same state)
@@ -197,11 +212,11 @@ int rankingScreen() {
 
 /**
  * Manage the game screen
- * 
+ *
  * Arguments:
  *     game (Game*): Pointer to the current game to be managed
  *     timeDelta (double): Time elapsed since last update
-*/
+ */
 int gameScreen(Game* game, double timeDelta) {
     // Draw game on the screen
     renderGame(game);
@@ -232,15 +247,15 @@ int gameScreen(Game* game, double timeDelta) {
     if (IsKeyDown(KEY_DOWN)) {
         handleAction(game, ACTION_DOWN);
     }
-    
+
     if (IsKeyPressed(KEY_SPACE)) {
         handleAction(game, ACTION_SPACE);
     }
-    
+
     if (IsKeyReleased(KEY_DOWN)) {
         handleAction(game, ACTION_RELEASE_DOWN);
     }
-    
+
     if (IsKeyReleased(KEY_UP)) {
         handleAction(game, ACTION_RELEASE_UP);
     }
@@ -253,10 +268,39 @@ int gameScreen(Game* game, double timeDelta) {
     // Update the game based on the actions taken by the user
     updateGame(game, timeDelta);
 
-    if (game->nextStage) {
-     loadNextStage(game);
+    if (game->dave.lives == 0) {
+        return STATE_GAME_OVER;
     }
 
+    if (game->nextStage) {
+        loadNextStage(game);
+    }
 
+    return 0;
+}
+
+int gameOverScreen(Game* game, Menu *menu) {
+    Ranking ranking = getRanking();
+
+    if (game->score > ranking.entries[4].score) {
+        //renderRankingRecord();
+        printf("Salvar no ranking\n");
+    } else {
+        renderGameOver(game, *menu);
+
+        // Handling of menu actions
+        if (IsKeyPressed(KEY_DOWN)) *menu = updateMenu(*menu, ACTION_DOWN);
+        if (IsKeyPressed(KEY_UP)) *menu = updateMenu(*menu, ACTION_UP);
+        if (IsKeyPressed(KEY_ENTER)) *menu = updateMenu(*menu, ACTION_YES);
+
+        if (menu->selectionDone) {
+            switch (menu->selectedOption) {
+                case 0:
+                    return STATE_MENU;
+                case 1:
+                    return STATE_NEW_GAME;
+            }
+        }
+    }
     return 0;
 }

@@ -21,6 +21,16 @@ Menu getMenu(MenuType type) {
         };
         return menu;
     }
+    
+    case MENU_GAME_OVER: {
+        Menu menu = {
+            .options = {"Menu principal", "Jogar novamente"},
+            .numOptions = 2,
+            .selectedOption = 0,
+            .selectionDone = false,
+        };
+        return menu;
+    }
 
     default:
         return menu;
