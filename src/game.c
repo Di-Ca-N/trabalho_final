@@ -12,7 +12,7 @@ static void checkInteraction(Game *game);
  */
 Game newGame() {
     // Load first stage map
-    Map map = loadMap("assets/stages/mapa1.txt");
+    Map map = loadMap("assets/stages/fase_01.txt");
 
     // Dave starting representation
     Dave dave = {
@@ -34,7 +34,9 @@ Game newGame() {
         .dave = dave,
         .stage = 1,
         .score = 0,
+        .nextStage = false,
         .gameOver = false,
+
     };
 
     return game;
@@ -297,6 +299,28 @@ static void checkInteraction(Game *game) {
                 clearStagePosition(&game->map, checkPosition[i].x,
                                    checkPosition[i].y);
                 break;
+            case DOOR:
+                if (game->dave.gotTrophy) 
+                 game->nextStage = true;
         }
     }
+}
+
+void loadNextStage (Game *game) {
+
+        game->stage++;
+
+           char fase[30];
+            snprintf(fase, 30 , "assets/stages/fase_%02d.txt" ,
+               game->stage);
+   game->map = loadMap (fase);
+
+         game->dave.gotTrophy = false;
+         game->dave.hasJetpack = false;
+         game->dave.flying = false;
+         game->dave.position.x = game->map.daveStart[1];
+         game->dave.position.y = game->map.daveStart[0];
+         game->dave.speed.x = 0;
+         game->dave.speed.y = 0;
+         game->nextStage = false;
 }

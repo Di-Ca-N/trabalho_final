@@ -30,6 +30,7 @@ typedef struct {
     bool flying;
     bool gotTrophy;
     bool hasJetpack;
+
 } Dave;
 
 // Game representation
@@ -40,6 +41,10 @@ typedef struct {
 
     // Game over flag
     bool gameOver;
+
+    // Next stage flag
+
+    bool nextStage;
 
     // Current player score
     int score;
@@ -64,5 +69,6 @@ typedef enum {
 Game newGame();                                // Create a new game
 void handleAction(Game* game, Action action);  // Update game state according to actions
 void updateGame(Game* game, double timeDelta); // Apply updates on game
+void loadNextStage(Game* game); // Load the next stage
 
 #endif

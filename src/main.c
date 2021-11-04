@@ -253,5 +253,10 @@ int gameScreen(Game* game, double timeDelta) {
     // Update the game based on the actions taken by the user
     updateGame(game, timeDelta);
 
+    if (game->nextStage) {
+     loadNextStage(game);
+    }
+
+
     return 0;
 }

@@ -1,15 +1,15 @@
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-x                                                                          T                   x
-x    J                                                                                         x
-x    x          @                                                                              x
-x        xxx    x                                                                              x
-x                   xxxxxxxxxxxxxxx                                                            x
-x                                         $                                                    x
-x                                     xxxxxxxxx                                                x
-x              #               !                                                               x
-x             xxx          xxxxxxxxx                                                           x
-x                     !                                                                     %  x
-x        xxx         xxx            xxxxxxxxx                  FFFFFFFFFFFFFFFFFFFFFFFFFFF     x
-x  O                                             xxxxxx        FFFFFFFFFFFFFFFFFFFFFFFFFFF     x
-x  D                       AAAAAAAAAAAAAAA                 !   FFFFFFFFFFFFFFFFFFFFFFFFFFF  P  x
+x                                                                                              x
+x                                                                                  !         T x
+x  P                 @    xxxxxxx           !                                    xxxx    xxxxxxx
+xxxxxxxx            xx                    xxxxx                         xxxxx                  x
+x                                                             xxxxx                            x
+x    $     xxxxxx                  xxxxx             xxxxx                                     x
+x   xxx                                                                                        x
+x                          xxxxxx           @               xxxxxx                             x
+x     xxxxxxx       xxx                 xxxxxxxxx                     xxx                      x
+x               !                                   #                         xxxxx            x
+x             xxx               xxxx               xxx                                      %  x
+x  O                 xxxxxxxx                             xxxxxxxx                    xxxxxxxxxx
+x  D               xxxxxxxxxxxFFFFFFFFFFFFFFFFFFFFFFFFFFFFxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx

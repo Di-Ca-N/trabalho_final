@@ -95,14 +95,25 @@ void renderGame(Game *game) {
                   (game->map.height + 2) * TILE_SIZE);
     BeginDrawing();
     ClearBackground(RAYWHITE);
-    // Show current score on screen at top left corner                               
-    DrawText("PONTUAÇÃO: 1000", TILE_SIZE * 0.5, TILE_SIZE * 0.8, TEXT_MAP_SIZE,
+    // Show current score on screen at top left corner    
+            
+            char pontuacao[20] = "PONTUAÇÃO:";
+            snprintf(pontuacao, 20 , "PONTUAÇÃO: %d",
+                     game->score);
+    DrawText(pontuacao , TILE_SIZE * 0.5, TILE_SIZE * 0.8, TEXT_MAP_SIZE, 
              BLACK);
+
+             char vidas[10] = "VIDAS:";
+              snprintf(vidas, 10 , "VIDAS: %d",
+                     game->dave.lives);
     // Show remaining lives on screen
-    DrawText("3 VIDAS", TILE_SIZE * 15.0, TILE_SIZE * 0.8, TEXT_MAP_SIZE, 
+    DrawText(vidas, TILE_SIZE * 15.0, TILE_SIZE * 0.8, TEXT_MAP_SIZE, 
              MAROON);
     // Show current level on screen
-    DrawText("NIVEL: 1", TILE_SIZE * 25.0, TILE_SIZE * 0.8, TEXT_MAP_SIZE, 
+               char nivel[15] = "NÍVEL:";
+                snprintf(nivel, 15 , "NÍVEL: %d",
+                     game->stage);
+    DrawText(nivel, TILE_SIZE * 25.0, TILE_SIZE * 0.8, TEXT_MAP_SIZE, 
              BLACK);
     // Show message on screen if Dave collects the trophy
     if (game->dave.gotTrophy) {                                         
