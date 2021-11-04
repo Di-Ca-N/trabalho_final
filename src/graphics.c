@@ -111,7 +111,7 @@ void renderGame(Game* game) {
 
     // Show current level on screen
     char nivel[15] = "NÍVEL:";
-    snprintf(nivel, 15, "NÍVEL: %d", game->stage);
+    snprintf(nivel, 15, "NÍVEL: %d", game->level);
     DrawText(nivel, TILE_SIZE * 25.0, TILE_SIZE * 0.8, TEXT_MAP_SIZE, BLACK);
 
     // Show message on screen if Dave collects the trophy

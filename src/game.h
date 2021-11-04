@@ -42,15 +42,15 @@ typedef struct {
     // Game over flag
     bool gameOver;
 
-    // Next stage flag
+    // Next level flag
 
     bool nextStage;
 
     // Current player score
     int score;
 
-    // Current stage number
-    int stage;
+    // Current level number
+    int level;
 } Game;
 
     
@@ -69,6 +69,6 @@ typedef enum {
 Game newGame();                                // Create a new game
 void handleAction(Game* game, Action action);  // Update game state according to actions
 void updateGame(Game* game, double timeDelta); // Apply updates on game
-void loadNextStage(Game* game); // Load the next stage
+void loadNextStage(Game* game);                // Load the next stage
 
 #endif

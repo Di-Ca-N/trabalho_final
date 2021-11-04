@@ -31,7 +31,7 @@ Game newGame() {
     Game game = {
         .map = map,
         .dave = dave,
-        .stage = 1,
+        .level = 1,
         .score = 0,
         .nextStage = false,
         .gameOver = false,
@@ -125,9 +125,9 @@ static void moveDave(Game *game, double timeDelta) {
 
     // Indicate whether Dave is movind to the right
     int goingRight = game->dave.speed.x > 0;
+    float dx = game->dave.speed.x * timeDelta;
 
-    float nextX =
-        game->dave.position.x + game->dave.speed.x * timeDelta + goingRight;
+    float nextX = game->dave.position.x + dx + goingRight;
     float currentY = game->dave.position.y;
     float yCeil = ceil(game->dave.position.y);
 
@@ -157,8 +157,8 @@ static void moveDave(Game *game, double timeDelta) {
     // Dave Y position update
     int goingDown = game->dave.speed.y > 0;
 
-    float nextY =
-        game->dave.position.y + game->dave.speed.y * timeDelta + goingDown;
+    float dy = game->dave.speed.y * timeDelta;
+    float nextY = game->dave.position.y + dy + goingDown;
     float currentX = game->dave.position.x;
     float xCeil = ceil(game->dave.position.x);
 
@@ -182,18 +182,12 @@ static void moveDave(Game *game, double timeDelta) {
     }
 
     // Dave floor interaction
-    float belowDave =
-        game->dave.position.y + game->dave.speed.y * timeDelta + 1;
+    float belowDave = game->dave.position.y + dy + 1;
 
     // Objects below Dave. It is necessary to check two positions
     // because Dave can be located between two integer x positions
     char stop_y_below = getStagePosition(&game->map, currentX, belowDave);
     char stop_y_below_r = getStagePosition(&game->map, xCeil, belowDave);
-
-    // Apply gravity
-    if (!game->dave.flying) {
-        game->dave.speed.y += GRAVITY * timeDelta;
-    }
 
     // If there is a wall below Dave
     if (stop_y_below == WALL || stop_y_below_r == WALL) {
@@ -202,10 +196,15 @@ static void moveDave(Game *game, double timeDelta) {
         // Reset jump flag (so Dave can jump again)
         game->dave.jumping = false;
     }
+
+    // Apply gravity
+    if (!game->dave.flying) {
+        game->dave.speed.y += GRAVITY * timeDelta;
+    }
 }
 
 /**
- * Process Dave interactions with the stage environment
+ * Process Dave interactions with the level environment
  *
  * Arguments:
  *     game (Game*): Pointer to the Game to be updated
@@ -221,7 +220,7 @@ static void checkInteraction(Game *game) {
         {game->dave.position.x, ceil(game->dave.position.y)},
         {ceil(game->dave.position.x), ceil(game->dave.position.y)},
     };
-    // Flag to indicate that damage was processed on the current
+    // Flag to indicate that damage was already processed on the current
     // update. On each update, the damage must be processed only once.
     bool processedDamage = false;
 
@@ -232,7 +231,6 @@ static void checkInteraction(Game *game) {
                                     checkPosition[i].y);
         // If the position contains
         switch (pos) {
-            // Water or fire
             case WATER:
             case FIRE:
                 // If damage was not processed on the current update
@@ -242,23 +240,23 @@ static void checkInteraction(Game *game) {
                     // Dave loses a life
                     game->dave.lives--;
 
+                    // If Dave's lifes reach zero, it is Game Over
                     if (game->dave.lives == 0) {
                         game->gameOver = true;
                     }
 
                     // Stops flying
                     game->dave.flying = false;
+
                     // Return to the starting position
                     game->dave.position.y = game->map.daveStart[0];
                     game->dave.position.x = game->map.daveStart[1];
+
                     // And loses 500 score
                     game->score -= 500;
-
-                    // Log
-                    printf("Dave levou dano!\n");
                 }
                 break;
-            // Jetpack
+
             case JETPACK:
                 // Update jetpack flag
                 game->dave.hasJetpack = true;
@@ -267,7 +265,6 @@ static void checkInteraction(Game *game) {
                                    checkPosition[i].y);
                 break;
 
-            // Trophy
             case TROPHY:
                 // Update trophy flag
                 game->dave.gotTrophy = true;
@@ -278,8 +275,15 @@ static void checkInteraction(Game *game) {
                                    checkPosition[i].y);
                 break;
 
-            // With any other collectible, give the correspondent score
-            // and remove them from the map
+            case DOOR:
+                // If Dave already have the trophy, mark the next stage
+                // flag
+                if (game->dave.gotTrophy) 
+                    game->nextStage = true;
+                break;
+
+            // With any other collectible, give the player the 
+            // correspondent score and remove it from the map
             case SAPHIRE:
                 game->score += 100;
                 clearStagePosition(&game->map, checkPosition[i].x,
@@ -305,21 +309,29 @@ static void checkInteraction(Game *game) {
                 clearStagePosition(&game->map, checkPosition[i].x,
                                    checkPosition[i].y);
                 break;
-            case DOOR:
-                if (game->dave.gotTrophy) game->nextStage = true;
         }
     }
 }
 
+/**
+ * Load the next level
+ * 
+ * Arguments:
+ *     game (Game*): Pointer to the game to be updated 
+ */
 void loadNextStage(Game *game) {
-    game->stage++;
+    // Increase game level;
+    game->level++;
 
-    char fase[30];
-    snprintf(fase, 30, "assets/stages/fase_%02d.txt", game->stage);
+    // Assemble path to the map file
+    char stage[30];
+    snprintf(stage, 30, "assets/stages/fase_%02d.txt", game->level);
 
-    if (FileExists(fase)) {
-        game->map = loadMap(fase);
+    // If the map file exists, start a new stage
+    if (FileExists(stage)) {
+        game->map = loadMap(stage);
 
+        // Reseting game state for the next level
         game->dave.gotTrophy = false;
         game->dave.hasJetpack = false;
         game->dave.flying = false;
@@ -329,7 +341,7 @@ void loadNextStage(Game *game) {
         game->dave.speed.y = 0;
         game->nextStage = false;
     } else {
+        // Otherwise, there is no more levels and the game is over
         game->gameOver = true;
     }
-   
 }
