@@ -12,9 +12,9 @@ Menu getMenu(MenuType type) {
         };
         return menu;
     }
-    case MENU_RANKING: {
+    case MENU_OK: {
         Menu menu = {
-            .options = {"Back"},
+            .options = {"OK"},
             .numOptions = 1,
             .selectedOption = 0,
             .selectionDone = false,

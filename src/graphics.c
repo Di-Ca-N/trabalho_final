@@ -72,8 +72,7 @@ void renderRanking(Ranking ranking, Menu menu) {
     for (int i = 0; i < 5; i++) {
         if (strlen(ranking.entries[i].username) == 0) {
             snprintf(rankingEntryBuffer, MAX_USERNAME_LENGTH + 12,
-                     "%d. %10s    %04d", i + 1, "---",
-                     ranking.entries[i].score);
+                     "%d. %10s", i + 1, "---");
         } else {
             snprintf(rankingEntryBuffer, MAX_USERNAME_LENGTH + 12,
                      "%d. %10s    %04d", i + 1, ranking.entries[i].username,
@@ -87,6 +86,9 @@ void renderRanking(Ranking ranking, Menu menu) {
     int menuYPos = TILE_SIZE * 3 + HEADER_FONT_SIZE + 10 + 5 * TEXT_FONT_SIZE;
     drawMenu(menu, TILE_SIZE * 3, menuYPos);
     EndDrawing();
+
+    
+ 
 }
 
 // Render game icons from map
@@ -216,6 +218,7 @@ void renderGame(Game* game) {
     EndDrawing();
 }
 
+
 void renderGameOver(Game* game, Menu menu) {
     SetWindowSize(TILE_SIZE * NUM_TILES_WIDTH, TILE_SIZE * NUM_TILES_HEIGHT);
 
@@ -232,4 +235,33 @@ void renderGameOver(Game* game, Menu menu) {
     drawMenu(menu, TILE_SIZE * 7, TILE_SIZE * 10);
     EndDrawing();
 }
+
+void renderScoreMenu(Game *game ,char *username , Menu menu) {
+
+    SetWindowSize(TILE_SIZE * NUM_TILES_WIDTH, TILE_SIZE * NUM_TILES_HEIGHT);
+
+    BeginDrawing();
+    ClearBackground(RAYWHITE);
+
+   DrawText("Fim de Jogo", TILE_SIZE * 3, TILE_SIZE * 3,
+             HEADER_FONT_SIZE, BLACK);
+
+    char pontuacao[40] = "";
+    snprintf(pontuacao, 40, "Sua pontuação: %d", game->score);
+    DrawText(pontuacao, TILE_SIZE * 3, TILE_SIZE * 5, TEXT_FONT_SIZE, BLACK);
+
+
+    DrawText("Parabéns! Sua pontuação está entre as 5 maiores.", TILE_SIZE * 3, TILE_SIZE * 8.5,
+      19, BLACK); 
+    DrawText("Digite seu username:", TILE_SIZE * 3, TILE_SIZE * 9.5,
+     TEXT_FONT_SIZE , BLACK); 
+    
+    DrawRectangleLines(TILE_SIZE * 3 , TILE_SIZE * 11, 360 , 30 , BLACK ); 
+    DrawText(username , (TILE_SIZE * 3) + 8 , (TILE_SIZE * 11) + 8, TEXT_FONT_SIZE, BLACK);
+
+    drawMenu(menu, TILE_SIZE * 3, TILE_SIZE * 13.5);
+    EndDrawing();
+    
+}
+
 void endGraphics() { CloseWindow(); }

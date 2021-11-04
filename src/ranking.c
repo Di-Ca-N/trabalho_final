@@ -2,6 +2,8 @@
 
 #include <stdio.h>  // fopen, fread, fwrite
 #include "raylib.h" // FileExists
+#include <limits.h>
+
 
 
 // Write ranking struct to file in disk
@@ -30,7 +32,7 @@ Ranking getRanking() {
     } else {
         // If the file does not exist, create an empty ranking
         for (int i = 0; i < 5; i++)
-            ranking.entries[i] = (RankingEntry){.username = "", .score = 0};
+            ranking.entries[i] = (RankingEntry){.username = "", .score = INT_MIN};
         // And save it to disk
         writeRanking(ranking);
     }
