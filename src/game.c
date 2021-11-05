@@ -324,12 +324,12 @@ void loadNextStage(Game *game) {
     game->level++;
 
     // Assemble path to the map file
-    char stage[30];
-    snprintf(stage, 30, "assets/stages/fase_%02d.txt", game->level);
+    char level_path[30];
+    snprintf(level_path, 30, "assets/stages/fase_%02d.txt", game->level);
 
     // If the map file exists, start a new stage
-    if (FileExists(stage)) {
-        game->map = loadMap(stage);
+    if (FileExists(level_path)) {
+        game->map = loadMap(level_path);
 
         // Reseting game state for the next level
         game->dave.gotTrophy = false;

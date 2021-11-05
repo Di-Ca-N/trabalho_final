@@ -21,8 +21,9 @@ void initGraphics() {
 void drawMenu(Menu menu, int xPos, int yPos) {
     // Loop to draw menu options
     for (int i = 0; i < menu.numOptions; i++) {
-        // Buffer to hold option text. Set to MAX_OPTION_LENGTH + 2 to
-        // account for extra characters added to the buffer on the "if" below
+        // Buffer to hold option text. Settled to MAX_OPTION_LENGTH + 2 
+        // to account for extra characters added to the buffer on the 
+        // "if" below
         char optionBuffer[MAX_OPTION_LENGTH + 2];
 
         // If the option being current redendered is the selected option
@@ -43,6 +44,7 @@ void drawMenu(Menu menu, int xPos, int yPos) {
 
 // Render the main menu scren
 void renderMainMenu(Menu menu) {
+    SetWindowSize(TILE_SIZE * NUM_TILES_WIDTH, TILE_SIZE * NUM_TILES_HEIGHT);
     // Start drawing
     BeginDrawing();
 
@@ -86,9 +88,6 @@ void renderRanking(Ranking ranking, Menu menu) {
     int menuYPos = TILE_SIZE * 3 + HEADER_FONT_SIZE + 10 + 5 * TEXT_FONT_SIZE;
     drawMenu(menu, TILE_SIZE * 3, menuYPos);
     EndDrawing();
-
-    
- 
 }
 
 // Render game icons from map
