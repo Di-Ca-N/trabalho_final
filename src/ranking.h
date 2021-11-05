@@ -7,6 +7,7 @@
 
 // ==== CONSTANTS ====
 #define MAX_USERNAME_LENGTH 15 // Maximum allowed username length on ranking
+#define RANKING_ENTRIES 5
 
 // ==== TYPES ====
 
@@ -18,7 +19,7 @@ typedef struct {
 
 // Represent the ranking itself
 typedef struct {
-    RankingEntry entries[5];
+    RankingEntry entries[RANKING_ENTRIES];
 } Ranking;
 
 // ==== FUNCTIONS ====

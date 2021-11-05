@@ -71,7 +71,7 @@ void renderRanking(Ranking ranking, Menu menu) {
 
     char rankingEntryBuffer[MAX_USERNAME_LENGTH + 12];
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < RANKING_ENTRIES; i++) {
         if (strlen(ranking.entries[i].username) == 0) {
             snprintf(rankingEntryBuffer, MAX_USERNAME_LENGTH + 12,
                      "%d. %10s", i + 1, "---");
@@ -85,7 +85,7 @@ void renderRanking(Ranking ranking, Menu menu) {
                  TILE_SIZE * 3 + HEADER_FONT_SIZE + 12 + i * TEXT_FONT_SIZE,
                  TEXT_FONT_SIZE, BLACK);
     }
-    int menuYPos = TILE_SIZE * 3 + HEADER_FONT_SIZE + 10 + 5 * TEXT_FONT_SIZE;
+    int menuYPos = TILE_SIZE * 3 + HEADER_FONT_SIZE + 10 + RANKING_ENTRIES * TEXT_FONT_SIZE;
     drawMenu(menu, TILE_SIZE * 3, menuYPos);
     EndDrawing();
 }
