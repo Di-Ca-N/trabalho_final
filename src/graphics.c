@@ -201,34 +201,37 @@ void renderGame(Game *game) {
 
     // Show current score on screen at top left corner
     char score[20];
-    snprintf(score, 20, "PONTUAÇÃO: %d", game->score);
+    snprintf(score, 20, "PONTOS: %d", game->score);
     DrawText(score, TILE_SIZE * 0.5, TILE_SIZE * 0.8, TEXT_MAP_SIZE, BLACK);
 
+    // Show remaining lives on screen
     char lifes[10];
     snprintf(lifes, 10, "VIDAS: %d", game->dave.lives);
-
-    // Show remaining lives on screen
-    DrawText(lifes, TILE_SIZE * 11, TILE_SIZE * 0.8, TEXT_MAP_SIZE, MAROON);
+    DrawText(lifes, TILE_SIZE * 9, TILE_SIZE * 0.8, TEXT_MAP_SIZE, MAROON);
 
     // Show current level on screen
     char level[15];
-    snprintf(level, 15, "NÍVEL: %d", game->level);
-    DrawText(level, TILE_SIZE * 16.5, TILE_SIZE * 0.8, TEXT_MAP_SIZE, BLACK);
+    snprintf(level, 16, "NÍVEL: %d", game->level);
+    DrawText(level, TILE_SIZE * 16, TILE_SIZE * 0.8, TEXT_MAP_SIZE, BLACK);
 
-    // Show message on screen if Dave collects the trophy
+    // Show icon on screen if Dave collects the trophy
     if (game->dave.gotTrophy) {
-        DrawText("TROFEU CONQUISTADO", TILE_SIZE * 35.0, TILE_SIZE * 0.8,
-                 TEXT_MAP_SIZE, BLACK);
+        Vector2 v7 = {22.5 * TILE_SIZE, 0.8 * TILE_SIZE};
+        Vector2 v8 = {22 * TILE_SIZE, 1.8 * TILE_SIZE};
+        Vector2 v9 = {23 * TILE_SIZE, 1.8 * TILE_SIZE};
+        DrawTriangle(v7, v8, v9, GOLD);
+        DrawText("Troféu", 23.5 * TILE_SIZE, 0.8 * TILE_SIZE, TEXT_MAP_SIZE, BLACK);
     }
+
     // Show message on screen if Dave acquires the jetpack
     if (game->dave.hasJetpack) {
-        DrawText("JETPACK ADQUIRIDO", TILE_SIZE * 52.0, TILE_SIZE * 0.8,
+        DrawText("Jetpack", TILE_SIZE * 30, TILE_SIZE * 0.8,
                  TEXT_MAP_SIZE, BLACK);
     }
     // Show message on screen if jetpack is active
     if (game->dave.flying) {
-        DrawText("JETPACK ATIVADO", TILE_SIZE * 67.0, TILE_SIZE * 0.8,
-                 TEXT_MAP_SIZE, BLACK);
+        DrawText("Jetpack", TILE_SIZE * 30, TILE_SIZE * 0.8,
+                 TEXT_MAP_SIZE, RED);
     }
 
     EndDrawing();
