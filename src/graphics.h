@@ -17,7 +17,7 @@
 #define HEADER_FONT_SIZE 30  // Font size of headers
 #define TEXT_FONT_SIZE 21    // Font size of text
 #define TEXT_MAP_SIZE 18     // Font size of text on the game screen
-
+#define TOP_BAR_TILES 2      // Number of tiles on the top bar
 
 // ==== FUNCTIONS ====
 void initGraphics();                            // Init graphics module
