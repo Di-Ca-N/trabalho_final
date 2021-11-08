@@ -90,8 +90,11 @@ void renderRanking(Ranking ranking, Menu menu) {
                  TEXT_FONT_SIZE, BLACK);
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
     int menuYPos = TILE_SIZE * 3 + HEADER_FONT_SIZE + 10 + RANKING_ENTRIES * TEXT_FONT_SIZE;
 =======
+=======
+>>>>>>> 493a7f53ae832c030e5734a2cb93b67afe3d797f
 
     int menuYPos = TILE_SIZE * 3 + HEADER_FONT_SIZE + 10 + 5 * TEXT_FONT_SIZE;
 >>>>>>> 493a7f5 (Support for 2D scrolling camera)
