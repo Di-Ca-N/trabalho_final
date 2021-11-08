@@ -28,16 +28,18 @@ typedef enum {
     STATE_LOAD_GAME,
     STATE_RANKING,
     STATE_GAME_OVER,
+    STATE_GAME_OVER_RECORD,
     STATE_EXIT,
     STATE_WAITING_NEW_GAME,
     STATE_WAITING_EXIT_GAME,
 } GameState;
 
 // Game screens prototypes
-int mainMenuScreen(Menu *menu);                  // Manage main menu screen
-int rankingScreen();                             // Manage ranking screen
-int gameScreen(Game *game, double lastTime);     // Manage game screen
-int gameOverScreen(char *username, Game *game);  // Manage game over screen
+int mainMenuScreen(Menu *menu);
+int rankingScreen();
+int gameScreen(Game *game, double lastTime);
+int gameOverScreen(Game *game);
+int gameOverRecordScreen(Game *game, char *username);
 int confirmationDialog(char *message, Menu *menu, GameState stateYes,
                        GameState stateNo);
 
@@ -48,8 +50,7 @@ int main() {
     char username[MAX_USERNAME_LENGTH] = "";  // Player's username
     int nextState;                            // Next game state
     Game game;                                // Current game instance
-    // Menus with persistent state. Start as the Main Menu
-    Menu menu = getMenu(MENU_MAIN);
+    Menu menu = getMenu(MENU_MAIN);           // Menus with persistent state
 
     // Init graphics module
     initGraphics();
@@ -109,12 +110,16 @@ int main() {
                 break;
 
             case STATE_GAME_OVER:
-                nextState = gameOverScreen(username, &game);
+                nextState = gameOverScreen(&game);
 
                 // Update the state if the next state is valid
                 if (nextState != 0) state = nextState;
+                break;
 
-                if (state == STATE_MENU) menu = getMenu(MENU_MAIN);
+            case STATE_GAME_OVER_RECORD:
+                nextState = gameOverRecordScreen(&game, username);
+                // Update the state if the next state is valid
+                if (nextState != 0) state = nextState;
                 break;
 
             case STATE_WAITING_NEW_GAME:
@@ -125,6 +130,7 @@ int main() {
                 // Update the state if the next state is valid
                 if (nextState) state = nextState;
 
+                // If going back to the playing state, reset Dave speeds
                 if (state == STATE_PLAYING) {
                     game.dave.speed.x = 0;
                     game.dave.speed.y = 0;
@@ -139,8 +145,10 @@ int main() {
                 // Update the state if the next state is valid
                 if (nextState) state = nextState;
 
+                // If going back to the menu state, reset main menu
                 if (state == STATE_MENU) menu = getMenu(MENU_MAIN);
 
+                // If going back to the playing state, reset Dave speeds
                 if (state == STATE_PLAYING) {
                     game.dave.speed.x = 0;
                     game.dave.speed.y = 0;
@@ -250,14 +258,49 @@ int gameScreen(Game *game, double timeDelta) {
     updateGame(game, timeDelta);
 
     // Game events
-    if (game->gameOver) return STATE_GAME_OVER;
+    if (game->gameOver) {
+        Ranking ranking = getRanking();
+        if (game->score > ranking.entries[RANKING_ENTRIES - 1].score) {
+            return STATE_GAME_OVER_RECORD;
+        }
+        return STATE_GAME_OVER;
+    }
     if (game->nextStage) loadNextStage(game);
 
     return 0;
 }
 
-void gameOverRecord(Game *game, char* username, Menu *menu) {
-    renderScoreMenu(game, username, *menu);
+/**
+ * Manage the game over screen
+ *
+ * Arguments:
+ *     game (Game*): pointer to the game which ended
+ */
+int gameOverScreen(Game *game) {
+    Menu menu = getMenu(MENU_OK);
+    renderGameOver(game, menu);
+
+    if (IsKeyPressed(KEY_ENTER)) {
+        menu = updateMenu(menu, ACTION_YES);
+    }
+
+    if (menu.selectionDone) {
+        return STATE_RANKING;
+    }
+
+    return 0;
+}
+
+/**
+ * Manage the game over screen when a record occurs
+ *
+ * Arguments:
+ *     game (Game*): pointer to the game which ended
+ *     username (char*): pointer to the username string
+ */
+int gameOverRecordScreen(Game *game, char *username) {
+    Menu menu = getMenu(MENU_OK);
+    renderScoreMenu(game, username, menu);
 
     int letterCount = strlen(username);
     int key = GetCharPressed();
@@ -280,40 +323,31 @@ void gameOverRecord(Game *game, char* username, Menu *menu) {
     }
 
     if (IsKeyPressed(KEY_ENTER) && letterCount) {
-        *menu = updateMenu(*menu, ACTION_YES);
+        menu = updateMenu(menu, ACTION_YES);
         RankingEntry Entry;
         Entry.score = game->score;
         strcpy(Entry.username, username);
         saveOnRanking(Entry);
         strcpy(username, "");
     }
-}
-
-void gameOver(Game *game, Menu *menu) {
-    renderGameOver(game, *menu);
-
-    if (IsKeyPressed(KEY_ENTER)) {
-        *menu = updateMenu(*menu, ACTION_YES);
-    }
-}
-
-int gameOverScreen(char *username, Game *game) {
-    Menu menu = getMenu(MENU_OK);
-    Ranking ranking = getRanking();
-
-    if (game->score > ranking.entries[4].score) {
-        gameOverRecord(game, username, &menu);
-    } else {
-        gameOver(game, &menu);
-    }
 
     if (menu.selectionDone) {
         return STATE_RANKING;
     }
-
     return 0;
 }
 
+/**
+ * Manage overlay confirmation dialogs, using an yes/no menu. If the
+ * confirmation happens, return the first state passed as argument.
+ * Otherwise, return the second state.
+ *
+ * Arguments:
+ *     message (char*): Message to display on dialog
+ *     menu (Menu*): Yes-no menu to display and manage
+ *     yesState (GameState): State to return if the yes is selected
+ *     noState (GameState): State to return if the no is selected
+ */
 int confirmationDialog(char *message, Menu *menu, GameState stateYes,
                        GameState stateNo) {
     drawConfirmationDialog(message, *menu);
@@ -324,11 +358,10 @@ int confirmationDialog(char *message, Menu *menu, GameState stateYes,
     if (IsKeyPressed(KEY_ENTER)) *menu = updateMenu(*menu, ACTION_YES);
 
     if (menu->selectionDone) {
-        if (menu->selectedOption == 0) {
+        if (menu->selectedOption == 0)
             return stateYes;
-        } else {
+        else
             return stateNo;
-        }
     }
     return 0;
 }

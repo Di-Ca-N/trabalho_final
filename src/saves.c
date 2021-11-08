@@ -2,14 +2,21 @@
 
 #include <stdio.h>
 
+int saveExists() {
+    return FileExists(SAVE_PATH);
+}
+
 // Load a game save from disk
 Game loadGame() {
-    // If save does not exist, load a new game
-    if (!FileExists(SAVE_PATH)) {
-        return newGame();
-    }
     // Load save file
     FILE *saveFile = fopen(SAVE_PATH, "rb");
+
+    // If the save file can't be open, create and return a new game
+    if (saveFile == NULL) {
+        printf("Cannot open save file. Creating a new game\n");
+        return newGame();;
+    }
+
     Game game;
 
     // Read file and put data into game variable
@@ -30,6 +37,11 @@ void saveGame(Game game) {
 
     // Open save file
     FILE *saveFile = fopen(SAVE_PATH, "wb");
+
+    if (saveFile == NULL) {
+        printf("Cannot save game\n");
+        return;
+    }
 
     // Write game to file
     fwrite(&game, sizeof(Game), 1, saveFile);

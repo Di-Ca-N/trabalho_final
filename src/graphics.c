@@ -242,7 +242,7 @@ void renderScoreMenu(Game *game ,char *username , Menu menu) {
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-   DrawText("Fim de Jogo", TILE_SIZE * 3, TILE_SIZE * 3,
+    DrawText("Fim de Jogo", TILE_SIZE * 3, TILE_SIZE * 3,
              HEADER_FONT_SIZE, BLACK);
 
     char pontuacao[40] = "";
