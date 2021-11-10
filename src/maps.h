@@ -26,9 +26,9 @@
 
 // ==== TYPES ====
 
-// Internal map representation
+// Map representation
 typedef struct{
-    // Matrix map representation
+    // Stage matrix
     char stage[MAX_MAP_HEIGHT][MAX_MAP_WIDTH];
 
     // Dave starting position
