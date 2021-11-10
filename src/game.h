@@ -38,21 +38,20 @@ typedef struct {
     Dave dave;
     Map map;
 
-    // Game over flag
+    // Indicate game over
     bool gameOver;
-
-    // Next level flag
-
-    bool nextStage;
 
     // Current player score
     int score;
 
     // Current level number
     int level;
+
+    // Indicate when to load the next level
+    bool nextStage;
 } Game;
 
-    
+
 // Recognized game actions. Defined to decouple input 
 // from game actions
 typedef enum {
