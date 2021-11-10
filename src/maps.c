@@ -4,55 +4,49 @@
 #include <stdlib.h>
 
 // Loading a map from disk
-Map loadMap(char *filename)  
-{
+Map loadMap(char *filename) {
     Map newMap;
     FILE *file;
     file = fopen(filename, "r");
-    if (file == NULL)
-    {    // Error message - Load failed
-        printf("Load failed\n");  
+    if (file == NULL) {
+        // Error message - Load failed
+        printf("Load failed\n");
         getchar();
         exit(0);
     }
 
-    char mapa[2];
-
     int l = 0, c = 0;
     // Reading map informations
-    while (fgets(mapa, 2, file) != NULL)  
-    {
+    while (!feof(file)) {
+        char chr = getc(file);
 
-        if (mapa[0] == 'D')
-        {  
-         // Dave starting position - line (l) and columm (c)
-            newMap.daveStart[0] = l;
-            newMap.daveStart[1] = c;
-            newMap.stage[l][c] = ' ';
-        }
-        else if (mapa[0] != '\n')
-        {                                
-            newMap.stage[l][c] = mapa[0]; 
-        }
+        if (chr != EOF) {
+            if (chr == 'D') {
+                // Dave starting position - line (l) and columm (c)
+                newMap.daveStart[0] = l;
+                newMap.daveStart[1] = c;
+                newMap.stage[l][c] = ' ';
+            } else if (chr != '\n') {
+                newMap.stage[l][c] = chr;
+            }
 
-        if (mapa[0] == '\n')
-        {
-            l++;
-            c = 0;
-        }
-        else
-        {
-            c++;
+            if (chr == '\n') {
+                l++;
+                c = 0;
+            } else {
+                c++;
+            }
         }
     }
+
     // Actual Map width (part of Max Supported map height)
-    newMap.width = c; 
+    newMap.width = c;
     // Actual Map height (part of Max Supported map width)
-    newMap.height = l + 1; 
+    newMap.height = l + 1;
 
     fclose(file);
 
-    return newMap; 
+    return newMap;
 }
 
 /**
@@ -68,7 +62,7 @@ char getStagePosition(Map *map, float x, float y) {
 }
 
 /**
- * Set the character located on some position of the stage to a new 
+ * Set the character located on some position of the stage to a new
  * value
  *
  * Arguments:
