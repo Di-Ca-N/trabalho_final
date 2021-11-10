@@ -17,7 +17,7 @@ Game newGame() {
     // Dave starting representation
     Dave dave = {
         .position = {map.daveStart[1], map.daveStart[0]},
-        .speed = {0, 0},
+        .velocity = {0, 0},
 
         .lives = 3,
 
@@ -53,47 +53,47 @@ void handleAction(Game *game, Action action) {
     switch (action) {
         case ACTION_RIGHT:
             if (game->dave.flying) {
-                game->dave.speed.x = FLYING_SPEED;
+                game->dave.velocity.x = FLYING_SPEED;
             } else {
-                game->dave.speed.x = WALKING_X_SPEED;
+                game->dave.velocity.x = WALKING_X_SPEED;
             }
             break;
         case ACTION_LEFT:
             if (game->dave.flying) {
-                game->dave.speed.x = -FLYING_SPEED;
+                game->dave.velocity.x = -FLYING_SPEED;
             } else {
-                game->dave.speed.x = -WALKING_X_SPEED;
+                game->dave.velocity.x = -WALKING_X_SPEED;
             }
             break;
         case ACTION_RELEASE_RIGHT:
         case ACTION_RELEASE_LEFT:
-            game->dave.speed.x = 0;
+            game->dave.velocity.x = 0;
             break;
         case ACTION_UP:
             if (!game->dave.flying) {
                 if (!game->dave.jumping) {
-                    game->dave.speed.y = -JUMP_INITIAL_SPEED;
+                    game->dave.velocity.y = -JUMP_INITIAL_SPEED;
                     game->dave.jumping = true;
                 }
             } else {
-                game->dave.speed.y = -FLYING_SPEED;
+                game->dave.velocity.y = -FLYING_SPEED;
             }
             break;
         case ACTION_SPACE:
             if (game->dave.hasJetpack) {
                 game->dave.flying = !game->dave.flying;
-                game->dave.speed.y = 0;
+                game->dave.velocity.y = 0;
             }
             break;
         case ACTION_DOWN:
             if (game->dave.flying) {
-                game->dave.speed.y = FLYING_SPEED;
+                game->dave.velocity.y = FLYING_SPEED;
             }
             break;
         case ACTION_RELEASE_UP:
         case ACTION_RELEASE_DOWN:
             if (game->dave.flying) {
-                game->dave.speed.y = 0;
+                game->dave.velocity.y = 0;
             }
             break;
         default:
@@ -124,8 +124,8 @@ static void moveDave(Game *game, double timeDelta) {
     // Dave X Position Update
 
     // Indicate whether Dave is movind to the right
-    int goingRight = game->dave.speed.x > 0;
-    float dx = game->dave.speed.x * timeDelta;
+    int goingRight = game->dave.velocity.x > 0;
+    float dx = game->dave.velocity.x * timeDelta;
 
     float nextX = game->dave.position.x + dx + goingRight;
     float currentY = game->dave.position.y;
@@ -139,7 +139,7 @@ static void moveDave(Game *game, double timeDelta) {
 
     if (next_position_x != WALL && next_position_x_forward != WALL) {
         // If neither position is a wall, update Dave x position
-        game->dave.position.x += game->dave.speed.x * timeDelta;
+        game->dave.position.x += game->dave.velocity.x * timeDelta;
     } else {
         // Otherwise, correct Dave position in relation to the wall,
         // based on its current movement direction
@@ -155,9 +155,9 @@ static void moveDave(Game *game, double timeDelta) {
     }
 
     // Dave Y position update
-    int goingDown = game->dave.speed.y > 0;
+    int goingDown = game->dave.velocity.y > 0;
 
-    float dy = game->dave.speed.y * timeDelta;
+    float dy = game->dave.velocity.y * timeDelta;
     float nextY = game->dave.position.y + dy + goingDown;
     float currentX = game->dave.position.x;
     float xCeil = ceil(game->dave.position.x);
@@ -171,7 +171,7 @@ static void moveDave(Game *game, double timeDelta) {
     // If there is no wall on Dave's path on the Y axis
     if (next_position_y != WALL && next_position_y_r != WALL) {
         // Update Dave Y pos
-        game->dave.position.y += game->dave.speed.y * timeDelta;
+        game->dave.position.y += game->dave.velocity.y * timeDelta;
     } else {
         // If there is a wall, corrects Dave Y position
         if (goingDown) {
@@ -191,15 +191,15 @@ static void moveDave(Game *game, double timeDelta) {
 
     // If there is a wall below Dave
     if (stop_y_below == WALL || stop_y_below_r == WALL) {
-        // Y speed becomes zero
-        game->dave.speed.y = 0;
+        // Y velocity becomes zero
+        game->dave.velocity.y = 0;
         // Reset jump flag (so Dave can jump again)
         game->dave.jumping = false;
     }
 
     // Apply gravity
     if (!game->dave.flying) {
-        game->dave.speed.y += GRAVITY * timeDelta;
+        game->dave.velocity.y += GRAVITY * timeDelta;
     }
 }
 
@@ -337,8 +337,8 @@ void loadNextStage(Game *game) {
         game->dave.flying = false;
         game->dave.position.x = game->map.daveStart[1];
         game->dave.position.y = game->map.daveStart[0];
-        game->dave.speed.x = 0;
-        game->dave.speed.y = 0;
+        game->dave.velocity.x = 0;
+        game->dave.velocity.y = 0;
         game->nextStage = false;
     } else {
         // Otherwise, there is no more levels and the game is over

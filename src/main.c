@@ -132,8 +132,8 @@ int main() {
 
                 // If going back to the playing state, reset Dave speeds
                 if (state == STATE_PLAYING) {
-                    game.dave.speed.x = 0;
-                    game.dave.speed.y = 0;
+                    game.dave.velocity.x = 0;
+                    game.dave.velocity.y = 0;
                 }
                 break;
 
@@ -150,8 +150,8 @@ int main() {
 
                 // If going back to the playing state, reset Dave speeds
                 if (state == STATE_PLAYING) {
-                    game.dave.speed.x = 0;
-                    game.dave.speed.y = 0;
+                    game.dave.velocity.x = 0;
+                    game.dave.velocity.y = 0;
                 }
 
                 break;

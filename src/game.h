@@ -20,9 +20,9 @@
 typedef struct {
     // Dave position and speed
     Vector2 position;
-    Vector2 speed;
+    Vector2 velocity;
 
-    // Remaining Dave lives
+    // Remaining lives
     int lives;
 
     // State flags
@@ -30,7 +30,6 @@ typedef struct {
     bool flying;
     bool gotTrophy;
     bool hasJetpack;
-
 } Dave;
 
 // Game representation

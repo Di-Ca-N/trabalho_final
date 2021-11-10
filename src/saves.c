@@ -30,10 +30,10 @@ Game loadGame() {
 
 // Save a game to the disk
 void saveGame(Game game) {
-    // Reset Dave speed before save. The speeds must be recalculated
+    // Reset Dave velocity before save. The speeds must be recalculated
     // every time the game is loaded
-    game.dave.speed.x = 0;
-    game.dave.speed.y = 0;
+    game.dave.velocity.x = 0;
+    game.dave.velocity.y = 0;
 
     // Open save file
     FILE *saveFile = fopen(SAVE_PATH, "wb");
