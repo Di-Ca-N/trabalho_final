@@ -37,7 +37,7 @@ typedef enum {
 // Game screens prototypes
 int mainMenuScreen(Menu *menu);
 int rankingScreen();
-int gameScreen(Game *game, double lastTime);
+int gameScreen(Game *game, double lastTime, SpriteSheet *spriteSheet);
 int gameOverScreen(Game *game);
 int gameOverRecordScreen(Game *game, char *username);
 int confirmationDialog(char *message, Menu *menu, GameState stateYes,
@@ -51,9 +51,9 @@ int main() {
     int nextState;                            // Next game state
     Game game;                                // Current game instance
     Menu menu = getMenu(MENU_MAIN);           // Menus with persistent state
-
+    SpriteSheet spriteSheet;
     // Init graphics module
-    initGraphics();
+    initGraphics(&spriteSheet);
 
     // Main game loop
     while (running && !WindowShouldClose()) {
@@ -86,7 +86,7 @@ int main() {
             // Playing
             case STATE_PLAYING:
                 // Run the game screen
-                nextState = gameScreen(&game, GetFrameTime());
+                nextState = gameScreen(&game, GetFrameTime(), &spriteSheet);
 
                 // Update the state if the next state is valid
                 if (nextState != 0) state = nextState;
@@ -128,8 +128,11 @@ int main() {
                                        STATE_NEW_GAME, STATE_PLAYING);
 
                 // Update the state if the next state is valid
-                if (nextState) state = nextState;
-
+                if (nextState) {
+                    state = nextState;
+                    // Reset the menu back to the main
+                    menu = getMenu(MENU_MAIN);
+                }
                 // If going back to the playing state, reset Dave speeds
                 if (state == STATE_PLAYING) {
                     game.dave.velocity.x = 0;
@@ -143,10 +146,11 @@ int main() {
                                        STATE_MENU, STATE_PLAYING);
 
                 // Update the state if the next state is valid
-                if (nextState) state = nextState;
-
-                // If going back to the menu state, reset main menu
-                if (state == STATE_MENU) menu = getMenu(MENU_MAIN);
+                if (nextState) {
+                    state = nextState;
+                    // Reset the menu back to the main
+                    menu = getMenu(MENU_MAIN);
+                }
 
                 // If going back to the playing state, reset Dave speeds
                 if (state == STATE_PLAYING) {
@@ -159,7 +163,7 @@ int main() {
     }
 
     // Tear down graphics module
-    endGraphics();
+    endGraphics(&spriteSheet);
 
     return 0;
 }
@@ -234,9 +238,9 @@ int rankingScreen() {
  *     game (Game*): Pointer to the current game to be managed
  *     timeDelta (double): Time elapsed since last update
  */
-int gameScreen(Game *game, double timeDelta) {
+int gameScreen(Game *game, double timeDelta, SpriteSheet *spriteSheet) {
     // Draw game on the screen
-    renderGame(game);
+    renderGame(game, spriteSheet);
 
     // Movement actions
     if (IsKeyDown(KEY_RIGHT)) handleAction(game, ACTION_RIGHT);

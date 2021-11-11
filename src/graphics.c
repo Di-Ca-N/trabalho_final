@@ -9,11 +9,25 @@
 static Camera2D getCamera(Game *game);
 static void drawMenu(Menu menu, int xPos, int yPos);
 
-void initGraphics() {
+void initGraphics(SpriteSheet* spriteSheet) {
     // Init game window
     InitWindow(TILE_SIZE * NUM_TILES_WIDTH, 
                TILE_SIZE * NUM_TILES_HEIGHT,
                "Dangerous Dave");
+
+    spriteSheet->wall = LoadTexture("assets/sprites/wall.png");
+    spriteSheet->dave = LoadTexture("assets/sprites/dave.png");
+    spriteSheet->daveFlying = LoadTexture("assets/sprites/dave_flying.png");
+    spriteSheet->crown = LoadTexture("assets/sprites/crown.png");
+    spriteSheet->gem = LoadTexture("assets/sprites/gem.png");
+    spriteSheet->gem2 = LoadTexture("assets/sprites/gem2.png");
+    spriteSheet->ring = LoadTexture("assets/sprites/ring.png");
+    spriteSheet->trophy = LoadTexture("assets/sprites/trophy.png");
+    spriteSheet->door = LoadTexture("assets/sprites/door.png");
+    spriteSheet->doorClosed = LoadTexture("assets/sprites/door_closed.png");
+    spriteSheet->water = LoadTexture("assets/sprites/water.png");
+    spriteSheet->fire = LoadTexture("assets/sprites/fire.png");
+    spriteSheet->jetpack = LoadTexture("assets/sprites/hat.png");
 
     // Set game to run at 60 fps
     SetTargetFPS(60);
@@ -97,7 +111,7 @@ void renderRanking(Ranking ranking, Menu menu) {
 }
 
 // Render game icons from map
-void renderGame(Game *game) {
+void renderGame(Game *game, SpriteSheet *spriteSheet) {
     // Get the current game camera
     Camera2D camera = getCamera(game);
 
@@ -107,95 +121,85 @@ void renderGame(Game *game) {
     // Start 2D camera context
     BeginMode2D(camera);
 
-    // Drawing map and Dave
+    // Loop to draw current stage
     for (int row = 0; row < game->map.height; row++) {
         for (int col = 0; col < game->map.width; col++) {
+            // X and Y screen positions of the current tile
+            int xPos = col * TILE_SIZE;
+            int yPos = row * TILE_SIZE;
+            
+            // Drawing background tile
+            DrawTexture(spriteSheet->wall, xPos, yPos, DARKBROWN);
+
+            // Drawing game objects
             switch (game->map.stage[row][col]) {
                 case WALL:
-                    // Render walls
-                    DrawRectangle(col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE,
-                                  TILE_SIZE, GREEN);
+                    DrawTexture(spriteSheet->wall, xPos, yPos, WHITE);
                     break;
                 case CROWN:
-                    // Render crown
-                    DrawCircle(col * TILE_SIZE + (TILE_SIZE / 2),
-                               row * TILE_SIZE + (TILE_SIZE / 2),
-                               (TILE_SIZE / 2), YELLOW);
+                    DrawTexture(spriteSheet->crown, xPos, yPos, WHITE);
                     break;
-                case RUBY: {
-                    // Render ruby
-
-                    Vector2 v1 = {col * TILE_SIZE, row * TILE_SIZE};
-                    Vector2 v2 = {(col - 0.4) * TILE_SIZE,
-                                  (row + 1) * TILE_SIZE};
-                    Vector2 v3 = {(col + 0.4) * TILE_SIZE,
-                                  (row + 1) * TILE_SIZE};
-
-                    DrawTriangle(v1, v2, v3, DARKGREEN);
+                case RUBY:
+                    DrawTexture(spriteSheet->gem, xPos, yPos, RED);
                     break;
-                }
                 case AMETHYST:
-                    // Render amethyst gem
-                    DrawEllipse((col + .5) * TILE_SIZE, (row + .5) * TILE_SIZE,
-                                (TILE_SIZE / 2), (TILE_SIZE / 3), PURPLE);
+                    DrawTexture(spriteSheet->gem, xPos, yPos, PURPLE);
                     break;
-                case SAPHIRE: {
-                    // Render saphire gem
-
-                    Vector2 v4 = {(col + 0.25) * TILE_SIZE, row * TILE_SIZE};
-                    Vector2 v5 = {col * TILE_SIZE, (row + 1) * TILE_SIZE};
-                    Vector2 v6 = {(col + 0.5) * TILE_SIZE,
-                                  (row + 1) * TILE_SIZE};
-
-                    DrawTriangle(v4, v5, v6, DARKBLUE);
+                case SAPHIRE:
+                    DrawTexture(spriteSheet->gem2, xPos, yPos, DARKBLUE);
                     break;
-                }
                 case RING:
-                    // Render ring
-                    DrawCircle(col * TILE_SIZE + (TILE_SIZE / 2.5),
-                               row * TILE_SIZE + (TILE_SIZE / 3),
-                               (TILE_SIZE / 2.5), GRAY);
+                    DrawTexture(spriteSheet->ring, xPos, yPos, WHITE);
                     break;
                 case DOOR:
-                    // Render door
-                    DrawRectangle(col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE,
-                                  TILE_SIZE, BROWN);
+                    DrawTexture(spriteSheet->door, xPos, yPos, WHITE);
                     break;
                 case WATER:
-                    // Render water
-                    DrawRectangle(col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE,
-                                  TILE_SIZE, SKYBLUE);
+                    DrawTexture(spriteSheet->water, xPos, yPos, WHITE);
                     break;
                 case FIRE:
-                    // Render fire
-                    DrawRectangle(col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE,
-                                  TILE_SIZE, RED);
-
+                    DrawTexture(spriteSheet->fire, xPos, yPos, WHITE);
                     break;
                 case JETPACK:
-                    // Render jetpack
-                    DrawRectangle(col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE,
-                                  TILE_SIZE, ORANGE);
+                    DrawTexture(spriteSheet->jetpack, xPos, yPos, WHITE);
                     break;
-                case TROPHY: {
-                    // Render trophy
-
-                    Vector2 v7 = {(col + 0.5) * TILE_SIZE, (row)*TILE_SIZE};
-                    Vector2 v8 = {col * TILE_SIZE, (row + 1) * TILE_SIZE};
-                    Vector2 v9 = {(col + 1.0) * TILE_SIZE,
-                                  (row + 1) * TILE_SIZE};
-                    DrawTriangle(v7, v8, v9, GOLD);
-                }
+                case TROPHY:
+                    DrawTexture(spriteSheet->trophy, xPos, yPos, GOLD);
+                    break;
             }
         }
     }
 
-    DrawRectangle(game->dave.position.x * TILE_SIZE,
-                  game->dave.position.y * TILE_SIZE, TILE_SIZE, TILE_SIZE,
-                  BLUE);
+    // Dave Sprite selection
+    Texture2D daveSprite;
+    Rectangle spriteRect;
+    
+    // Dave have different sprite sheets for walking and flying
+    if (game->dave.flying)
+        daveSprite = spriteSheet->daveFlying;
+    else
+        daveSprite = spriteSheet->dave;
+
+    // Choses sprite of the Dave's sheets according to its velocity
+    if (game->dave.velocity.x > 0)
+        spriteRect = (Rectangle){32, 32, 16, 16};
+    else if (game->dave.velocity.x < 0)
+        spriteRect = (Rectangle){32, 16, 16, 16};
+    else
+        spriteRect = (Rectangle){16, 0, 16, 16};
+
+    // Drawing Dave's sprite
+    Vector2 davePosition = {
+        game->dave.position.x * TILE_SIZE, 
+        game->dave.position.y * TILE_SIZE
+    };
+    DrawTextureRec(daveSprite, spriteRect, davePosition, WHITE);
+
     // Ending 2D camera context
     EndMode2D();
 
+    // Drawing of the top bar. It is drawn after the stage to ensure that
+    // it is always visible on the screen
     DrawRectangle(0, 0, TILE_SIZE * NUM_TILES_WIDTH, TILE_SIZE * TOP_BAR_TILES,
                   LIGHTGRAY);
 
@@ -216,10 +220,7 @@ void renderGame(Game *game) {
 
     // Show icon on screen if Dave collects the trophy
     if (game->dave.gotTrophy) {
-        Vector2 v7 = {22.5 * TILE_SIZE, 0.8 * TILE_SIZE};
-        Vector2 v8 = {22 * TILE_SIZE, 1.8 * TILE_SIZE};
-        Vector2 v9 = {23 * TILE_SIZE, 1.8 * TILE_SIZE};
-        DrawTriangle(v7, v8, v9, GOLD);
+        DrawTexture(spriteSheet->trophy, 22 * TILE_SIZE, 0.8 * TILE_SIZE, GOLD);
         DrawText("Troféu", 23.5 * TILE_SIZE, 0.8 * TILE_SIZE, TEXT_MAP_SIZE, BLACK);
     }
 
@@ -261,7 +262,7 @@ Camera2D getCamera(Game *game) {
     // Camera with no rotation
     camera.rotation = 0;
     // Camera zoom
-    camera.zoom = 1.3;
+    camera.zoom = 2;
 
     // Map extreme coordinates
     Vector2 topLeft = {0, 0};
@@ -337,14 +338,22 @@ void renderScoreMenu(Game *game, char *username, Menu menu) {
     EndDrawing();
 }
 
-void drawConfirmationDialog(char *message, Menu menu) {
+/**
+ * Draw a confirmation dialog at the center of the screen
+ * 
+ * Arguments:
+ *     message (char*): message to be displayed
+ *     menu (Menu): menu to be displayed inside the dialog
+ */
+void drawConfirmationDialog(char* message, Menu menu) {
+    // Calculating dialog position
     int height = GetScreenHeight();
     int width = GetScreenWidth();
     int centerHeight = height / 2;
     int centerWidth = width / 2;
-
     Rectangle dialogBox = {centerWidth - 175, centerHeight - 75, 350, 150};
 
+    // Dialog drawing
     BeginDrawing();
     DrawRectangle(dialogBox.x, dialogBox.y, dialogBox.width, dialogBox.height,
                   LIGHTGRAY);
@@ -354,4 +363,27 @@ void drawConfirmationDialog(char *message, Menu menu) {
     EndDrawing();
 }
 
-void endGraphics() { CloseWindow(); }
+/**
+ * Tear down and close the graphic resources
+ * 
+ * Arguments:
+ *     spriteSheet (SpriteSheet*): sprite sheet to be unloaded
+ */
+void endGraphics(SpriteSheet* spriteSheet) {
+    // Unloading all textures
+    UnloadTexture(spriteSheet->wall);
+    UnloadTexture(spriteSheet->dave);
+    UnloadTexture(spriteSheet->crown);
+    UnloadTexture(spriteSheet->ring);
+    UnloadTexture(spriteSheet->gem);
+    UnloadTexture(spriteSheet->gem2);
+    UnloadTexture(spriteSheet->door);
+    UnloadTexture(spriteSheet->doorClosed);
+    UnloadTexture(spriteSheet->water);
+    UnloadTexture(spriteSheet->fire);
+    UnloadTexture(spriteSheet->daveFlying);
+    UnloadTexture(spriteSheet->jetpack);
+
+    // Closing window
+    CloseWindow(); 
+}

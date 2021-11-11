@@ -10,6 +10,24 @@
 #include "ranking.h"
 #include "menus.h"
 
+// ==== TYPES ====
+
+typedef struct {
+    Texture2D wall;
+    Texture2D dave;
+    Texture2D daveFlying;
+    Texture2D crown;
+    Texture2D gem;
+    Texture2D gem2;
+    Texture2D ring;
+    Texture2D trophy;
+    Texture2D door;
+    Texture2D doorClosed;
+    Texture2D fire;
+    Texture2D water;
+    Texture2D jetpack;
+} SpriteSheet;
+
 // ==== CONSTANTS ====
 #define TILE_SIZE 16         // Size (in pixels) of a single game tile
 #define NUM_TILES_HEIGHT 20  // Number of tiles in the height of the window
@@ -20,9 +38,9 @@
 #define TOP_BAR_TILES 2      // Number of tiles on the top bar
 
 // ==== FUNCTIONS ====
-void initGraphics();                            // Init graphics module
-void endGraphics();                             // Tear down graphics
-void renderGame(Game* game);                    // Draw the game
+void initGraphics(SpriteSheet* spriteSheet);    // Init graphics module
+void endGraphics(SpriteSheet* SpriteSheet);     // Tear down graphics
+void renderGame(Game* game, SpriteSheet* spriteSheet); // Draw the game
 void renderMainMenu(Menu menu);                 // Draw the main menu
 void renderRanking(Ranking ranking, Menu menu); // Draw the ranking
 void renderGameOver(Game* game, Menu menu);     // Draw the game over screen
