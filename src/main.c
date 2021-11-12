@@ -11,10 +11,12 @@
  * Estudantes: Diego Cardoso Nunes, Enzo Sergi Berquo Xavier
  */
 
+#include <stdio.h>
 #include <string.h>
 
 #include "game.h"
 #include "graphics.h"
+#include "maps.h"
 #include "menus.h"
 #include "ranking.h"
 #include "raylib.h"
@@ -45,8 +47,8 @@ int confirmationDialog(char *message, Menu *menu, GameState stateYes,
 
 int main() {
     // === Initial state variables ===
-    GameState state = STATE_MENU;  // Current game state
-    bool running = true;           // Indicate wether the game is running
+    GameState state = STATE_MENU;             // Current game state
+    bool running = true;                      // Indicate wether the game is running
     char username[MAX_USERNAME_LENGTH] = "";  // Player's username
     int nextState;                            // Next game state
     Game game;                                // Current game instance
@@ -73,7 +75,8 @@ int main() {
 
             // New game
             case STATE_NEW_GAME:
-                game = newGame();
+                // Create a game with the first map
+                game = newGame(loadMap("assets/stages/fase_01.txt"));
                 state = STATE_PLAYING;
                 break;
 
@@ -133,10 +136,9 @@ int main() {
                     // Reset the menu back to the main
                     menu = getMenu(MENU_MAIN);
                 }
-                // If going back to the playing state, reset Dave speeds
+                // If going back to the playing state, reset actions
                 if (state == STATE_PLAYING) {
-                    game.dave.velocity.x = 0;
-                    game.dave.velocity.y = 0;
+                    releaseAllActions(&game);
                 }
                 break;
 
@@ -152,10 +154,9 @@ int main() {
                     menu = getMenu(MENU_MAIN);
                 }
 
-                // If going back to the playing state, reset Dave speeds
+                // If going back to the playing state, reset actions
                 if (state == STATE_PLAYING) {
-                    game.dave.velocity.x = 0;
-                    game.dave.velocity.y = 0;
+                    releaseAllActions(&game);
                 }
 
                 break;
@@ -269,8 +270,18 @@ int gameScreen(Game *game, double timeDelta, SpriteSheet *spriteSheet) {
         }
         return STATE_GAME_OVER;
     }
-    if (game->nextStage) loadNextStage(game);
 
+    if (game->nextStage) {
+        char level_path[30];
+        snprintf(level_path, 30, "assets/stages/fase_%02d.txt", game->level);
+
+        if (FileExists(level_path)) {
+            Map map = loadMap(level_path);
+            loadNextStage(game, map);
+        } else {
+            game->gameOver = true;
+        }
+    }
     return 0;
 }
 

@@ -21,8 +21,8 @@ Map loadMap(char *filename) {
         char chr = getc(file);
 
         if (chr != EOF) {
-            if (chr == 'D') {
-                // Dave starting position - line (l) and columm (c)
+            if (chr == DAVE) {
+                // Dave starting position - line (l) and column (c)
                 newMap.daveStart[0] = l;
                 newMap.daveStart[1] = c;
                 newMap.stage[l][c] = ' ';

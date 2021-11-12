@@ -87,21 +87,24 @@ void renderRanking(Ranking ranking, Menu menu) {
 
     DrawText("Ranking", TILE_SIZE * 3, TILE_SIZE * 3, HEADER_FONT_SIZE, BLACK);
 
-    char rankingEntryBuffer[MAX_USERNAME_LENGTH + 12];
-
     for (int i = 0; i < RANKING_ENTRIES; i++) {
-        if (strlen(ranking.entries[i].username) == 0) {
-            snprintf(rankingEntryBuffer, MAX_USERNAME_LENGTH + 12, "%d. %-15s",
-                     i + 1, "---");
-        } else {
-            snprintf(rankingEntryBuffer, MAX_USERNAME_LENGTH + 12,
-                     "%d. %-15s %5d", i + 1, ranking.entries[i].username,
-                     ranking.entries[i].score);
-        }
+        int yPos = TILE_SIZE * 3 + HEADER_FONT_SIZE + 6 + i * TEXT_FONT_SIZE;
+        char pos[3];
+        snprintf(pos, sizeof(pos), "%d.", i + 1);
 
-        DrawText(rankingEntryBuffer, TILE_SIZE * 3,
-                 TILE_SIZE * 3 + HEADER_FONT_SIZE + 12 + i * TEXT_FONT_SIZE,
-                 TEXT_FONT_SIZE, BLACK);
+        DrawText(pos, TILE_SIZE * 3, yPos, TEXT_FONT_SIZE, BLACK);
+
+        if (strlen(ranking.entries[i].username) == 0) {
+            DrawText("---", TILE_SIZE * 3, yPos, TEXT_FONT_SIZE, BLACK);
+        } else {
+            char username[MAX_USERNAME_LENGTH + 5];
+            snprintf(username, sizeof(username), "%-15s", ranking.entries[i].username);
+            DrawText(username, TILE_SIZE * 5, yPos, TEXT_FONT_SIZE, BLACK);
+
+            char score[6];
+            snprintf(score, sizeof(score), "%5d", ranking.entries[i].score);
+            DrawText(score, TILE_SIZE * 20, yPos, TEXT_FONT_SIZE, BLACK);
+        }
     }
 
     int menuYPos = TILE_SIZE * 3 + HEADER_FONT_SIZE + 10 + RANKING_ENTRIES * TEXT_FONT_SIZE;
@@ -303,14 +306,14 @@ void renderGameOver(Game *game, Menu menu) {
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-    DrawText("Fim de Jogo", TILE_SIZE * 7, TILE_SIZE * 5, HEADER_FONT_SIZE,
+    DrawText("Fim de Jogo", TILE_SIZE * 3, TILE_SIZE * 3, HEADER_FONT_SIZE,
              BLACK);
 
     char score[40] = "";
     snprintf(score, 40, "Sua pontuação: %d", game->score);
-    DrawText(score, TILE_SIZE * 7, TILE_SIZE * 7, TEXT_FONT_SIZE, BLACK);
+    DrawText(score, TILE_SIZE * 3, TILE_SIZE * 5, TEXT_FONT_SIZE, BLACK);
 
-    drawMenu(menu, TILE_SIZE * 7, TILE_SIZE * 10);
+    drawMenu(menu, TILE_SIZE * 3, TILE_SIZE * 10);
     EndDrawing();
 }
 

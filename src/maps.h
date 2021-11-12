@@ -1,6 +1,6 @@
 /********************************************************
  * maps module
- * Loading of game maps
+ * Management of game maps
  ********************************************************/
 #ifndef MAPS_H
 #define MAPS_H

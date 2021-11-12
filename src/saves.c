@@ -2,10 +2,6 @@
 
 #include <stdio.h>
 
-int saveExists() {
-    return FileExists(SAVE_PATH);
-}
-
 // Load a game save from disk
 Game loadGame() {
     // Load save file
@@ -14,7 +10,7 @@ Game loadGame() {
     // If the save file can't be open, create and return a new game
     if (saveFile == NULL) {
         printf("Cannot open save file. Creating a new game\n");
-        return newGame();;
+        return newGame(loadMap("assets/stages/fase_01.txt"));;
     }
 
     Game game;
@@ -30,10 +26,8 @@ Game loadGame() {
 
 // Save a game to the disk
 void saveGame(Game game) {
-    // Reset Dave velocity before save. The speeds must be recalculated
-    // every time the game is loaded
-    game.dave.velocity.x = 0;
-    game.dave.velocity.y = 0;
+    // Release all actions before save
+    releaseAllActions(&game);
 
     // Open save file
     FILE *saveFile = fopen(SAVE_PATH, "wb");

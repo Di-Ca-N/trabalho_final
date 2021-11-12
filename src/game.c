@@ -1,19 +1,18 @@
 #include "game.h"
 
 #include <math.h>
-#include <stdio.h>
 
 // Static functions prototypes, only to be used inside this module
 static void moveDave(Game *game, double time);
 static void checkInteraction(Game *game);
 
 /**
- * Create a new game, with default values
+ * Create a new game using the given map
+ * 
+ * Arguments:
+ *     map (Map): Map to be used as the first stage
  */
-Game newGame() {
-    // Load first stage map
-    Map map = loadMap("assets/stages/fase_01.txt");
-
+Game newGame(Map map) {
     // Dave starting representation
     Dave dave = {
         .position = {map.daveStart[1], map.daveStart[0]},
@@ -51,6 +50,8 @@ Game newGame() {
  */
 void handleAction(Game *game, Action action) {
     switch (action) {
+        // Right and left actions: assign Dave the correct x speed 
+        // according to its state
         case ACTION_RIGHT:
             if (game->dave.flying) {
                 game->dave.velocity.x = FLYING_SPEED;
@@ -65,10 +66,9 @@ void handleAction(Game *game, Action action) {
                 game->dave.velocity.x = -WALKING_X_SPEED;
             }
             break;
-        case ACTION_RELEASE_RIGHT:
-        case ACTION_RELEASE_LEFT:
-            game->dave.velocity.x = 0;
-            break;
+
+        // Up and down actions: assign Dave the correct y speed 
+        // according to its state
         case ACTION_UP:
             if (!game->dave.flying) {
                 if (!game->dave.jumping) {
@@ -79,23 +79,34 @@ void handleAction(Game *game, Action action) {
                 game->dave.velocity.y = -FLYING_SPEED;
             }
             break;
+        case ACTION_DOWN:
+            if (game->dave.flying) {
+                game->dave.velocity.y = FLYING_SPEED;
+            }
+            break;
+        
+        // Release actions: update Dave's speed
+        case ACTION_RELEASE_RIGHT:
+        case ACTION_RELEASE_LEFT:
+            game->dave.velocity.x = 0;
+            break;
+        case ACTION_RELEASE_UP:
+        case ACTION_RELEASE_DOWN:
+            // Only reset speed if Dave is flying
+            if (game->dave.flying) {
+                game->dave.velocity.y = 0;
+            }
+            break;
+        
+        // Space action: Activate Jetpack if it was collected
         case ACTION_SPACE:
             if (game->dave.hasJetpack) {
                 game->dave.flying = !game->dave.flying;
                 game->dave.velocity.y = 0;
             }
             break;
-        case ACTION_DOWN:
-            if (game->dave.flying) {
-                game->dave.velocity.y = FLYING_SPEED;
-            }
-            break;
-        case ACTION_RELEASE_UP:
-        case ACTION_RELEASE_DOWN:
-            if (game->dave.flying) {
-                game->dave.velocity.y = 0;
-            }
-            break;
+        
+        // Ignore every other action
         default:
             break;
     }
@@ -220,7 +231,7 @@ static void checkInteraction(Game *game) {
         {game->dave.position.x, ceil(game->dave.position.y)},
         {ceil(game->dave.position.x), ceil(game->dave.position.y)},
     };
-    // Flag to indicate that damage was already processed on the current
+    // Indicate that damage was already processed on the current
     // update. On each update, the damage must be processed only once.
     bool processedDamage = false;
 
@@ -240,7 +251,7 @@ static void checkInteraction(Game *game) {
                     // Dave loses a life
                     game->dave.lives--;
 
-                    // If Dave's lifes reach zero, it is Game Over
+                    // If lives reach zero, it is Game Over
                     if (game->dave.lives == 0) {
                         game->gameOver = true;
                     }
@@ -278,8 +289,10 @@ static void checkInteraction(Game *game) {
             case DOOR:
                 // If Dave already have the trophy, mark the next stage
                 // flag
-                if (game->dave.gotTrophy) 
+                if (game->dave.gotTrophy) {
                     game->nextStage = true;
+                    game->level++;
+                }
                 break;
 
             // With any other collectible, give the player the 
@@ -314,34 +327,36 @@ static void checkInteraction(Game *game) {
 }
 
 /**
- * Load the next level
+ * Load the next map into the game
  * 
  * Arguments:
- *     game (Game*): Pointer to the game to be updated 
+ *     game (Game*): Pointer to the game to be updated
+ *     map (Map): Map to be used in the next stage
  */
-void loadNextStage(Game *game) {
-    // Increase game level;
-    game->level++;
+void loadNextStage(Game *game, Map map) {
+    // Updating the map
+    game->map = map;
 
-    // Assemble path to the map file
-    char level_path[30];
-    snprintf(level_path, 30, "assets/stages/fase_%02d.txt", game->level);
+    // Reseting game state for the next level
+    game->dave.gotTrophy = false;
+    game->dave.hasJetpack = false;
+    game->dave.flying = false;
+    game->dave.position.x = game->map.daveStart[1];
+    game->dave.position.y = game->map.daveStart[0];
+    game->dave.velocity.x = 0;
+    game->dave.velocity.y = 0;
+    game->nextStage = false;
+}
 
-    // If the map file exists, start a new stage
-    if (FileExists(level_path)) {
-        game->map = loadMap(level_path);
-
-        // Reseting game state for the next level
-        game->dave.gotTrophy = false;
-        game->dave.hasJetpack = false;
-        game->dave.flying = false;
-        game->dave.position.x = game->map.daveStart[1];
-        game->dave.position.y = game->map.daveStart[0];
-        game->dave.velocity.x = 0;
-        game->dave.velocity.y = 0;
-        game->nextStage = false;
-    } else {
-        // Otherwise, there is no more levels and the game is over
-        game->gameOver = true;
-    }
+/**
+ * Release all game actions
+ * 
+ * Arguments:
+ *    game (Game*): Game to be updated
+ */
+void releaseAllActions(Game* game) {
+    handleAction(game, ACTION_RELEASE_DOWN);
+    handleAction(game, ACTION_RELEASE_UP);
+    handleAction(game, ACTION_RELEASE_LEFT);
+    handleAction(game, ACTION_RELEASE_RIGHT);
 }

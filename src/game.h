@@ -52,21 +52,19 @@ typedef struct {
 } Game;
 
 
-// Recognized game actions. Defined to decouple input 
-// from game actions
+// Recognized game actions. Defined to decouple input from game actions
 typedef enum {
     ACTION_UP = 1, ACTION_DOWN, ACTION_LEFT, ACTION_RIGHT,
-    ACTION_EXIT, ACTION_SAVE, ACTION_STOP, 
     ACTION_RELEASE_UP, ACTION_RELEASE_DOWN, 
     ACTION_RELEASE_RIGHT, ACTION_RELEASE_LEFT,
-    ACTION_YES, ACTION_NO,
-    ACTION_SPACE,
+    ACTION_YES, ACTION_NO, ACTION_SPACE,
 } Action;
 
 // ==== FUNCTIONS ====
-Game newGame();                                // Create a new game
+Game newGame(Map map);                         // Create a new game using the given map
 void handleAction(Game* game, Action action);  // Update game state according to actions
 void updateGame(Game* game, double timeDelta); // Apply updates on game
-void loadNextStage(Game* game);                // Load the next stage
+void loadNextStage(Game* game, Map map);       // Load the next stage
+void releaseAllActions(Game* game);            // Release all movement actions
 
 #endif
