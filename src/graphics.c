@@ -9,12 +9,20 @@
 static Camera2D getCamera(Game *game);
 static void drawMenu(Menu menu, int xPos, int yPos);
 
+/**
+ * Initialize the graphics module
+ * 
+ * Arguments:
+ *    spriteSheet (SpriteSheet*): Pointer to the sprite sheet where the
+ *       game sprites should be loaded
+ */
 void initGraphics(SpriteSheet* spriteSheet) {
     // Init game window
     InitWindow(TILE_SIZE * NUM_TILES_WIDTH, 
                TILE_SIZE * NUM_TILES_HEIGHT,
                "Dangerous Dave");
 
+    // Loading sprites into the sprite sheet
     spriteSheet->wall = LoadTexture("assets/sprites/wall.png");
     spriteSheet->dave = LoadTexture("assets/sprites/dave.png");
     spriteSheet->daveFlying = LoadTexture("assets/sprites/dave_flying.png");
@@ -36,7 +44,12 @@ void initGraphics(SpriteSheet* spriteSheet) {
     SetExitKey(0);
 }
 
-// Render the main menu screen
+/**
+ * Draw the main menu screen
+ * 
+ * Arguments:
+ *     menu (Menu): Menu to be drawn
+ */
 void renderMainMenu(Menu menu) {
     // Start drawing
     BeginDrawing();
@@ -55,8 +68,15 @@ void renderMainMenu(Menu menu) {
     EndDrawing();
 }
 
-// Draw a menu to the screen, starting at xPos and yPos
-void drawMenu(Menu menu, int xPos, int yPos) {
+/**
+ * Draw a menu to the screen, one option per line.
+ * 
+ * Arguments:
+ *     menu (Menu): Menu to be drawn
+ *     xPos (int): X position of the menu first option
+ *     yPos (int): Y position of the menu first option 
+ */
+static void drawMenu(Menu menu, int xPos, int yPos) {
     // Loop to draw menu options
     for (int i = 0; i < menu.numOptions; i++) {
         // Buffer to hold option text. Settled to MAX_OPTION_LENGTH + 2
@@ -80,7 +100,13 @@ void drawMenu(Menu menu, int xPos, int yPos) {
     }
 }
 
-// Render the ranking screen
+/**
+ * Draw the ranking screen
+ * 
+ * Arguments:
+ *     ranking (Ranking): Ranking to be drawn
+ *     menu (Menu): Menu of the screen
+ */
 void renderRanking(Ranking ranking, Menu menu) {
     BeginDrawing();
     ClearBackground(RAYWHITE);
@@ -113,7 +139,14 @@ void renderRanking(Ranking ranking, Menu menu) {
     EndDrawing();
 }
 
-// Render game icons from map
+/**
+ * Draw game
+ * 
+ * Arguments:
+ *     game (Game*): Pointer to the game to be drawn
+ *     spriteSheet (SpriteSheet*): Pointer to the sprite sheet with the 
+ *         textures of the game elements
+ */
 void renderGame(Game *game, SpriteSheet *spriteSheet) {
     // Get the current game camera
     Camera2D camera = getCamera(game);
@@ -183,7 +216,7 @@ void renderGame(Game *game, SpriteSheet *spriteSheet) {
     else
         daveSprite = spriteSheet->dave;
 
-    // Choses sprite of the Dave's sheets according to its velocity
+    // Choose sprite of the Dave's sheets according to its velocity
     if (game->dave.velocity.x > 0)
         spriteRect = (Rectangle){32, 32, 16, 16};
     else if (game->dave.velocity.x < 0)
@@ -271,7 +304,7 @@ Camera2D getCamera(Game *game) {
     Vector2 topLeft = {0, 0};
     Vector2 bottomRight = {game->map.width, game->map.height};
 
-    // Scaling vertices to their display size
+    // Scaling vertices to their display position
     Vector2 scaledTopLeft = Vector2Scale(topLeft, TILE_SIZE);
     Vector2 scaledBottomRight = Vector2Scale(bottomRight, TILE_SIZE);
 
@@ -302,6 +335,13 @@ Camera2D getCamera(Game *game) {
     return camera;
 }
 
+/**
+ * Draw Game Over screen
+ * 
+ * Arguments:
+ *     game (Game*): Pointer to the game
+ *     menu (Menu): Screen menu
+ */
 void renderGameOver(Game *game, Menu menu) {
     BeginDrawing();
     ClearBackground(RAYWHITE);
@@ -309,7 +349,7 @@ void renderGameOver(Game *game, Menu menu) {
     DrawText("Fim de Jogo", TILE_SIZE * 3, TILE_SIZE * 3, HEADER_FONT_SIZE,
              BLACK);
 
-    char score[40] = "";
+    char score[40];
     snprintf(score, 40, "Sua pontuação: %d", game->score);
     DrawText(score, TILE_SIZE * 3, TILE_SIZE * 5, TEXT_FONT_SIZE, BLACK);
 
@@ -317,15 +357,26 @@ void renderGameOver(Game *game, Menu menu) {
     EndDrawing();
 }
 
+/**
+ * Draw the record screen
+ * 
+ * Arguments:
+ *     game (Game*): Pointer to the game
+ *     username (char*): Current username text
+ *     menu (Menu): Menu of the screen
+ */
 void renderScoreMenu(Game *game, char *username, Menu menu) {
+    // Assembling score message
+    char score[40];
+    snprintf(score, 40, "Sua pontuação: %d", game->score);
+    
+    // Drawing screen
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
     DrawText("Fim de Jogo", TILE_SIZE * 3, TILE_SIZE * 3, HEADER_FONT_SIZE,
              BLACK);
 
-    char score[40] = "";
-    snprintf(score, 40, "Sua pontuação: %d", game->score);
     DrawText(score, TILE_SIZE * 3, TILE_SIZE * 5, TEXT_FONT_SIZE, BLACK);
 
     DrawText("Parabéns! Sua pontuação está entre as 5 maiores.", TILE_SIZE * 3,

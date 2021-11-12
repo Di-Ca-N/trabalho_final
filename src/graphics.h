@@ -12,6 +12,7 @@
 
 // ==== TYPES ====
 
+// Sprite sheet containing all game objects
 typedef struct {
     Texture2D wall;
     Texture2D dave;
