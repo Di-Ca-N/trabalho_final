@@ -287,9 +287,10 @@ static void checkInteraction(Game *game) {
                 break;
 
             case DOOR:
-                // If Dave already have the trophy, mark the next stage
-                // flag
-                if (game->dave.gotTrophy) {
+                // If Dave already have the trophy and the next stage 
+                // flag is not already marked
+                if (game->dave.gotTrophy && !game->nextStage) {
+                    // Update the flag and increment the curent level
                     game->nextStage = true;
                     game->level++;
                 }
