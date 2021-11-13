@@ -315,7 +315,7 @@ int gameOverScreen(Game *game) {
  */
 int gameOverRecordScreen(Game *game, char *username) {
     Menu menu = getMenu(MENU_OK);
-    renderScoreMenu(game, username, menu);
+    renderRecord(game, username, menu);
 
     int letterCount = strlen(username);
     int key = GetCharPressed();

@@ -365,7 +365,7 @@ void renderGameOver(Game *game, Menu menu) {
  *     username (char*): Current username text
  *     menu (Menu): Menu of the screen
  */
-void renderScoreMenu(Game *game, char *username, Menu menu) {
+void renderRecord(Game *game, char *username, Menu menu) {
     // Assembling score message
     char score[40];
     snprintf(score, 40, "Sua pontuação: %d", game->score);
