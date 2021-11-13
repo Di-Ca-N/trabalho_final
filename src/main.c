@@ -53,8 +53,9 @@ int main() {
     int nextState;                            // Next game state
     Game game;                                // Current game instance
     Menu menu = getMenu(MENU_MAIN);           // Menus with persistent state
+    
+    // Graphics module init
     SpriteSheet spriteSheet;
-    // Init graphics module
     initGraphics(&spriteSheet);
 
     // Main game loop
@@ -68,25 +69,18 @@ int main() {
                 if (nextState != 0) state = nextState;
                 break;
 
-            // Exiting game
-            case STATE_EXIT:
-                running = false;
-                break;
-
-            // New game
             case STATE_NEW_GAME:
                 // Create a game with the first map
                 game = newGame(loadMap("assets/stages/fase_01.txt"));
                 state = STATE_PLAYING;
                 break;
 
-            // Load a game
             case STATE_LOAD_GAME:
+                // Load the current saved game
                 game = loadGame();
                 state = STATE_PLAYING;
                 break;
 
-            // Playing
             case STATE_PLAYING:
                 // Run the game screen
                 nextState = gameScreen(&game, GetFrameTime(), &spriteSheet);
@@ -100,7 +94,6 @@ int main() {
                 }
                 break;
 
-            // Ranking
             case STATE_RANKING:
                 nextState = rankingScreen();
 
@@ -159,6 +152,10 @@ int main() {
                     releaseAllActions(&game);
                 }
 
+                break;
+
+            case STATE_EXIT:
+                running = false;
                 break;
         }
     }
