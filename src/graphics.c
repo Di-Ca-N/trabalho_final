@@ -11,15 +11,14 @@ static void drawMenu(Menu menu, int xPos, int yPos);
 
 /**
  * Initialize the graphics module
- * 
+ *
  * Arguments:
  *    spriteSheet (SpriteSheet*): Pointer to the sprite sheet where the
  *       game sprites should be loaded
  */
-void initGraphics(SpriteSheet* spriteSheet) {
+void initGraphics(SpriteSheet *spriteSheet) {
     // Init game window
-    InitWindow(TILE_SIZE * NUM_TILES_WIDTH, 
-               TILE_SIZE * NUM_TILES_HEIGHT,
+    InitWindow(TILE_SIZE * NUM_TILES_WIDTH, TILE_SIZE * NUM_TILES_HEIGHT,
                "Dangerous Dave");
 
     // Loading sprites into the sprite sheet
@@ -47,7 +46,7 @@ void initGraphics(SpriteSheet* spriteSheet) {
 
 /**
  * Draw the main menu screen
- * 
+ *
  * Arguments:
  *     menu (Menu): Menu to be drawn
  */
@@ -71,11 +70,11 @@ void renderMainMenu(Menu menu) {
 
 /**
  * Draw a menu to the screen, one option per line.
- * 
+ *
  * Arguments:
  *     menu (Menu): Menu to be drawn
  *     xPos (int): X position of the menu first option
- *     yPos (int): Y position of the menu first option 
+ *     yPos (int): Y position of the menu first option
  */
 static void drawMenu(Menu menu, int xPos, int yPos) {
     // Loop to draw menu options
@@ -103,7 +102,7 @@ static void drawMenu(Menu menu, int xPos, int yPos) {
 
 /**
  * Draw the ranking screen
- * 
+ *
  * Arguments:
  *     ranking (Ranking): Ranking to be drawn
  *     menu (Menu): Menu of the screen
@@ -125,7 +124,8 @@ void renderRanking(Ranking ranking, Menu menu) {
             DrawText("---", TILE_SIZE * 5, yPos, TEXT_FONT_SIZE, BLACK);
         } else {
             char username[MAX_USERNAME_LENGTH + 5];
-            snprintf(username, sizeof(username), "%-15s", ranking.entries[i].username);
+            snprintf(username, sizeof(username), "%-15s",
+                     ranking.entries[i].username);
             DrawText(username, TILE_SIZE * 5, yPos, TEXT_FONT_SIZE, BLACK);
 
             char score[6];
@@ -134,7 +134,8 @@ void renderRanking(Ranking ranking, Menu menu) {
         }
     }
 
-    int menuYPos = TILE_SIZE * 3 + HEADER_FONT_SIZE + 10 + RANKING_ENTRIES * TEXT_FONT_SIZE;
+    int menuYPos = TILE_SIZE * 3 + HEADER_FONT_SIZE + 10 +
+                   RANKING_ENTRIES * TEXT_FONT_SIZE;
 
     drawMenu(menu, TILE_SIZE * 3, menuYPos);
     EndDrawing();
@@ -142,10 +143,10 @@ void renderRanking(Ranking ranking, Menu menu) {
 
 /**
  * Draw game
- * 
+ *
  * Arguments:
  *     game (Game*): Pointer to the game to be drawn
- *     spriteSheet (SpriteSheet*): Pointer to the sprite sheet with the 
+ *     spriteSheet (SpriteSheet*): Pointer to the sprite sheet with the
  *         textures of the game elements
  */
 void renderGame(Game *game, SpriteSheet *spriteSheet) {
@@ -164,15 +165,12 @@ void renderGame(Game *game, SpriteSheet *spriteSheet) {
             // X and Y screen positions of the current tile
             int xPos = col * TILE_SIZE;
             int yPos = row * TILE_SIZE;
-            
+
             // Drawing background tile
             DrawTexture(spriteSheet->wall, xPos, yPos, DARKBROWN);
 
             // Drawing game objects
             switch (game->map.stage[row][col]) {
-                case ENTRY:
-                    DrawTexture(spriteSheet->entry, xPos, yPos, WHITE);
-                    break;
                 case WALL:
                     DrawTexture(spriteSheet->wall, xPos, yPos, WHITE);
                     break;
@@ -206,6 +204,9 @@ void renderGame(Game *game, SpriteSheet *spriteSheet) {
                 case TROPHY:
                     DrawTexture(spriteSheet->trophy, xPos, yPos, GOLD);
                     break;
+                case ENTRY:
+                    DrawTexture(spriteSheet->entry, xPos, yPos, WHITE);
+                    break;
             }
         }
     }
@@ -213,7 +214,7 @@ void renderGame(Game *game, SpriteSheet *spriteSheet) {
     // Dave Sprite selection
     Texture2D daveSprite;
     Rectangle spriteRect;
-    
+
     // Dave have different sprite sheets for walking and flying
     if (game->dave.flying)
         daveSprite = spriteSheet->daveFlying;
@@ -229,10 +230,8 @@ void renderGame(Game *game, SpriteSheet *spriteSheet) {
         spriteRect = (Rectangle){16, 0, 16, 16};
 
     // Drawing Dave's sprite
-    Vector2 davePosition = {
-        game->dave.position.x * TILE_SIZE, 
-        game->dave.position.y * TILE_SIZE
-    };
+    Vector2 davePosition = {game->dave.position.x * TILE_SIZE,
+                            game->dave.position.y * TILE_SIZE};
     DrawTextureRec(daveSprite, spriteRect, davePosition, WHITE);
 
     // Ending 2D camera context
@@ -249,9 +248,9 @@ void renderGame(Game *game, SpriteSheet *spriteSheet) {
     DrawText(score, TILE_SIZE * 0.5, TILE_SIZE * 0.8, TEXT_MAP_SIZE, BLACK);
 
     // Show remaining lives on screen
-    char lifes[10];
-    snprintf(lifes, 10, "VIDAS: %d", game->dave.lives);
-    DrawText(lifes, TILE_SIZE * 9, TILE_SIZE * 0.8, TEXT_MAP_SIZE, MAROON);
+    char lives[10];
+    snprintf(lives, 10, "VIDAS: %d", game->dave.lives);
+    DrawText(lives, TILE_SIZE * 9, TILE_SIZE * 0.8, TEXT_MAP_SIZE, MAROON);
 
     // Show current level on screen
     char level[15];
@@ -261,18 +260,19 @@ void renderGame(Game *game, SpriteSheet *spriteSheet) {
     // Show icon on screen if Dave collects the trophy
     if (game->dave.gotTrophy) {
         DrawTexture(spriteSheet->trophy, 22 * TILE_SIZE, 0.8 * TILE_SIZE, GOLD);
-        DrawText("Troféu", 23.5 * TILE_SIZE, 0.8 * TILE_SIZE, TEXT_MAP_SIZE, BLACK);
+        DrawText("Troféu", 23.5 * TILE_SIZE, 0.8 * TILE_SIZE, TEXT_MAP_SIZE,
+                 BLACK);
     }
 
     // Show message on screen if Dave acquires the jetpack
     if (game->dave.hasJetpack) {
-        DrawText("Jetpack", TILE_SIZE * 30, TILE_SIZE * 0.8,
-                 TEXT_MAP_SIZE, BLACK);
+        DrawText("Jetpack", TILE_SIZE * 30, TILE_SIZE * 0.8, TEXT_MAP_SIZE,
+                 BLACK);
     }
     // Show message on screen if jetpack is active
     if (game->dave.flying) {
-        DrawText("Jetpack", TILE_SIZE * 30, TILE_SIZE * 0.8,
-                 TEXT_MAP_SIZE, RED);
+        DrawText("Jetpack", TILE_SIZE * 30, TILE_SIZE * 0.8, TEXT_MAP_SIZE,
+                 RED);
     }
 
     EndDrawing();
@@ -324,7 +324,8 @@ Camera2D getCamera(Game *game) {
     // If the top border would appear on screen
     if (topLeftScreen.y > TOP_BAR_TILES * TILE_SIZE)
         // Change the offset to show only objects below the border
-        camera.offset.y = screenHeight / 2.0f - topLeftScreen.y + TOP_BAR_TILES * TILE_SIZE;
+        camera.offset.y =
+            screenHeight / 2.0f - topLeftScreen.y + TOP_BAR_TILES * TILE_SIZE;
 
     // If the right border would appear on screen
     if (topRightScreen.x < screenWidth)
@@ -341,7 +342,7 @@ Camera2D getCamera(Game *game) {
 
 /**
  * Draw Game Over screen
- * 
+ *
  * Arguments:
  *     game (Game*): Pointer to the game
  *     menu (Menu): Screen menu
@@ -363,7 +364,7 @@ void renderGameOver(Game *game, Menu menu) {
 
 /**
  * Draw the record screen
- * 
+ *
  * Arguments:
  *     game (Game*): Pointer to the game
  *     username (char*): Current username text
@@ -373,7 +374,7 @@ void renderRecord(Game *game, char *username, Menu menu) {
     // Assembling score message
     char score[40];
     snprintf(score, 40, "Sua pontuação: %d", game->score);
-    
+
     // Drawing screen
     BeginDrawing();
     ClearBackground(RAYWHITE);
@@ -398,12 +399,12 @@ void renderRecord(Game *game, char *username, Menu menu) {
 
 /**
  * Draw a confirmation dialog at the center of the screen
- * 
+ *
  * Arguments:
  *     message (char*): message to be displayed
  *     menu (Menu): menu to be displayed inside the dialog
  */
-void drawConfirmationDialog(char* message, Menu menu) {
+void drawConfirmationDialog(char *message, Menu menu) {
     // Calculating dialog position
     int height = GetScreenHeight();
     int width = GetScreenWidth();
@@ -423,11 +424,11 @@ void drawConfirmationDialog(char* message, Menu menu) {
 
 /**
  * Tear down and close the graphic resources
- * 
+ *
  * Arguments:
  *     spriteSheet (SpriteSheet*): sprite sheet to be unloaded
  */
-void endGraphics(SpriteSheet* spriteSheet) {
+void endGraphics(SpriteSheet *spriteSheet) {
     // Unloading all textures
     UnloadTexture(spriteSheet->wall);
     UnloadTexture(spriteSheet->dave);
@@ -444,5 +445,5 @@ void endGraphics(SpriteSheet* spriteSheet) {
     UnloadTexture(spriteSheet->entry);
 
     // Closing window
-    CloseWindow(); 
+    CloseWindow();
 }
