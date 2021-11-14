@@ -5,8 +5,13 @@
 #include <limits.h>
 
 
-// Write ranking struct to file in disk
-void writeRanking(Ranking ranking) {
+/**
+ * Write the ranking to a binary file
+ * 
+ * Arguments:
+ *     ranking (Ranking): Ranking to be written to the file.
+ */
+static void writeRanking(Ranking ranking) {
     // Opening file in binary write mode
     FILE *rankingFile = fopen("assets/ranking.dat", "wb");
 
@@ -22,7 +27,9 @@ void writeRanking(Ranking ranking) {
     fclose(rankingFile);
 }
 
-// Return current ranking
+/**
+ * Load and return the current ranking. 
+ */
 Ranking getRanking() {
     Ranking ranking;
 
@@ -46,33 +53,30 @@ Ranking getRanking() {
     return ranking;
 }
 
-// Save entry on ranking file
+/**
+ * Save an entry into the ranking.
+ * 
+ * Arguments:
+ *     entry (RankingEntry): entry to be added to ranking
+ */
 void saveOnRanking(RankingEntry entry) {
+    // Loading current ranking
     Ranking ranking = getRanking();
-    RankingEntry lastEntry;
 
-    // Flag that indicates whether the entry is being inserted or moved down
-    bool inserting = true;
+    // The ranking will be sorted using insertion sort
+
+    // Auxiliar to hold the last entry
+    RankingEntry lastEntry = entry;
 
     for (int i = 0; i < RANKING_ENTRIES; i++) {
-        // If the entry score is higher than the current entry, the 
-        // entry need to pushed down the list
+        // If the entry score is higher than the current entry, swap
+        // the last entry and the current entry
         if (entry.score > ranking.entries[i].score) {
-            // If it is inserting the new entry
-            if (inserting) {
-                // Save the old entry and replace it with the new entry
-                lastEntry = ranking.entries[i];
-                ranking.entries[i] = entry;
-
-                // Set the inserting flag to false
-                inserting = false;
-            } else {
-                // If it is pushing an entry down, swaps the current 
-                // entry with the last entry
-                RankingEntry tmp = ranking.entries[i];
-                ranking.entries[i] = lastEntry;
-                lastEntry = tmp;
-            }
+            // If it is pushing an entry down, swaps the current 
+            // entry with the last entry
+            RankingEntry tmp = ranking.entries[i];
+            ranking.entries[i] = lastEntry;
+            lastEntry = tmp;
         }
     }
 
