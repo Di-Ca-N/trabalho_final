@@ -122,7 +122,7 @@ void renderRanking(Ranking ranking, Menu menu) {
         DrawText(pos, TILE_SIZE * 3, yPos, TEXT_FONT_SIZE, BLACK);
 
         if (strlen(ranking.entries[i].username) == 0) {
-            DrawText("---", TILE_SIZE * 3, yPos, TEXT_FONT_SIZE, BLACK);
+            DrawText("---", TILE_SIZE * 5, yPos, TEXT_FONT_SIZE, BLACK);
         } else {
             char username[MAX_USERNAME_LENGTH + 5];
             snprintf(username, sizeof(username), "%-15s", ranking.entries[i].username);

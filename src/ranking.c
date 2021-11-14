@@ -1,13 +1,13 @@
 #include "ranking.h"
 
-#include <stdio.h>  // fopen, fread, fwrite
-#include "raylib.h" // FileExists
 #include <limits.h>
+#include <stdio.h>  // fopen, fread, fwrite
 
+#include "raylib.h"  // FileExists
 
 /**
  * Write the ranking to a binary file
- * 
+ *
  * Arguments:
  *     ranking (Ranking): Ranking to be written to the file.
  */
@@ -28,7 +28,7 @@ static void writeRanking(Ranking ranking) {
 }
 
 /**
- * Load and return the current ranking. 
+ * Load and return the current ranking.
  */
 Ranking getRanking() {
     Ranking ranking;
@@ -55,7 +55,7 @@ Ranking getRanking() {
 
 /**
  * Save an entry into the ranking.
- * 
+ *
  * Arguments:
  *     entry (RankingEntry): entry to be added to ranking
  */
@@ -72,7 +72,7 @@ void saveOnRanking(RankingEntry entry) {
         // If the entry score is higher than the current entry, swap
         // the last entry and the current entry
         if (entry.score > ranking.entries[i].score) {
-            // If it is pushing an entry down, swaps the current 
+            // If it is pushing an entry down, swaps the current
             // entry with the last entry
             RankingEntry tmp = ranking.entries[i];
             ranking.entries[i] = lastEntry;
