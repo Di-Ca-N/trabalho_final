@@ -27,6 +27,7 @@ typedef struct {
     Texture2D fire;
     Texture2D water;
     Texture2D jetpack;
+    Texture2D entry;
 } SpriteSheet;
 
 // ==== CONSTANTS ====

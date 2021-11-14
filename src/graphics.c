@@ -36,6 +36,7 @@ void initGraphics(SpriteSheet* spriteSheet) {
     spriteSheet->water = LoadTexture("assets/sprites/water.png");
     spriteSheet->fire = LoadTexture("assets/sprites/fire.png");
     spriteSheet->jetpack = LoadTexture("assets/sprites/hat.png");
+    spriteSheet->entry = LoadTexture("assets/sprites/entry.png");
 
     // Set game to run at 60 fps
     SetTargetFPS(60);
@@ -169,6 +170,9 @@ void renderGame(Game *game, SpriteSheet *spriteSheet) {
 
             // Drawing game objects
             switch (game->map.stage[row][col]) {
+                case ENTRY:
+                    DrawTexture(spriteSheet->entry, xPos, yPos, WHITE);
+                    break;
                 case WALL:
                     DrawTexture(spriteSheet->wall, xPos, yPos, WHITE);
                     break;
@@ -437,6 +441,7 @@ void endGraphics(SpriteSheet* spriteSheet) {
     UnloadTexture(spriteSheet->fire);
     UnloadTexture(spriteSheet->daveFlying);
     UnloadTexture(spriteSheet->jetpack);
+    UnloadTexture(spriteSheet->entry);
 
     // Closing window
     CloseWindow(); 
