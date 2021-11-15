@@ -34,6 +34,7 @@ Game newGame(Map map) {
         .score = 0,
         .nextStage = false,
         .gameOver = false,
+        .victory = false,
     };
 
     return game;

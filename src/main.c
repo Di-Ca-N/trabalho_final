@@ -259,7 +259,7 @@ int gameScreen(Game *game, double timeDelta, SpriteSheet *spriteSheet) {
     // Update the game based on the actions taken by the user
     updateGame(game, timeDelta);
 
-    // Game events
+    // Game over
     if (game->gameOver) {
         Ranking ranking = getRanking();
         if (game->score > ranking.entries[RANKING_ENTRIES - 1].score) {
@@ -277,6 +277,7 @@ int gameScreen(Game *game, double timeDelta, SpriteSheet *spriteSheet) {
             loadNextStage(game, map);
         } else {
             game->gameOver = true;
+            game->victory = true;
         }
     }
     return 0;

@@ -38,8 +38,9 @@ typedef struct {
     Dave dave;
     Map map;
 
-    // Indicate game over
+    // Game over indicators
     bool gameOver;
+    bool victory;
 
     // Current player score
     int score;

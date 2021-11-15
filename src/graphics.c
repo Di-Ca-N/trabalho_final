@@ -351,8 +351,13 @@ void renderGameOver(Game *game, Menu menu) {
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-    DrawText("Fim de Jogo", TILE_SIZE * 3, TILE_SIZE * 3, HEADER_FONT_SIZE,
-             BLACK);
+    if (game->victory) {
+        DrawText("Fim de Jogo - Vitória!", TILE_SIZE * 3, TILE_SIZE * 3, HEADER_FONT_SIZE,
+            BLACK);
+    } else {
+        DrawText("Fim de Jogo", TILE_SIZE * 3, TILE_SIZE * 3, HEADER_FONT_SIZE,
+            BLACK);
+    }
 
     char score[40];
     snprintf(score, 40, "Sua pontuação: %d", game->score);
@@ -379,8 +384,13 @@ void renderRecord(Game *game, char *username, Menu menu) {
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-    DrawText("Fim de Jogo", TILE_SIZE * 3, TILE_SIZE * 3, HEADER_FONT_SIZE,
-             BLACK);
+    if (game->victory) {
+        DrawText("Fim de Jogo - Vitória!", TILE_SIZE * 3, TILE_SIZE * 3, HEADER_FONT_SIZE,
+            BLACK);
+    } else {
+        DrawText("Fim de Jogo", TILE_SIZE * 3, TILE_SIZE * 3, HEADER_FONT_SIZE,
+            BLACK);
+    }
 
     DrawText(score, TILE_SIZE * 3, TILE_SIZE * 5, TEXT_FONT_SIZE, BLACK);
 
