@@ -328,7 +328,7 @@ static void checkInteraction(Game *game) {
 }
 
 /**
- * Load the next map into the game
+ * Load the next map into the game.
  * 
  * Arguments:
  *     game (Game*): Pointer to the game to be updated
@@ -350,7 +350,8 @@ void loadNextStage(Game *game, Map map) {
 }
 
 /**
- * Release all game actions
+ * Release all game actions. Useful to avoid unwanted moves on saving
+ * or pausing the game.
  * 
  * Arguments:
  *    game (Game*): Game to be updated
