@@ -8,7 +8,7 @@ static void checkInteraction(Game *game);
 
 /**
  * Create a new game using the given map
- * 
+ *
  * Arguments:
  *     map (Map): Map to be used as the first stage
  */
@@ -50,7 +50,7 @@ Game newGame(Map map) {
  */
 void handleAction(Game *game, Action action) {
     switch (action) {
-        // Right and left actions: assign Dave the correct x speed 
+        // Right and left actions: assign Dave the correct x speed
         // according to its state
         case ACTION_RIGHT:
             if (game->dave.flying) {
@@ -67,7 +67,7 @@ void handleAction(Game *game, Action action) {
             }
             break;
 
-        // Up and down actions: assign Dave the correct y speed 
+        // Up and down actions: assign Dave the correct y speed
         // according to its state
         case ACTION_UP:
             if (!game->dave.flying) {
@@ -84,7 +84,7 @@ void handleAction(Game *game, Action action) {
                 game->dave.velocity.y = FLYING_SPEED;
             }
             break;
-        
+
         // Release actions: update Dave's speed
         case ACTION_RELEASE_RIGHT:
         case ACTION_RELEASE_LEFT:
@@ -97,7 +97,7 @@ void handleAction(Game *game, Action action) {
                 game->dave.velocity.y = 0;
             }
             break;
-        
+
         // Space action: Activate Jetpack if it was collected
         case ACTION_SPACE:
             if (game->dave.hasJetpack) {
@@ -105,7 +105,7 @@ void handleAction(Game *game, Action action) {
                 game->dave.velocity.y = 0;
             }
             break;
-        
+
         // Ignore every other action
         default:
             break;
@@ -287,7 +287,7 @@ static void checkInteraction(Game *game) {
                 break;
 
             case DOOR:
-                // If Dave already have the trophy and the next stage 
+                // If Dave already have the trophy and the next stage
                 // flag is not already marked
                 if (game->dave.gotTrophy && !game->nextStage) {
                     // Update the flag and increment the curent level
@@ -296,7 +296,7 @@ static void checkInteraction(Game *game) {
                 }
                 break;
 
-            // With any other collectible, give the player the 
+            // With any other collectible, give the player the
             // correspondent score and remove it from the map
             case SAPHIRE:
                 game->score += 100;
@@ -329,7 +329,7 @@ static void checkInteraction(Game *game) {
 
 /**
  * Load the next map into the game.
- * 
+ *
  * Arguments:
  *     game (Game*): Pointer to the game to be updated
  *     map (Map): Map to be used in the next stage
@@ -352,11 +352,11 @@ void loadNextStage(Game *game, Map map) {
 /**
  * Release all game actions. Useful to avoid unwanted moves on saving
  * or pausing the game.
- * 
+ *
  * Arguments:
  *    game (Game*): Game to be updated
  */
-void releaseAllActions(Game* game) {
+void releaseAllActions(Game *game) {
     handleAction(game, ACTION_RELEASE_DOWN);
     handleAction(game, ACTION_RELEASE_UP);
     handleAction(game, ACTION_RELEASE_LEFT);

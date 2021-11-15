@@ -11,10 +11,11 @@ Map loadMap(char *filename) {
     if (file == NULL) {
         // Error message - Load failed
         printf("Load failed\n");
-        getchar();
         exit(0);
     }
 
+    newMap.width = 0;
+    newMap.height = 0;
     int l = 0, c = 0;
     // Reading map informations
     while (!feof(file)) {
@@ -37,10 +38,11 @@ Map loadMap(char *filename) {
                 c++;
             }
         }
+        // Map width should be the width of the longest line
+        if (newMap.width < c) {
+            newMap.width = c;
+        }
     }
-
-    // Actual Map width (part of Max Supported map height)
-    newMap.width = c;
     // Actual Map height (part of Max Supported map width)
     newMap.height = l + 1;
 

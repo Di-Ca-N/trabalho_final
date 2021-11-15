@@ -5,8 +5,8 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "raylib.h"
 #include "maps.h"
+#include "raylib.h"
 
 // ==== CONSTANTS ====
 #define GRAVITY 50             // Game gravity
@@ -51,13 +51,19 @@ typedef struct {
     bool nextStage;
 } Game;
 
-
 // Recognized game actions. Defined to decouple input from game actions
 typedef enum {
-    ACTION_UP = 1, ACTION_DOWN, ACTION_LEFT, ACTION_RIGHT,
-    ACTION_RELEASE_UP, ACTION_RELEASE_DOWN, 
-    ACTION_RELEASE_RIGHT, ACTION_RELEASE_LEFT,
-    ACTION_YES, ACTION_NO, ACTION_SPACE,
+    ACTION_UP = 1,
+    ACTION_DOWN,
+    ACTION_LEFT,
+    ACTION_RIGHT,
+    ACTION_RELEASE_UP,
+    ACTION_RELEASE_DOWN,
+    ACTION_RELEASE_RIGHT,
+    ACTION_RELEASE_LEFT,
+    ACTION_YES,
+    ACTION_NO,
+    ACTION_SPACE,
 } Action;
 
 // ==== FUNCTIONS ====

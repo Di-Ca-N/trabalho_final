@@ -7,8 +7,8 @@
 #define GRAPHICS_H
 
 #include "game.h"
-#include "ranking.h"
 #include "menus.h"
+#include "ranking.h"
 
 // ==== TYPES ====
 
@@ -40,13 +40,13 @@ typedef struct {
 #define TOP_BAR_TILES 2      // Number of tiles on the top bar
 
 // ==== FUNCTIONS ====
-void initGraphics(SpriteSheet* spriteSheet);    // Init graphics module
-void endGraphics(SpriteSheet* SpriteSheet);     // Tear down graphics
-void renderGame(Game* game, SpriteSheet* spriteSheet); // Draw the game screen
-void renderMainMenu(Menu menu);                 // Draw the main menu screen
-void renderRanking(Ranking ranking, Menu menu); // Draw the ranking screen
-void renderGameOver(Game* game, Menu menu);     // Draw the game over screen
-void renderRecord(Game *game, char *username, Menu menu); // Draw the record screen
-void drawConfirmationDialog(char* message, Menu menu); // Draw confirmation dialog
+void initGraphics(SpriteSheet* spriteSheet);               // Init graphics module
+void endGraphics(SpriteSheet* SpriteSheet);                // Tear down graphics
+void renderGame(Game* game, SpriteSheet* spriteSheet);     // Draw the game screen
+void renderMainMenu(Menu menu);                            // Draw the main menu screen
+void renderRanking(Ranking ranking, Menu menu);            // Draw the ranking screen
+void renderGameOver(Game* game, Menu menu);                // Draw the game over screen
+void renderRecord(Game* game, char* username, Menu menu);  // Draw the record screen
+void drawConfirmationDialog(char* message, Menu menu);     // Draw confirmation dialog
 
 #endif
