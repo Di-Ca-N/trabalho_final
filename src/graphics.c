@@ -114,12 +114,16 @@ void renderRanking(Ranking ranking, Menu menu) {
     DrawText("Ranking", TILE_SIZE * 3, TILE_SIZE * 3, HEADER_FONT_SIZE, BLACK);
 
     for (int i = 0; i < RANKING_ENTRIES; i++) {
+        // Calculating y position of all the elements of the current entry
         int yPos = TILE_SIZE * 3 + HEADER_FONT_SIZE + 6 + i * TEXT_FONT_SIZE;
+
+        // Drawing position number
         char pos[3];
         snprintf(pos, sizeof(pos), "%d.", i + 1);
-
         DrawText(pos, TILE_SIZE * 3, yPos, TEXT_FONT_SIZE, BLACK);
 
+        // Drawing username and score if the entry is filled. Otherwise, just a 
+        // placeholder
         if (strlen(ranking.entries[i].username) == 0) {
             DrawText("---", TILE_SIZE * 5, yPos, TEXT_FONT_SIZE, BLACK);
         } else {
@@ -134,6 +138,7 @@ void renderRanking(Ranking ranking, Menu menu) {
         }
     }
 
+    // Drawing ranking screen menu
     int menuYPos = TILE_SIZE * 3 + HEADER_FONT_SIZE + 10 +
                    RANKING_ENTRIES * TEXT_FONT_SIZE;
 
@@ -284,7 +289,7 @@ void renderGame(Game *game, SpriteSheet *spriteSheet) {
  *     game (Game*): Game to be displayed
  */
 Camera2D getCamera(Game *game) {
-    // Getting screen dimensions
+    // Geting screen dimensions
     int screenWidth = GetScreenWidth();
     int screenHeight = GetScreenHeight();
 
@@ -351,6 +356,7 @@ void renderGameOver(Game *game, Menu menu) {
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
+    // Select message based on victory or defeat
     if (game->victory) {
         DrawText("Fim de Jogo - Vitória!", TILE_SIZE * 3, TILE_SIZE * 3, HEADER_FONT_SIZE,
             BLACK);
@@ -359,6 +365,7 @@ void renderGameOver(Game *game, Menu menu) {
             BLACK);
     }
 
+    // Drawing score
     char score[40];
     snprintf(score, 40, "Sua pontuação: %d", game->score);
     DrawText(score, TILE_SIZE * 3, TILE_SIZE * 5, TEXT_FONT_SIZE, BLACK);
@@ -376,14 +383,11 @@ void renderGameOver(Game *game, Menu menu) {
  *     menu (Menu): Menu of the screen
  */
 void renderRecord(Game *game, char *username, Menu menu) {
-    // Assembling score message
-    char score[40];
-    snprintf(score, 40, "Sua pontuação: %d", game->score);
-
     // Drawing screen
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
+    // Select message based on victory or defeat
     if (game->victory) {
         DrawText("Fim de Jogo - Vitória!", TILE_SIZE * 3, TILE_SIZE * 3, HEADER_FONT_SIZE,
             BLACK);
@@ -392,6 +396,9 @@ void renderRecord(Game *game, char *username, Menu menu) {
             BLACK);
     }
 
+    // Drawing score
+    char score[40];
+    snprintf(score, 40, "Sua pontuação: %d", game->score);
     DrawText(score, TILE_SIZE * 3, TILE_SIZE * 5, TEXT_FONT_SIZE, BLACK);
 
     DrawText("Parabéns! Sua pontuação está entre as 5 maiores.", TILE_SIZE * 3,
@@ -399,6 +406,7 @@ void renderRecord(Game *game, char *username, Menu menu) {
     DrawText("Digite seu username:", TILE_SIZE * 3, TILE_SIZE * 9.5,
              TEXT_FONT_SIZE, BLACK);
 
+    // Text input box
     DrawRectangleLines(TILE_SIZE * 3, TILE_SIZE * 11, 360, 30, BLACK);
     DrawText(username, (TILE_SIZE * 3) + 8, (TILE_SIZE * 11) + 8,
              TEXT_FONT_SIZE, BLACK);

@@ -167,7 +167,8 @@ int main() {
 }
 
 /**
- * Manage the main menu screen.
+ * Manage the main menu screen. Return the next game state or 0 (keep 
+ * the current state).
  *
  * Arguments:
  *     menu (Menu*): Pointer to the current main menu
@@ -203,7 +204,8 @@ int mainMenuScreen(Menu *menu) {
 }
 
 /**
- * Manage the ranking screen.
+ * Manage the ranking screen. Return the next game state or 0 (keep the 
+ * current state).
  */
 int rankingScreen() {
     // Get the current ranking
@@ -230,7 +232,8 @@ int rankingScreen() {
 }
 
 /**
- * Manage the game screen
+ * Manage the game screen. Return the next game state or 0 (keep the 
+ * current state).
  *
  * Arguments:
  *     game (Game*): Pointer to the current game to be managed
@@ -268,14 +271,18 @@ int gameScreen(Game *game, double timeDelta, SpriteSheet *spriteSheet) {
         return STATE_GAME_OVER;
     }
 
+    // Next Stage
     if (game->nextStage) {
+        // Assembling next stage map path
         char level_path[30];
         snprintf(level_path, 30, "assets/stages/fase_%02d.txt", game->level);
 
+        // If the map exists, load the next stage
         if (FileExists(level_path)) {
             Map map = loadMap(level_path);
             loadNextStage(game, map);
         } else {
+            // Otherwise, the game is over with victory
             game->gameOver = true;
             game->victory = true;
         }
@@ -284,13 +291,17 @@ int gameScreen(Game *game, double timeDelta, SpriteSheet *spriteSheet) {
 }
 
 /**
- * Manage the game over screen
+ * Manage the game over screen. Return the next game state or 0 
+ * (keep the current state)
  *
  * Arguments:
  *     game (Game*): pointer to the game which ended
  */
 int gameOverScreen(Game *game) {
+    // Load the menu. As it has only one option, does not require persistence 
+    // and can be generated every call
     Menu menu = getMenu(MENU_OK);
+
     renderGameOver(game, menu);
 
     if (IsKeyPressed(KEY_ENTER)) {
@@ -305,48 +316,61 @@ int gameOverScreen(Game *game) {
 }
 
 /**
- * Manage the game over screen when a record occurs
+ * Manage the game over screen when a record occurs. Return the next 
+ * game state or 0 (keep the current state)
  *
  * Arguments:
  *     game (Game*): pointer to the game which ended
  *     username (char*): pointer to the username string
  */
 int gameOverRecordScreen(Game *game, char *username) {
+    // Load the menu. As it has only one option, does not require persistence 
+    // and can be generated every call
     Menu menu = getMenu(MENU_OK);
+    
     renderRecord(game, username, menu);
 
+    // Counting letters of username
     int letterCount = strlen(username);
+
+    // Getting pressed char
     int key = GetCharPressed();
 
-    while (key > 0) {
-        if ((key >= 32) && (key <= 126) &&
-            (letterCount < MAX_USERNAME_LENGTH)) {
-            username[letterCount] = (char)key;
-            username[letterCount + 1] = '\0';
-            letterCount++;
-        }
-
-        key = GetCharPressed();
+    // If the key is a valid ascii character and the username has not 
+    // excceded max length (with \0)
+    if ((key >= 32) && (key <= 126) && (letterCount + 1 < MAX_USERNAME_LENGTH)) {
+        // Append letter to the username and updated \0 position
+        username[letterCount] = (char)key;
+        username[letterCount + 1] = '\0';
+        // Increase letter count
+        letterCount++;
     }
 
+    // Removing a character when backspace is pressed
     if (IsKeyPressed(KEY_BACKSPACE)) {
         letterCount--;
         if (letterCount < 0) letterCount = 0;
         username[letterCount] = '\0';
     }
 
+    // If the name is not empty and the enter is pressed
     if (IsKeyPressed(KEY_ENTER) && letterCount) {
+        // Confirm menu selection
         menu = updateMenu(menu, ACTION_YES);
+
+        // Create ranking entry and save it
         RankingEntry Entry;
         Entry.score = game->score;
         strcpy(Entry.username, username);
         saveOnRanking(Entry);
-        strcpy(username, "");
-    }
 
-    if (menu.selectionDone) {
+        // Reset username
+        strcpy(username, "");
+
+        // Go to the ranking        
         return STATE_RANKING;
     }
+
     return 0;
 }
 
@@ -370,6 +394,7 @@ int confirmationDialog(char *message, Menu *menu, GameState stateYes,
     if (IsKeyPressed(KEY_UP)) *menu = updateMenu(*menu, ACTION_UP);
     if (IsKeyPressed(KEY_ENTER)) *menu = updateMenu(*menu, ACTION_YES);
 
+    // Return next state according to selection
     if (menu->selectionDone) {
         if (menu->selectedOption == 0)
             return stateYes;
