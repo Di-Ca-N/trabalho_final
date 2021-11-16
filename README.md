@@ -56,5 +56,5 @@ make
 |Gemas, coroa, chapéu e background | Brackeys |[Standard Unity Asset Store EULA](https://unity3d.com/legal/as_terms)| https://assetstore.unity.com/packages/2d/free-2d-mega-pack-177430 | 15/11/2021
 |Sprites de água e lava            | BlueFoxx_ | [CC-BY 3.0](https://creativecommons.org/licenses/by/3.0/)| https://opengameart.org/content/16x16-water-lava-sprites | 15/11/2021
 |Anel e troféu                     | Alex's Assets| [CC0](https://creativecommons.org/publicdomain/zero/1.0/deed.pt_BR) | https://alexs-assets.itch.io/16x16-rpg-item-pack | 15/11/2021
-|Porta (Modificada)                | o lobster || https://o-lobster.itch.io/simple-dungeon-crawler-16x16-pixel-pack | 15/11/2021
+|Porta (Modificada)                | o lobster |Própria (vide link)| https://o-lobster.itch.io/simple-dungeon-crawler-16x16-pixel-pack | 15/11/2021
 | Personagem                       |route1rodent | [CC-BY 3.0](https://creativecommons.org/licenses/by/3.0/) | https://route1rodent.itch.io/16x16-rpg-character-sprite-sheet | 15/11/2021
